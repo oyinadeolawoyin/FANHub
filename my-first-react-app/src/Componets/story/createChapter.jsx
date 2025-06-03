@@ -1,0 +1,91 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+function CreateChapter() {
+    const [form, setForm] = useState({
+        title: "",
+        content: "",
+    });
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const { id } = useParams();
+
+    function handleChange(e) {
+        const { name, value } = e.target;
+        setForm(prevForm => ({
+          ...prevForm,
+          [name]: value
+        }));
+    }    
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+    
+        try {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/create-chapter`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form),
+                credentials: "include",
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                setError(data.message || "Something is wrong. Try again!");
+                setLoading(false);
+                return;
+            }
+    
+            alert(data.message || "Created!");  
+    
+            navigate(`/story/${id}`); 
+        } catch(err) {
+            alert("Something went wrong. Please try again.");
+            setLoading(false);
+        }
+    };
+    
+    
+    return (
+        <div>
+          <h2>Create chapter</h2>
+      
+          {loading && <div>Loading, please wait...</div>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+      
+          {!loading && (
+            <form onSubmit={handleSubmit}>
+              <label>
+                Title:{" "}
+                <input
+                  type="text"
+                  name="title"
+                  value={form.title}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Content:{" "}
+                <textarea
+                  name="content"
+                  value={form.content}
+                  onChange={handleChange}
+                  required
+                  placeholder="Write here..."
+                />
+              </label>
+              <button type="submit">Create</button>
+            </form>
+          )}
+        </div>
+    );
+}      
+
+export default CreateChapter;
