@@ -1,14 +1,13 @@
 import { useStories } from "./storiesContext";
 import Delete from "../delete/delete";
 import { useNavigate } from "react-router-dom";
-import { useImages } from "../gallery/imagesContext";
-
+// import { useImages } from "../gallery/imagesContext";
 
 function Stories() {
   const { stories, setStories, loading, error } = useStories();
   const navigate = useNavigate();
-  const { images } = useImages();
-  console.log('stoyiii', images);
+  // const { images } = useImages();
+  // console.log('stoyiii', images);
 
   if (loading) {
     return <div>Loading, please wait...</div>;
@@ -33,16 +32,15 @@ function Stories() {
                 <div key={story.id}>
                     <li>
                         <img 
-                            style={
-                                {
-                                width: "200px"}} 
-                                src={story.imgUrl}
+                            style={ {width: "200px" } } 
+                            src={story.imgUrl}
                         />
                     </li>
                     <li>{story.title}</li>
                     <li>{story.summary}</li>
                     <li>{story.tags}</li>
                     <li>{story.status}</li>
+                    <li>{story.type}</li>
                     <button
                         onClick={() => {
                             const confirmed = window.confirm("Are you sure you want to delete this story?");

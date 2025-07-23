@@ -66,6 +66,8 @@ function StoryPage() {
                 <li><img style={{ width: "200px" }} src={story.imgUrl} /></li>
                 <li>{story.title}</li>
                 <li>{story.summary}</li>
+                <li>{story.type}</li>
+                <li>{story.tags}</li>
                 <li>{story.likes}</li>
                 <li>{story.status}</li>
                 <li>likes: {story.likes.length}</li>

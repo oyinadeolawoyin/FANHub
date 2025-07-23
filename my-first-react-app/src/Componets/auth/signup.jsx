@@ -9,7 +9,8 @@ function Signup() {
         password: "",
         country: "",
         gender: "",
-        newsletter: false,
+        bio:"",
+        file: "",
         role: "USER"
     });
     const [error, setError] = useState("");
@@ -17,13 +18,14 @@ function Signup() {
     const { setUser } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    function handleChange(e) {
-        const { name, value, type, checked } = e.target;
-        setForm(prevForm => ({
-          ...prevForm,
-          [name]: type === "checkbox" ? checked : value
-        }));
-    };
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        if (name === "file") {
+          setForm({ ...form, [name]: files[0] });
+        } else {
+          setForm({ ...form, [name]: value });
+        }
+    }; 
       
 
     const handleSubmit = async (e) => {
@@ -31,23 +33,29 @@ function Signup() {
         setError("");
         setLoading(true);
 
-        console.log(form);
+        const formData = new FormData();
+        formData.append("username", form.username);
+        formData.append("email", form.email);
+        formData.append("password", form.password);
+        formData.append("country", form.country);
+        formData.append("gender", form.gender); 
+        formData.append("bio", form.bio); 
+        formData.append("file", form.file); 
 
         try {
             const response = await fetch("https://fanhub-server.onrender.com/api/auth/signup", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: formData,
                 credentials: "include",
-                
             });
-
+            
             if (!response.ok) {
                 setError(data.message || "Signup failed");
                 return;
             } else if (response.ok) {
                 const data = await response.json();
-                setUser(data);
+                console.log("data", data);
+                setUser(data.user);
                 navigate("/login");
             } 
         } catch(err) {
@@ -126,11 +134,11 @@ function Signup() {
                     />
                 </label>
                 <label>
-                    Accept Newsletter:{" "}
+                    bio:{" "}
                     <input
-                        type="checkbox"
-                        name="newsletter"
-                        checked={form.newsletter}
+                        type="text"
+                        name="bio"
+                        checked={form.bio}
                         onChange={handleChange}
                     />
                 </label>

@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
+import Dashboard from './Componets/dashboard/dashboard.jsx';
 import Signup from './Componets/auth/signup.jsx';
 import Login from './Componets/auth/login.jsx';
 import Logout from './Componets/auth/logout.jsx';
@@ -21,28 +22,11 @@ import { StoriesProvider } from './Componets/story/storiesContext.jsx';
 import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
 import { VideosProvider } from './Componets/gallery/videosContext.jsx';
 
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "create story", 
-        element: <Createstory />,
-      },
-      {
-        path: "Stories",
-        element: <Stories />,
-      },
-      {
-        path: "upload image",
-        element: <UploadImage />,
-      },
-      {
-        path: "upload video",
-        element: <UploadVideo />
-      }
-    ]
+    element: <App />
   },
   {
     path: "signup",
@@ -55,6 +39,28 @@ const router = createBrowserRouter([
   {
     path: "logout",
     element: <Logout />
+  },
+  {
+    path: "dashboard",
+    element: <Dashboard />,
+    children: [
+      {
+        path: "create story", 
+        element: <Createstory />,
+      },
+      {
+        path: "stories",
+        element: <Stories />,
+      },
+      {
+        path: "upload image",
+        element: <UploadImage />,
+      },
+      {
+        path: "upload video",
+        element: <UploadVideo />
+      }
+    ]
   },
   {
     path: "/story/:id",
@@ -81,15 +87,15 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <UsersProvider>
+      {/* <UsersProvider> */}
         <StoriesProvider>
-          <ImagesProvider>
-            <VideosProvider>
+          {/* <ImagesProvider> */}
+            {/* <VideosProvider> */}
               <RouterProvider router={router} />
-            </VideosProvider>
-          </ImagesProvider>
+            {/* </VideosProvider> */}
+          {/* </ImagesProvider> */}
         </StoriesProvider>
-      </UsersProvider>
+      {/* </UsersProvider> */}
     </AuthProvider>
   </StrictMode>,
 )

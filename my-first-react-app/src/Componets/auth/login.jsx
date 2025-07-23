@@ -38,7 +38,7 @@ function Login() {
                 return;
             } else if (response.ok) {
                 const data = await response.json();
-                setUser(data);
+                setUser(data.user);
                 navigate("/");
             } 
             

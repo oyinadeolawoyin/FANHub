@@ -8,7 +8,8 @@ function Createstory() {
         file: null,
         summary: "",
         tags: "",
-        status: "ongoing"
+        status: "ongoing",
+        type: "",
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ function Createstory() {
         formData.append("tags", form.tags);
         formData.append("status", form.status);
         formData.append("file", form.file); 
+        formData.append("type", form.type); 
     
         try {
             const response = await fetch("https://fanhub-server.onrender.com/api/stories/create", {
@@ -44,7 +46,7 @@ function Createstory() {
             });
     
             const data = await response.json();
-    
+            console.log("data", data);
             if (!response.ok) {
                 setError(data.message || "Something is wrong. Try again!");
                 setLoading(false);
@@ -54,7 +56,7 @@ function Createstory() {
             alert("Created!");  
             setStories(prev => [...prev, data.story])
     
-            navigate("/"); 
+            navigate("/dashboard"); 
         } catch(err) {
             alert("Something went wrong. Please try again.");
             setLoading(false);
@@ -117,6 +119,17 @@ function Createstory() {
                   name="status"
                   placeholder="ongoing/completed"
                   value={form.status}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Type:{" "}
+                <input
+                  type="text"
+                  name="type"
+                  placeholder="novel/short story"
+                  value={form.type}
                   onChange={handleChange}
                   required
                 />
