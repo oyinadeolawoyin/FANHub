@@ -9,8 +9,9 @@ import Logout from './Componets/auth/logout.jsx';
 import  Createstory from './Componets/story/createStory.jsx';
 import Stories from './Componets/story/stories.jsx';
 import StoryPage from './Componets/story/storyPage.jsx';
-import CreateChapter from './Componets/story/createChapter.jsx';
 import Updatestory from './Componets/story/updateStory.jsx';
+import CreateChapter from './Componets/story/createChapter.jsx';
+import UpdateChapter from './Componets/story/chapterPage.jsx';
 import UploadImage from './Componets/gallery/createImage.jsx';
 import Images from './Componets/gallery/images.jsx';
 import UploadVideo from './Componets/gallery/createVideo.jsx';
@@ -71,8 +72,12 @@ const router = createBrowserRouter([
     element: <Updatestory />
   },
   {
-    path: "/story/:id/create-chapter",
+    path: "/story/:id/create chapter",
     element: <CreateChapter />
+  },
+  {
+    path: "/story/:id/update chapter/:chapterId",
+    element: <UpdateChapter />
   },
   {
     path: "images",

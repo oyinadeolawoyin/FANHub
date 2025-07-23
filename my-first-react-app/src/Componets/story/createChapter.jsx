@@ -20,13 +20,13 @@ function CreateChapter() {
         }));
     }    
 
-    const handleSubmit = async (e) => {
+    async function handleSubmit (e, status) {
         e.preventDefault();
         setError("");
         setLoading(true);
     
         try {
-            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/create-chapter`, {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/createChapter/${status}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form),
@@ -59,7 +59,7 @@ function CreateChapter() {
           {error && <p style={{ color: "red" }}>{error}</p>}
       
           {!loading && (
-            <form onSubmit={handleSubmit}>
+            <form>
               <label>
                 Title:{" "}
                 <input
@@ -81,7 +81,8 @@ function CreateChapter() {
                   placeholder="Write here..."
                 />
               </label>
-              <button type="submit">Create</button>
+                <button onClick={(e) => handleSubmit(e, "publish")}>Create</button>
+                <button onClick={(e) => handleSubmit(e, "unpublish")}>save As Draft</button>
             </form>
           )}
         </div>
