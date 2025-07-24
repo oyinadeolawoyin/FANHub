@@ -1,18 +1,23 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useVideos } from "./videosContext";
+import { useCollections } from "./collectionContext";
 
 function UploadVideo() {
     const [form, setForm] = useState({
         caption: "",
-        file: null
+        file: null,
+        collectionId: "",
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const { setVideos } = { useVideos }
-    
-    
+    const { setVideos, videos } = useVideos(); 
+    const { collections } = useCollections();
+    // const [selectedCollectionId, setSelectedCollectionId] = useState("");
+
+    console.log("collection", collections);
+    console.log("vid", videos)
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -23,6 +28,8 @@ function UploadVideo() {
         }
     }; 
 
+    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
@@ -31,6 +38,7 @@ function UploadVideo() {
         const formData = new FormData();
         formData.append("caption", form.caption);
         formData.append("file", form.file); 
+        formData.append("collectionId", form.collectionId);
     
         try {
             const response = await fetch("https://fanhub-server.onrender.com/api/gallery/uploadVideo", {
@@ -40,9 +48,9 @@ function UploadVideo() {
             });
     
             const data = await response.json();
-    
+            console.log("datavideo", data);
             if (!response.ok) {
-                setError(data.message || "Something is wrong. Try again!");
+                setError(data.message);
                 setLoading(false);
                 return;
             }
@@ -50,7 +58,7 @@ function UploadVideo() {
             alert("Uploaded!"); 
             setVideos(prev => [...prev, data.video]);
     
-            navigate("/"); 
+            navigate("/dashboard/videos"); 
         } catch(err) {
             alert("Something went wrong. Please try again.");
             setLoading(false);
@@ -86,6 +94,21 @@ function UploadVideo() {
                   required
                 />
               </label>
+              <label htmlFor="collection">Choose Collection:</label>
+              <select 
+                  id="collection"
+                  name="collectionId"
+                  value={form.collectionId} 
+                  onChange={handleChange}
+                  required
+              >
+                  <option value="">-- Select a collection --</option>
+                  {collections.map(collection => (
+                      <option key={collection.id} value={collection.id}>
+                          {collection.name}
+                      </option>
+                  ))}
+              </select>
               <button type="submit">Upload</button>
             </form>
           )}

@@ -6,12 +6,18 @@ import Dashboard from './Componets/dashboard/dashboard.jsx';
 import Signup from './Componets/auth/signup.jsx';
 import Login from './Componets/auth/login.jsx';
 import Logout from './Componets/auth/logout.jsx';
-import  Createstory from './Componets/story/createStory.jsx';
+
+import Createstory from './Componets/story/createStory.jsx';
 import Stories from './Componets/story/stories.jsx';
 import StoryPage from './Componets/story/storyPage.jsx';
 import Updatestory from './Componets/story/updateStory.jsx';
 import CreateChapter from './Componets/story/createChapter.jsx';
-import UpdateChapter from './Componets/story/chapterPage.jsx';
+import UpdateChapter from './Componets/story/updateChapter.jsx';
+
+import CreateCollection from './Componets/gallery/createCollection.jsx';
+import Collections from './Componets/gallery/collections.jsx';
+import UpdateCollections from './Componets/gallery/updateCollection.jsx';
+import CollectionPage from './Componets/gallery/collectionPage.jsx';
 import UploadImage from './Componets/gallery/createImage.jsx';
 import Images from './Componets/gallery/images.jsx';
 import UploadVideo from './Componets/gallery/createVideo.jsx';
@@ -20,8 +26,11 @@ import Videos from './Componets/gallery/videos.jsx';
 import { AuthProvider } from './Componets/auth/authContext.jsx';
 import { UsersProvider } from './Componets/users/usersContext.jsx';
 import { StoriesProvider } from './Componets/story/storiesContext.jsx';
+import { CollectionProvider } from './Componets/gallery/collectionContext.jsx';
 import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
 import { VideosProvider } from './Componets/gallery/videosContext.jsx';
+
+
 
 
 const router = createBrowserRouter([
@@ -54,12 +63,28 @@ const router = createBrowserRouter([
         element: <Stories />,
       },
       {
+        path: "create collection",
+        element: <CreateCollection />
+      },
+      {
+        path: "collections",
+        element: <Collections />
+      },
+      {
         path: "upload image",
         element: <UploadImage />,
       },
       {
         path: "upload video",
         element: <UploadVideo />
+      },
+      {
+        path: "images",
+        element: <Images />
+      },
+      {
+        path: "videos",
+        element: <Videos />
       }
     ]
   },
@@ -80,13 +105,13 @@ const router = createBrowserRouter([
     element: <UpdateChapter />
   },
   {
-    path: "images",
-    element: <Images />
+    path: "/update collection/:id",
+    element: <UpdateCollections />
   },
   {
-    path: "videos",
-    element: <Videos />
-  }
+    path: "/collections/:id",
+    element: <CollectionPage />
+  },
 ])
 
 createRoot(document.getElementById('root')).render(
@@ -94,11 +119,13 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
       {/* <UsersProvider> */}
         <StoriesProvider>
-          {/* <ImagesProvider> */}
-            {/* <VideosProvider> */}
+         <CollectionProvider>
+          <ImagesProvider>
+            <VideosProvider>
               <RouterProvider router={router} />
-            {/* </VideosProvider> */}
-          {/* </ImagesProvider> */}
+            </VideosProvider>
+          </ImagesProvider>
+         </CollectionProvider>
         </StoriesProvider>
       {/* </UsersProvider> */}
     </AuthProvider>

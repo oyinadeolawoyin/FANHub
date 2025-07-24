@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useImages } from "./imagesContext";
 import { useCollections } from "./collectionContext";
 
-function UploadImage() {
+function CreateCollection() {
+    console.log("here...")
     const [form, setForm] = useState({
-        caption: "",
+        name: "",
         file: null,
-        collectionId: "",
+        description: "",
+        tags: "",
+        status: "ongoing",
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const {setImages} = useImages();
-    const { collections } = useCollections();
-    
-    
+    const { setCollections } = useCollections();
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -32,29 +31,31 @@ function UploadImage() {
         setLoading(true);
 
         const formData = new FormData();
-        formData.append("caption", form.caption);
-        formData.append("file", form.file); 
-        formData.append("collectionId", form.collectionId);
+        formData.append("name", form.name);
+        formData.append("description", form.description);
+        formData.append("tags", form.tags);
+        formData.append("status", form.status);
+        formData.append("file", form.file);  
     
         try {
-            const response = await fetch("https://fanhub-server.onrender.com/api/gallery/uploadImage", {
+            const response = await fetch("https://fanhub-server.onrender.com/api/gallery/createCollection", {
                 method: "POST",
                 body: formData,
                 credentials: "include",
             });
     
             const data = await response.json();
-    
+            console.log("data", data);
             if (!response.ok) {
                 setError(data.message || "Something is wrong. Try again!");
                 setLoading(false);
                 return;
             }
     
-            alert("Uploaded!"); 
-            setImages(prev => [...prev, data.image]);
+            alert("Created!");  
+            setCollections(prev => [...prev, data.collection])
     
-            navigate("/dashboard/images"); 
+            navigate("/dashboard"); 
         } catch(err) {
             alert("Something went wrong. Please try again.");
             setLoading(false);
@@ -64,7 +65,7 @@ function UploadImage() {
     
     return (
         <div>
-          <h2>Upload Image</h2>
+          <h2>Add new collection</h2>
       
           {loading && <div>Loading, please wait...</div>}
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -72,11 +73,11 @@ function UploadImage() {
           {!loading && (
             <form onSubmit={handleSubmit}>
               <label>
-                Caption:{" "}
+                Name:{" "}
                 <input
                   type="text"
-                  name="caption"
-                  value= {form.caption}
+                  name="name"
+                  value={form.title}
                   onChange={handleChange}
                   required
                 />
@@ -90,26 +91,42 @@ function UploadImage() {
                   required
                 />
               </label>
-              <label htmlFor="collection">Choose Collection:</label>
-              <select 
-                  id="collection"
-                  name="collectionId"
-                  value={form.collectionId} 
+              <label>
+                description:{" "}
+                <textarea
+                  name="description"
+                  value={form.summary}
                   onChange={handleChange}
                   required
-              >
-                  <option value="">-- Select a collection --</option>
-                  {collections.map(collection => (
-                      <option key={collection.id} value={collection.id}>
-                          {collection.name}
-                      </option>
-                  ))}
-              </select>
-              <button type="submit">Upload</button>
+                  placeholder="Write here..."
+                />
+              </label>
+              <label>
+                Tags:{" "}
+                <input
+                  type="text"
+                  name="tags"
+                  value={form.tags}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <label>
+                Status:{" "}
+                <input
+                  type="text"
+                  name="status"
+                  placeholder="ongoing/completed"
+                  value={form.status}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <button type="submit">Create</button>
             </form>
           )}
         </div>
     );
 }      
 
-export default UploadImage;
+export default CreateCollection;

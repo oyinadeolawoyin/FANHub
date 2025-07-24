@@ -14,7 +14,9 @@ function Dashboard() {
         <div>
           <li><Link to="create story">Create Story</Link></li>
           <li><Link to="stories">Stories</Link></li>
-          <li><Link to="upload images">Upload image</Link></li>
+          <li><Link to="create collection">Add new collection</Link></li>
+          <li><Link to="collections">Collections</Link></li>
+          <li><Link to="upload image">Upload image</Link></li>
           <li><Link to="upload video">Upload Video</Link></li>
           <li><Link to="images">Images</Link></li>
           <li><Link to="videos">Videos</Link></li>
