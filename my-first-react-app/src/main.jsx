@@ -22,6 +22,8 @@ import UploadImage from './Componets/gallery/createImage.jsx';
 import Images from './Componets/gallery/images.jsx';
 import UploadVideo from './Componets/gallery/createVideo.jsx';
 import Videos from './Componets/gallery/videos.jsx';
+import CreatePost from './Componets/post/createPost.jsx';
+import Posts from './Componets/post/postPage.jsx';
 
 import { AuthProvider } from './Componets/auth/authContext.jsx';
 import { UsersProvider } from './Componets/users/usersContext.jsx';
@@ -29,6 +31,7 @@ import { StoriesProvider } from './Componets/story/storiesContext.jsx';
 import { CollectionProvider } from './Componets/gallery/collectionContext.jsx';
 import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
 import { VideosProvider } from './Componets/gallery/videosContext.jsx';
+import { PostsProvider } from './Componets/post/postContext.jsx';
 
 
 
@@ -85,6 +88,14 @@ const router = createBrowserRouter([
       {
         path: "videos",
         element: <Videos />
+      },
+      {
+        path: "share post",
+        element: <CreatePost />
+      },
+      {
+        path: "posts",
+        element: <Posts />
       }
     ]
   },
@@ -122,7 +133,9 @@ createRoot(document.getElementById('root')).render(
          <CollectionProvider>
           <ImagesProvider>
             <VideosProvider>
-              <RouterProvider router={router} />
+              <PostsProvider>
+                <RouterProvider router={router} />
+              </PostsProvider>
             </VideosProvider>
           </ImagesProvider>
          </CollectionProvider>

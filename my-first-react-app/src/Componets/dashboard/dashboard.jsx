@@ -8,6 +8,7 @@ function Dashboard() {
       <header>
         <h1>Hello {user?.username || "Guest"}, this is your dashboard!</h1>
         <p>Here is the dashboard page</p>
+        <p>Return <Link to="/">Home</Link></p>
       </header>
 
       <main>
@@ -20,6 +21,8 @@ function Dashboard() {
           <li><Link to="upload video">Upload Video</Link></li>
           <li><Link to="images">Images</Link></li>
           <li><Link to="videos">Videos</Link></li>
+          <li><Link to="share post">Share post</Link></li>
+          <li><Link to="posts">Posts</Link></li>
           <div>
              <Outlet /> 
           </div>
