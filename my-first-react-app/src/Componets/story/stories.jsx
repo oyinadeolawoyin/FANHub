@@ -51,11 +51,11 @@ function Stories() {
                     >
                         Delete
                     </button>
-                    <button onClick={() => navigate(`/update-story/${story.id}`)}>
+                    <button onClick={() => navigate(`/dashboard/update-story/${story.id}`)}>
                         Edit
                     </button>
 
-                    <button onClick={() => navigate(`/story/${story.id}`)}>
+                    <button onClick={() => navigate(`/dashboard/story/${story.id}`)}>
                       View
                     </button>
                 </div>

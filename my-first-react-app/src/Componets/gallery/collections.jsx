@@ -48,11 +48,11 @@ function Collections() {
                     >
                         Delete
                     </button>
-                    <button onClick={() => navigate(`/update collection/${collection.id}`)}>
+                    <button onClick={() => navigate(`/dashboard/update collection/${collection.id}`)}>
                         Edit
                     </button>
 
-                    <button onClick={() => navigate(`/collections/${collection.id}`)}>
+                    <button onClick={() => navigate(`/dashboard/collections/${collection.id}`)}>
                       View
                     </button>
                 </div>

@@ -65,7 +65,7 @@ function Updatestory() {
             );              
             console.log("s:",stories)
     
-            navigate("/"); 
+            navigate("/dashboard"); 
         } catch(err) {
             alert("Something went wrong. Please try again.");
             setLoading(false);

@@ -1,19 +1,21 @@
 import { createContext, useState, useEffect, useContext } from "react";
+import { useAuth } from "../auth/authContext";
 
-const UsersContext = createContext();
+const UserContext = createContext();
 
-export function  UsersProvider({ children }) {
-  const [users, setUsers] = useState(null);
+export function  UserProvider({ children }) {
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { user: authUser } = useAuth();
 
   useEffect(() => {
-    async function fetchUsers() {
+    async function fetchUser() {
       setLoading(true);
       setError("");
 
       try {
-        const response = await fetch("https://fanhub-server.onrender.com/api/users/fans", {
+        const response = await fetch(`https://fanhub-server.onrender.com/api/users/${authUser.id}`, {
           method: "GET",
           headers: { 
             "Content-Type": "application/json",
@@ -28,7 +30,7 @@ export function  UsersProvider({ children }) {
           return;
         }
         console.log("dataUser", data);
-        setUsers(data.users);
+        setUser(data.user);
       } catch (err) {
         setError("Something went wrong. Please try again.");
       } finally {
@@ -36,16 +38,16 @@ export function  UsersProvider({ children }) {
       }
     }
 
-    fetchUsers();
+    fetchUser();
   }, []);
 
   return(
-    <UsersContext.Provider value={{ users, setUsers, loading, error }}>
+    <UserContext.Provider value={{ user, setUser, loading, error }}>
         {children}
-    </UsersContext.Provider>
+    </UserContext.Provider>
   )
 }
 
-export function useUsers() {
-    return useContext(UsersContext);
+export function useUser() {
+    return useContext(UserContext);
 }

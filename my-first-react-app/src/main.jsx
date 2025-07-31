@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
 import Dashboard from './Componets/dashboard/dashboard.jsx';
+import Profile from './Componets/profile/profile.jsx';
 import Signup from './Componets/auth/signup.jsx';
 import Login from './Componets/auth/login.jsx';
 import Logout from './Componets/auth/logout.jsx';
@@ -25,8 +26,15 @@ import Videos from './Componets/gallery/videos.jsx';
 import CreatePost from './Componets/post/createPost.jsx';
 import Posts from './Componets/post/postPage.jsx';
 
+import About from './Componets/profile/about.jsx';
+import ProfileStories from './Componets/profile/profileStories.jsx';
+import ProfileCollections from './Componets/profile/profileCollections.jsx';
+import Gallery from './Componets/profile/gallery.jsx';
+import ProfilePosts from './Componets/profile/profilePosts.jsx';
+import Fans from "./Componets/profile/fans.jsx";
+
 import { AuthProvider } from './Componets/auth/authContext.jsx';
-import { UsersProvider } from './Componets/users/usersContext.jsx';
+import { UserProvider } from './Componets/profile/usersContext.jsx';
 import { StoriesProvider } from './Componets/story/storiesContext.jsx';
 import { CollectionProvider } from './Componets/gallery/collectionContext.jsx';
 import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
@@ -96,39 +104,69 @@ const router = createBrowserRouter([
       {
         path: "posts",
         element: <Posts />
-      }
+      },
+      {
+        path: "story/:id",
+        element: <StoryPage />
+      },
+      {
+        path: "update-story/:id",
+        element: <Updatestory />
+      },
+      {
+        path: "story/:id/create chapter",
+        element: <CreateChapter />
+      },    
+      {
+        path: "story/:id/update chapter/:chapterId",
+        element: <UpdateChapter />
+      },
+      {
+        path: "update collection/:id",
+        element: <UpdateCollections />
+      },
+      {
+        path: "collections/:id",
+        element: <CollectionPage />
+      },
     ]
   },
   {
-    path: "/story/:id",
-    element: <StoryPage />
-  },
-  {
-    path: "/update-story/:id",
-    element: <Updatestory />
-  },
-  {
-    path: "/story/:id/create chapter",
-    element: <CreateChapter />
-  },
-  {
-    path: "/story/:id/update chapter/:chapterId",
-    element: <UpdateChapter />
-  },
-  {
-    path: "/update collection/:id",
-    element: <UpdateCollections />
-  },
-  {
-    path: "/collections/:id",
-    element: <CollectionPage />
-  },
+    path: "profile/:username",
+    element: <Profile />,
+    children: [
+      {
+        path: "about",
+        element: <About />
+      },
+      {
+        path: "stories",
+        element: <ProfileStories />
+      },
+      {
+        path: "collections",
+        element: <ProfileCollections />
+      },
+      {
+        path: "gallery",
+        element: <Gallery />
+      },
+      {
+        path: "posts",
+        element: <ProfilePosts />
+      },
+      {
+        path: "fans",
+        element: <Fans />
+      }
+    ]
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      {/* <UsersProvider> */}
+      <UserProvider>
         <StoriesProvider>
          <CollectionProvider>
           <ImagesProvider>
@@ -140,7 +178,7 @@ createRoot(document.getElementById('root')).render(
           </ImagesProvider>
          </CollectionProvider>
         </StoriesProvider>
-      {/* </UsersProvider> */}
+      </UserProvider>
     </AuthProvider>
   </StrictMode>,
 )

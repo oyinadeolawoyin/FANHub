@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
 
 function CreateChapter() {
     const [form, setForm] = useState({
@@ -10,6 +11,7 @@ function CreateChapter() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const { user } = useAuth();
     const { id } = useParams();
 
     function handleChange(e) {
@@ -20,36 +22,47 @@ function CreateChapter() {
         }));
     }    
 
-    async function handleSubmit (e, status) {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
+    async function handleSubmit(e, status) {
+      e.preventDefault();
+      setError("");
+      setLoading(true);
     
-        try {
-            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/createChapter/${status}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
-                credentials: "include",
-            });
+      try {
+        const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/createChapter/${status}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+          credentials: "include",
+        });
     
-            const data = await response.json();
+        const data = await response.json();
     
-            if (!response.ok) {
-                setError(data.message || "Something is wrong. Try again!");
-                setLoading(false);
-                return;
-            }
-    
-            alert(data.message || "Created!");  
-    
-            navigate(`/story/${id}`); 
-        } catch(err) {
-            alert("Something went wrong. Please try again.");
-            setLoading(false);
+        if (!response.ok) {
+          setError(data.message || "Something is wrong. Try again!");
+          setLoading(false);
+          return;
         }
-    };
     
+        const streakRes = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/writingStreak`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+    
+        if (!streakRes.ok) {
+          const errData = await streakRes.json();
+          console.warn("Streak update failed:", errData.message || "Unknown error");
+        }
+    
+        alert(data.message || "Chapter created!");
+        navigate(`/dashboard/story/${id}`);
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }    
     
     return (
         <div>

@@ -75,14 +75,14 @@ function StoryPage() {
 
             <main>
                 <div>
-                    <button onClick={() => navigate(`/story/${story.id}/create chapter`)}>
+                    <button onClick={() => navigate(`/dashboard/story/${story.id}/create chapter`)}>
                         New chapter
                     </button>
                 </div>
                 {chapters.length > 0 ? (
                 chapters.map(chapter => (
                     <div key={chapter.chapter.id}>
-                        <li onClick={() => navigate(`/story/chapters/${chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
+                        <li onClick={() => navigate(`/dashboard/story/chapters/${chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
                         <button
                             onClick={() => {
                                 const confirmed = window.confirm("Are you sure you want to delete this chapter?");
@@ -93,7 +93,7 @@ function StoryPage() {
                         >
                             Delete
                         </button>
-                        <button onClick={() => navigate(`/story/${story.id}/update chapter/${chapter.chapter.id}`)}>
+                        <button onClick={() => navigate(`/dashboard/story/${story.id}/update chapter/${chapter.chapter.id}`)}>
                             Edit
                         </button>
                     </div>
