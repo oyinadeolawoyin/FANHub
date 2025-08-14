@@ -6,8 +6,8 @@ export default async function Delete(url) {
     });
 
     const data = await response.json();
-
-    if (!response.ok) {
+    console.log("date delete", data);
+        if (!response.ok) {
         throw new Error(data.message || "Failed to delete story");
     }
 

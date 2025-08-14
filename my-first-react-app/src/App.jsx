@@ -1,5 +1,6 @@
 import { useAuth } from "./Componets/auth/authContext";
 import { Link } from "react-router-dom";
+import Homepage from "./Componets/homepage/homepage";
 
 const App = () => {
 
@@ -22,6 +23,10 @@ const App = () => {
           </ul>
         </nav>
       </header>
+
+      <main>
+        <Homepage />
+      </main>
     </div>
   );
 };

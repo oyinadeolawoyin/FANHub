@@ -33,6 +33,11 @@ import Gallery from './Componets/profile/gallery.jsx';
 import ProfilePosts from './Componets/profile/profilePosts.jsx';
 import Fans from "./Componets/profile/fans.jsx";
 
+import HomeStoryPage from './Componets/homepage/storypage.jsx';
+import CreateReview from './Componets/homepage/createreview.jsx';
+import Reviews from './Componets/homepage/reviews.jsx';
+import Chapter from './Componets/homepage/chapterPage.jsx';
+
 import { AuthProvider } from './Componets/auth/authContext.jsx';
 import { UserProvider } from './Componets/profile/usersContext.jsx';
 import { StoriesProvider } from './Componets/story/storiesContext.jsx';
@@ -60,6 +65,22 @@ const router = createBrowserRouter([
   {
     path: "logout",
     element: <Logout />
+  },
+  {
+    path: "/stories/:id",
+    element: <HomeStoryPage />
+  },
+  {
+    path: "/review/:id",
+    element: <CreateReview />
+  },
+  {
+    path: "/:name/:id/reviews",
+    element: <Reviews />
+  },
+  {
+    path: "/stories/:storyId/chapters/:chapterId",
+    element: <Chapter />
   },
   {
     path: "dashboard",

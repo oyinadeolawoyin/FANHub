@@ -87,7 +87,7 @@ function StoryPage() {
                             onClick={() => {
                                 const confirmed = window.confirm("Are you sure you want to delete this chapter?");
                                 if (confirmed) {
-                                handleDelete(chapter.id);
+                                handleDelete(chapter.chapter.id);
                                 }
                             }}
                         >

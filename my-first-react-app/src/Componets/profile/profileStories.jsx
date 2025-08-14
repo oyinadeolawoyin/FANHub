@@ -31,9 +31,9 @@ function ProfileStories() {
                     <li>{story.likes.length} likes</li>
                     <li>{story.reviews.length} reviews </li>
                     <li>{story.chapters.length} chapters</li>
-                    {/* <button onClick={() => navigate(`/dashboard/story/${story.id}`)}>
+                    <button onClick={() => navigate(`/stories/${story.id}`)}>
                       View
-                    </button> */}
+                    </button>
                 </div>
             ))}
           </ul>
