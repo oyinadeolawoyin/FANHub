@@ -53,7 +53,7 @@ function Homepage() {
                             <li>{collection?.tags}</li>
                             <li>{collection?.status}</li>
 
-                            <button onClick={() => navigate(`/collections/${collection.id}`)}>
+                            <button onClick={() => navigate(`/gallery/${collection.id}`)}>
                             View
                             </button>
                         </div>

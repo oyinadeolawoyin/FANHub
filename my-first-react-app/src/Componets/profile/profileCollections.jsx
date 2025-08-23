@@ -30,9 +30,9 @@ function ProfileCollections() {
                     <li>{collection?.likes.length} likes</li>
                     <li>{collection?.review.length} reviews </li>
                     <li>{collection?.images.length + collection?.videos.length} medias </li>
-                    {/* <button onClick={() => navigate(`/dashboard/collections/${collection.id}`)}>
+                    <button onClick={() => navigate(`/gallery/${collection.id}`)}>
                       View
-                    </button> */}
+                    </button>
                 </div>
             ))}
           </ul>

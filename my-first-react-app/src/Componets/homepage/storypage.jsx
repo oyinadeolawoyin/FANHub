@@ -100,7 +100,7 @@ function HomeStoryPage() {
                 </li>
                 <li onClick={() => navigate(`/stories/${story.id}/reviews`)}>{story.reviews.length} {story.reviews.length === 1 ? "Review" : "Reviews"}</li>
                 <li>
-                    <button onClick={() => navigate(`/review/${story.id}`)}>
+                    <button onClick={() => navigate(`/stories/${story.id}/review`)}>
                         ❤️ write a review 
                     </button>
                 </li>

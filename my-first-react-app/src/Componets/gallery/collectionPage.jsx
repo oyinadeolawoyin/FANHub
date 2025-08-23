@@ -43,15 +43,18 @@ function CollectionPage() {
 
     return (
         <div>
-            <header>
-                <li><img style={{ width: "200px" }} src={collection.img} /></li>
-                <li>{collection.name}</li>
-                <li>{collection.description}</li>
-                <li>{collection.tags}</li>
-                <li>{collection.status}</li>
-                <li>likes: {collection.likes.length}</li>
-                <li>Reviews: {collection.review.length}</li>
-            </header>
+            {collection && (
+                <header>
+                    <li><img style={{ width: "200px" }} src={collection.img} /></li>
+                    <li>{collection.name}</li>
+                    <li>{collection.description}</li>
+                    <li>{collection.tags}</li>
+                    <li>{collection.status}</li>
+                    <li>likes: {collection?.likes?.length}</li>
+                    <li>Reviews: {collection?.review?.length}</li>
+                </header>
+            )}
+                
             <main>
                 {images.length === 0 && videos.length === 0 ? (
                     <p>No media yet!</p>

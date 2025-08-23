@@ -1,26 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useStories } from "../story/storiesContext";
-import { useCollections } from "../gallery/collectionContext";
 
 function Reviews() {
     const { id, name } = useParams();
-    const { stories } = useStories();
-    const { collections } = useCollections();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [reviews, setReviews] = useState([]);
-    const [likes, setLikes] = useState([]);
-
-    const story = name === "stories" ? stories.find(s => s.id == id) : null;
-    const collection = name !== "stories" ? collections.find(c => c.id == id) : null;
-
-    useEffect(() => {
-        const item = name === "stories" ? story : collection;
-        if (item) {
-            setLikes(item.likes || []);
-        }
-    }, [story, collection, name]);
 
     useEffect(() => {
         async function fetchReviews() {
@@ -41,8 +26,10 @@ function Reviews() {
                 }
 
                 const data = await response.json();
+                console.log("dat", data);
                 if (!response.ok) {
                     setError(data.message || "Something is wrong. Try again!");
+                    console.log(data.error);
                     return;
                 }
 
@@ -56,13 +43,14 @@ function Reviews() {
         fetchReviews();
     }, [id, name]);
 
-    async function likeReview(e) {
+    async function likeReview(e, reviewId) {
         e.preventDefault();
         setError("");
         try {
+          
             const path = name === "stories"
-                ? `https://fanhub-server.onrender.com/api/${name}/${id}/like/love`
-                : `https://fanhub-server.onrender.com/api/gallery/${name}/${id}/like/love`;
+                ? `https://fanhub-server.onrender.com/api/${name}/${id}/reviews/${reviewId}/like/love`
+                : `https://fanhub-server.onrender.com/api/gallery/${name}/${id}/reviews/${reviewId}/like/love`;
 
             const response = await fetch(path, {
                 method: "POST",
@@ -76,7 +64,14 @@ function Reviews() {
             }
 
             alert("Liked!");
-            setLikes(prev => [...prev, data.liked]);
+            console.log("data like", data);
+            setReviews(prev =>
+                prev.map(r =>
+                  r.review.id === reviewId
+                    ? { ...r, likes: [...r.likes, data.liked] } 
+                    : r
+                )
+            );              
         } catch (err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");
@@ -98,8 +93,8 @@ function Reviews() {
                         <li>{review.review.content}</li>
                         <li>{review.review.uploadedAt}</li>
                         <li>
-                            <button onClick={likeReview}>
-                                ❤️ {likes.length} {likes.length === 1 ? "Like" : "Likes"}
+                            <button onClick={(e) => likeReview(e, review.review.id)}>
+                                ❤️ {review.likes.length} {review.likes.length === 1 ? "Like" : "Likes"}
                             </button>
                         </li>
                     </div>

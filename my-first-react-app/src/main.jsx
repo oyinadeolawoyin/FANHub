@@ -34,9 +34,11 @@ import ProfilePosts from './Componets/profile/profilePosts.jsx';
 import Fans from "./Componets/profile/fans.jsx";
 
 import HomeStoryPage from './Componets/homepage/storypage.jsx';
-import CreateReview from './Componets/homepage/createreview.jsx';
+// import CreateReview from './Componets/homepage/createreview.jsx';
+import WriteReview from './Componets/homepage/collectionReview.jsx';
 import Reviews from './Componets/homepage/reviews.jsx';
 import Chapter from './Componets/homepage/chapterPage.jsx';
+import HomepageCollections from './Componets/homepage/collectionPage.jsx';
 
 import { AuthProvider } from './Componets/auth/authContext.jsx';
 import { UserProvider } from './Componets/profile/usersContext.jsx';
@@ -70,17 +72,25 @@ const router = createBrowserRouter([
     path: "/stories/:id",
     element: <HomeStoryPage />
   },
-  {
-    path: "/review/:id",
-    element: <CreateReview />
-  },
+  // {
+  //   path: "/review/:id",
+  //   element: <CreateReview />
+  // },
   {
     path: "/:name/:id/reviews",
     element: <Reviews />
   },
   {
+    path: "/:name/:id/review",
+    element: <WriteReview />
+  },
+  {
     path: "/stories/:storyId/chapters/:chapterId",
     element: <Chapter />
+  },
+  {
+    path: "/gallery/:id",
+    element: <HomepageCollections />
   },
   {
     path: "dashboard",
