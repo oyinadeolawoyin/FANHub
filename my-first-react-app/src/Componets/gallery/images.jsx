@@ -22,7 +22,7 @@ function Images() {
 
             { images.length > 0 ? (
                 images.map(image => (
-                    <div key={image.id}>
+                    <div key={image.image.id}>
                         <li>{image?.image.uploadedAt} likes: {image.likes.length} comments: {image.comments.length}</li>
                         <li>
                             <img src={image.image.url}

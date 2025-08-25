@@ -60,6 +60,7 @@ function UploadVideo() {
     
             navigate("/dashboard/videos"); 
         } catch(err) {
+            console.log("err", error);
             alert("Something went wrong. Please try again.");
             setLoading(false);
         }
@@ -100,7 +101,6 @@ function UploadVideo() {
                   name="collectionId"
                   value={form.collectionId} 
                   onChange={handleChange}
-                  required
               >
                   <option value="">-- Select a collection --</option>
                   {collections.map(collection => (

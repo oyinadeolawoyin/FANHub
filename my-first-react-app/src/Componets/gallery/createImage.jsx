@@ -96,7 +96,6 @@ function UploadImage() {
                   name="collectionId"
                   value={form.collectionId} 
                   onChange={handleChange}
-                  required
               >
                   <option value="">-- Select a collection --</option>
                   {collections.map(collection => (
