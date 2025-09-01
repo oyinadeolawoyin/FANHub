@@ -87,6 +87,33 @@ function HomepageCollections() {
         }
     };
 
+    async function addToLibrary(id) {
+        // setError("");
+        // setLoading(true);
+        console.log("id here", id);
+        try {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collection/${id}/readinglist`, {
+            method: "POST",
+            credentials: "include",
+            });
+
+            const data = await response.json();
+            console.log("data", data);
+            
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            } 
+            
+        } catch(err) {
+            console.log("error", err);
+            alert("Something went wrong. Please try again.");
+        } 
+        // finally{
+        //     setLoading(false);
+        // }
+    }
+
     function handleChange(e) {
         const { name, value } = e.target;
         setForm(prevForm => ({
@@ -336,31 +363,37 @@ function HomepageCollections() {
     }
 
     return (
-        <div>
-            {loading && <p>Loading...please wait</p>}
-            {error && <p>{error}</p>}         
-            {!collection && <p>No collection yet!</p>}
-            <header>
-                <li><img style={{ width: "200px" }} src={collection?.img} /></li>
-                <li>{collection?.name}</li>
-                <li>{collection?.user?.username}</li>
-                <li>{collection?.tags}</li>
-                <li>{collection?.status}</li>
-                <li>
-                    <button onClick={likeCollection}>
-                        ❤️ {likes.length} {likes.length === 1 ? "Like" : "Likes"}
-                    </button>
-                </li>
-                <li onClick={() => navigate(`/collections/${id}/reviews`)}>
-                    {collection?.review?.length || 0} {collection?.review?.length === 1 ? "Review" : "Reviews"}
-                </li>
-                <li>
-                    <button onClick={() => navigate(`/collections/${collection.id}/review`)}>
-                        ❤️ write a review 
-                    </button>
-                </li>
-                <li><b>Description:</b> {collection?.description}</li>
-            </header>
+        <div>       
+            {collection ? (
+                <header>
+                    <li><img style={{ width: "200px" }} src={collection.img} /></li>
+                    <li>{collection.name}</li>
+                    <li>{collection.user.username}</li>
+                    <li>{collection.tags}</li>
+                    <li>{collection.status}</li>
+                    <li>
+                        <button onClick={likeCollection}>
+                            ❤️ {likes.length} {likes.length === 1 ? "Like" : "Likes"}
+                        </button>
+                    </li>
+                    <li onClick={()=> addToLibrary(collection.id)}>Add to Library</li>
+                    <li onClick={() => navigate(`/collections/${id}/reviews`)}>
+                        {collection.review.length || 0} {collection.review.length === 1 ? "Review" : "Reviews"}
+                    </li>
+                    <li>
+                        <button onClick={() => navigate(`/collections/${collection.id}/review`)}>
+                            ❤️ write a review 
+                        </button>
+                    </li>
+                    <li><b>Description:</b> {collection.description}</li>
+                </header>
+            ):(
+                <div>
+                    {loading && <p>Loading...please wait</p>}
+                    {error && <p>{error}</p>} 
+                </div>
+            )}
+            
 
             <main>
                 {images.map(image => (
