@@ -1,21 +1,82 @@
-import { useStories } from "../story/storiesContext";
-import { useCollections } from "../gallery/collectionContext";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Homepage() {
-  const { stories, loading, error } = useStories();
-  const { collections } = useCollections();
-  const navigate = useNavigate();
 
-  if (loading) {
-    return <div>Loading, please wait...</div>;
-  }
+function Homepage() {
+  const [stories, setStories] = useState(null);
+  const [collections, setCollections] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+        async function fetchStories() {
+            setError("");
+            setLoading(true);
+            try {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/home/stories`, {
+                    method: "GET",
+                    credentials: "include",
+                });
+        
+                const data = await response.json();
+                console.log("data", data);
+                
+                if (!response.ok) {
+                    setError(data.message);
+                    return;
+                } 
+                setStories(data.stories);
+                console.log("stories", stories);
+                
+            } catch(err) {
+                console.log("error", err);
+                alert("Something went wrong. Please try again.");
+            } finally{
+                setLoading(false);
+            }
+        };
+  
+        fetchStories();
+  }, []);
+
+  useEffect(() => {
+          async function fetchCollections() {
+              setError("");
+              setLoading(true);
+              try {
+                  const response = await fetch(`https://fanhub-server.onrender.com/api/home/collections`, {
+                      method: "GET",
+                      credentials: "include",
+                  });
+          
+                  const data = await response.json();
+                  console.log("data", data);
+                  
+                  if (!response.ok) {
+                      setError(data.message);
+                      return;
+                  } 
+                  setCollections(data.collections);
+                  console.log("collect", collections);
+                  
+              } catch(err) {
+                  console.log("error", err);
+                  alert("Something went wrong. Please try again.");
+              } finally{
+                  setLoading(false);
+              }
+          };
+    
+          fetchCollections();
+  }, []);
 
   return (
     <div>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && <p>loading... please wait!</p>}
       {stories && stories.length > 0 && (
-            <ul>
+          <ul>
             {stories.map((story) => (
                 <div key={story.id}>
                     <li>
@@ -38,6 +99,7 @@ function Homepage() {
           </ul>
         )
     }
+
     {collections && collections.length > 0 && (
                 <ul>
                     {collections.map((collection) => (

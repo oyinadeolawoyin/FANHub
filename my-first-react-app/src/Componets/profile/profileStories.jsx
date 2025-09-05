@@ -1,9 +1,11 @@
 // import { useStories } from "../story/storiesContext";
 import { useState, useEffect, use } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function ProfileStories() {
   // const { stories, loading, error } = useStories();
+  const { id } = useParams();
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +16,7 @@ function ProfileStories() {
           setError("");
           setLoading(true);
           try {
-              const response = await fetch(`https://fanhub-server.onrender.com/api/stories`, {
+              const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}`, {
                   method: "GET",
                   credentials: "include",
               });
@@ -40,6 +42,7 @@ function ProfileStories() {
       fetchStories();
     }, 
   []);
+  
   if (loading) {
     return <div>Loading, please wait...</div>;
   }

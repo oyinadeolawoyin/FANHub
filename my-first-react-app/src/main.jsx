@@ -31,7 +31,8 @@ import ProfileStories from './Componets/profile/profileStories.jsx';
 import ProfileCollections from './Componets/profile/profileCollections.jsx';
 import Gallery from './Componets/profile/gallery.jsx';
 import ProfilePosts from './Componets/profile/profilePosts.jsx';
-import Fans from "./Componets/profile/fans.jsx";
+import Follower from './Componets/profile/followers.jsx';
+import Following from './Componets/profile/following.jsx';
 
 import HomeStoryPage from './Componets/homepage/storypage.jsx';
 // import CreateReview from './Componets/homepage/createreview.jsx';
@@ -47,6 +48,7 @@ import { CollectionProvider } from './Componets/gallery/collectionContext.jsx';
 import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
 import { VideosProvider } from './Componets/gallery/videosContext.jsx';
 import { PostsProvider } from './Componets/post/postContext.jsx';
+
 
 
 
@@ -163,7 +165,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "profile/:username",
+    path: "profile/:username/:id",
     element: <Profile />,
     children: [
       {
@@ -171,24 +173,28 @@ const router = createBrowserRouter([
         element: <About />
       },
       {
-        path: "stories",
+        path: "stories/:id",
         element: <ProfileStories />
       },
       {
-        path: "collections",
+        path: "collections/:id",
         element: <ProfileCollections />
       },
       {
-        path: "gallery",
+        path: "gallery/:id",
         element: <Gallery />
       },
       {
-        path: "posts",
+        path: "posts/:id",
         element: <ProfilePosts />
       },
       {
-        path: "fans",
-        element: <Fans />
+        path: "followings/:id",
+        element: <Following />
+      },
+      {
+        path: "followers/:id",
+        element: <Follower />
       }
     ]
   }

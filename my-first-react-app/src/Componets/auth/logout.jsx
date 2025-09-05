@@ -8,6 +8,7 @@ function Logout() {
 
   useEffect(() => {
     async function logout() {
+      console.log("here... logout!")
       try {
         await fetch("https://fanhub-server.onrender.com/api/auth/logout", {
           method: "POST",

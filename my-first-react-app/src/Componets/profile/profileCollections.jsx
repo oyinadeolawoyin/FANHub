@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 function ProfileCollections() {
   const [collections, setCollections] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+   const { id } = useParams();
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -12,7 +14,7 @@ function ProfileCollections() {
             setError("");
             setLoading(true);
             try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections`, {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}`, {
                     method: "GET",
                     credentials: "include",
                 });

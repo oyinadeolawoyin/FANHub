@@ -36,7 +36,7 @@ function HomepageCollections() {
             setError("");
             setLoading(true);
             try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}`, {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/collection/${id}`, {
                     method: "GET",
                     credentials: "include",
                 });

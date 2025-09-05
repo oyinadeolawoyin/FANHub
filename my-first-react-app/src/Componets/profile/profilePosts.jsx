@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../auth/authContext";
 import Delete from "../delete/delete";
+import { useParams } from "react-router-dom";
 
 function ProfilePosts() {
     // const { posts, error, loading } = usePosts();
     // console.log("posts", posts);
+     const { id } = useParams();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useState([])
@@ -17,7 +19,7 @@ function ProfilePosts() {
             setError("");
             setLoading(true);
             try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/posts`, {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/posts/${id}`, {
                     method: "GET",
                     credentials: "include",
                 });

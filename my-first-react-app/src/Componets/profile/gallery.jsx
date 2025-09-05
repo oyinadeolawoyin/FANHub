@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Delete from "../delete/delete";
+import { useParams } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
 
 function Gallery() {
@@ -8,6 +9,7 @@ function Gallery() {
     const [images, setImages] = useState([]);
     const [videos, setVideos] = useState([]);
     const { user } = useAuth();
+    const { id } = useParams();
     const [form, setForm] = useState({ content: "" });
     const [replyingTo, setReplyingTo] = useState({ id: null, username: "" });
 
@@ -16,8 +18,8 @@ function Gallery() {
             setError("");
             setLoading(true);
             try {
-                const imageUrl = 'https://fanhub-server.onrender.com/api/gallery/images';
-                const videoUrl = 'https://fanhub-server.onrender.com/api/gallery/videos';
+                const imageUrl = `https://fanhub-server.onrender.com/api/gallery/images/${id}`;
+                const videoUrl = `https://fanhub-server.onrender.com/api/gallery/videos/${id}`;
                
                 const [imagesResponse, videosResponse] = await Promise.all([
                   fetch(imageUrl, { method: 'GET', credentials: 'include' }),

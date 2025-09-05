@@ -26,20 +26,20 @@ function HomeStoryPage() {
             setError("");
             setLoading(true);
             try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}`, {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/stories/story/${id}`, {
                     method: "GET",
                     credentials: "include",
                 });
         
                 const data = await response.json();
-                console.log("data", data.story);
+                console.log("data", data);
                 
                 if (!response.ok) {
                     setError(data.message);
                     return;
                 } 
                 setStory(data.story);
-                console.log("stories", story);
+                console.log("stories", data.story);
                 
             } catch(err) {
                 console.log("error", err);
@@ -147,7 +147,7 @@ function HomeStoryPage() {
                 <header>
                     <li><img style={{ width: "200px" }} src={story.story.imgUrl} /></li>
                     <li>{story.story.title}</li>
-                    {/* <li>{story.user.username}</li> */}
+                    <li onClick={() => navigate(`/profile/${story.story.user.username}/${story.story.userId}`)}>{story.story.user.username}</li>
                     <li>{story.story.type}</li>
                     <li>{story.story.tags}</li>
                     <li>{story.story.status}</li>
