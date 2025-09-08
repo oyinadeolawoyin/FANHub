@@ -7,6 +7,10 @@ function CreateReview() {
     const [form, setForm] = useState({
         title: "",
         content: "",
+        overallrate: "",
+        grammarrate: "",
+        plotrate: "",
+        writingstylerate: ""
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -83,7 +87,51 @@ function CreateReview() {
                   placeholder="Write here..."
                 />
               </label>
-                <button onClick={handleSubmit}>Post</button>
+            
+              <label>
+                Overall Rate:{" "}
+                <input
+                  type="number"
+                  name="overallrate"
+                  value={form.overallrate}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Plot Rate:{" "}
+                <input
+                  type="number"
+                  name="plotrate"
+                  value={form.plotrate}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Grammar Rate:{" "}
+                <input
+                  type="number"
+                  name="grammarrate"
+                  value={form.grammarrate}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              <label>
+                Writing Style Rate:{" "}
+                <input
+                  type="number"
+                  name="writingstylerate"
+                  value={form.writingstylerate}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+              <button onClick={handleSubmit}>Post</button>
             </form>
           )}
         </div>

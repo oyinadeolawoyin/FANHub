@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
@@ -7,11 +7,19 @@ function WriteReview() {
     const [form, setForm] = useState({
         title: "",
         content: "",
+        overallrate: "",
+        grammarrate: "",
+        plotrate: "",
+        writingstylerate: ""
     });
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const { id, name } = useParams();
+
+    useEffect(() => {
+      console.log("id", id);
+    }, [id]);
     
     function handleChange(e) {
         const { name, value } = e.target;
@@ -21,7 +29,6 @@ function WriteReview() {
         }));
     }   
     
-
     async function handleSubmit() {
         setLoading(true);
         setError("");
@@ -129,7 +136,56 @@ function WriteReview() {
                   placeholder="Write here..."
                 />
               </label>
-                <button onClick={handleSubmit}>Post</button>
+
+              <label>
+                Overall Rate:{" "}
+                <input
+                  type="number"
+                  name="overallrate"
+                  value={form.overallrate}
+                  onChange={handleChange}
+                  required
+                />
+              </label>
+
+              {name === "stories" && (
+                <div>
+                  <label>
+                    Plot Rate:{" "}
+                    <input
+                      type="number"
+                      name="plotrate"
+                      value={form.plotrate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Grammar Rate:{" "}
+                    <input
+                      type="number"
+                      name="grammarrate"
+                      value={form.grammarrate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Writing Style Rate:{" "}
+                    <input
+                      type="number"
+                      name="writingstylerate"
+                      value={form.writingstylerate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </label>
+                </div>
+              )}
+
+              <button onClick={handleSubmit}>Post</button>
             </form>
           )}
         </div>

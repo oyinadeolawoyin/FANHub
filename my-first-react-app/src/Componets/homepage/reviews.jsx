@@ -92,6 +92,14 @@ function Reviews() {
                         <li>{review.review.title}</li>
                         <li>{review.review.content}</li>
                         <li>{review.review.uploadedAt}</li>
+                        <li>Overall Rate: {review.review.overallrate}</li>
+                        {name == "stories" && (
+                            <div>
+                                <li>Plot Rate: {review.review.plotrate}</li>
+                                <li>Writing Style Rate: {review.review.writingstylerate}</li>
+                                <li>Grammar Rate: {review.review.grammarrate}</li>
+                            </div>
+                        )}
                         <li>
                             <button onClick={(e) => likeReview(e, review.review.id)}>
                                 ❤️ {review.likes.length} {review.likes.length === 1 ? "Like" : "Likes"}

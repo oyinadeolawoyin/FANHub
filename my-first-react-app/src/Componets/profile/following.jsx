@@ -1,15 +1,43 @@
 import { useEffect, useState } from "react";
-import { useUser } from "./usersContext";
+import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Following() {
-  const { user } = useUser();
-  const [following, setFollowing] = useState([]);
+  const { id } = useParams();
+  const [following, setFollowing] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      setFollowing(user.followering);
+    setLoading(true);
+    setError("");
+
+  async function fetchUser() {
+        try {
+          const response = await fetch(`https://fanhub-server.onrender.com/api/users/${id}`, {
+            method: "GET",
+            credentials: "include",
+          });
+            
+          const data = await response.json();
+          console.log("data", data.user);
+  
+          if (!response.ok) {
+              setError(data.message || "Something is wrong. Try again!");
+              return;
+          }
+          
+          setFollowing(data.user.followings);
+          
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
     }
-  }, [user]);
+    fetchUser();
+  }, []);
 
   return (
     <div>
@@ -17,14 +45,17 @@ function Following() {
             following.length > 0 ? (
                 following.map((following) => (
                 <div key={following.id}>
-                    <li>{following.username}</li>
+                    <li onClick={() => navigate(`/profile/${following.followingusername}/${following.followingId}`)}>{following.followingusername}</li>
                 </div>
                 ))
             ) : (
                 <p>No following yet</p>
             )
             ) : (
-            <p>Loading...</p>
+              <div>
+                  {loading && <p>Loading.... please wait!</p>}
+                  {error && <p style={{ color: "red" }}>{error}</p>}
+              </div>
         )}
     </div>
   );

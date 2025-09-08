@@ -189,7 +189,7 @@ const router = createBrowserRouter([
         element: <ProfilePosts />
       },
       {
-        path: "followings/:id",
+        path: "following/:id",
         element: <Following />
       },
       {
