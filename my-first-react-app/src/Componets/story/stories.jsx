@@ -1,17 +1,48 @@
-import { useStories } from "./storiesContext";
 import Delete from "../delete/delete";
 import { useNavigate } from "react-router-dom";
-// import { useImages } from "../gallery/imagesContext";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 function Stories() {
-  const { stories, setStories, loading, error } = useStories();
+  const { id } = useParams();
+  const [stories, setStories] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  // const { images } = useImages();
-  // console.log('stoyiii', images);
+  
+  console.log("idd", id);
 
-  if (loading) {
-    return <div>Loading, please wait...</div>;
-  }
+    
+  useEffect(() => {
+    async function fetchStories() {
+        setError("");
+        setLoading(true);
+        try {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}`, {
+                method: "GET",
+                credentials: "include",
+            });
+    
+            const data = await response.json();
+            console.log("data", data);
+            
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            } 
+            setStories(data.stories);
+            console.log("stories", stories);
+            
+        } catch(err) {
+            console.log("error", err);
+            alert("Something went wrong. Please try again.");
+        } finally{
+            setLoading(false);
+        }
+      };
+
+      fetchStories();
+  }, []);
 
   async function handleDelete(id) {
     try{
@@ -26,6 +57,7 @@ function Stories() {
   return (
     <div>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      {loading && <p>loading...</p>}
       {stories && stories.length > 0 ? (
             <ul>
             {stories.map((story) => (

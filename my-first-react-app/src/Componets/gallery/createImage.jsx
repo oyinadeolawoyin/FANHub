@@ -14,8 +14,6 @@ function UploadImage() {
     const [loading, setLoading] = useState(false);
     const {setImages} = useImages();
     const { collections } = useCollections();
-    
-    
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;

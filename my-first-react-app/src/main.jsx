@@ -7,6 +7,8 @@ import Profile from './Componets/profile/profile.jsx';
 import Signup from './Componets/auth/signup.jsx';
 import Login from './Componets/auth/login.jsx';
 import Logout from './Componets/auth/logout.jsx';
+import Notification from './Componets/notification/notification.jsx';
+import Library from './Componets/library/library.jsx';
 
 import Createstory from './Componets/story/createStory.jsx';
 import Stories from './Componets/story/stories.jsx';
@@ -71,6 +73,14 @@ const router = createBrowserRouter([
     element: <Logout />
   },
   {
+    path: "notification/:id",
+    element: <Notification />
+  },
+  {
+    path: "library/:id",
+    element: <Library />
+  },
+  {
     path: "/stories/:id",
     element: <HomeStoryPage />
   },
@@ -103,7 +113,7 @@ const router = createBrowserRouter([
         element: <Createstory />,
       },
       {
-        path: "stories",
+        path: "stories/:id",
         element: <Stories />,
       },
       {
@@ -111,7 +121,7 @@ const router = createBrowserRouter([
         element: <CreateCollection />
       },
       {
-        path: "collections",
+        path: "collections/:id",
         element: <Collections />
       },
       {
@@ -135,7 +145,7 @@ const router = createBrowserRouter([
         element: <CreatePost />
       },
       {
-        path: "posts",
+        path: "posts/:id",
         element: <Posts />
       },
       {
@@ -159,7 +169,7 @@ const router = createBrowserRouter([
         element: <UpdateCollections />
       },
       {
-        path: "collections/:id",
+        path: "collections/collection/:id",
         element: <CollectionPage />
       },
     ]
@@ -173,27 +183,27 @@ const router = createBrowserRouter([
         element: <About />
       },
       {
-        path: "stories/:id",
+        path: "stories",
         element: <ProfileStories />
       },
       {
-        path: "collections/:id",
+        path: "collections",
         element: <ProfileCollections />
       },
       {
-        path: "gallery/:id",
+        path: "gallery",
         element: <Gallery />
       },
       {
-        path: "posts/:id",
+        path: "posts",
         element: <ProfilePosts />
       },
       {
-        path: "following/:id",
+        path: "following",
         element: <Following />
       },
       {
-        path: "followers/:id",
+        path: "followers",
         element: <Follower />
       }
     ]

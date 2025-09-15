@@ -1,17 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useCollections } from "./collectionContext";
 import Delete from "../delete/delete";
 
 function CollectionPage() {
     const { id } = useParams();
-    const { collections } = useCollections();
+    const [collection, setCollection] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
     const [images, setImages] = useState("");
     const [videos, setVideos] = useState("");
     
-    const collection = collections.find(collectionElement => collectionElement.id == id);
-    
-    console.log("collection", collection);
     useEffect(() => {
         if (collection) {
             setImages(collection.images || []);
@@ -19,7 +17,37 @@ function CollectionPage() {
         }
     }, [collection]);
 
-    console.log("imge", images, "video:", videos);
+     useEffect(() => {
+        async function fetchCollection() {
+            setError("");
+            setLoading(true);
+            try {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/collection/${id}`, {
+                    method: "GET",
+                    credentials: "include",
+                });
+        
+                const data = await response.json();
+                console.log("data", data);
+                
+                if (!response.ok) {
+                    setError(data.message);
+                    return;
+                } 
+                setCollection(data.collection);
+                console.log("coll", collection);
+                
+            } catch(err) {
+                console.log("error", err);
+                alert("Something went wrong. Please try again.");
+            } finally{
+                setLoading(false);
+            }
+        };
+
+        fetchCollection();
+    }, [id]);
+
     async function handleDeleteImage(id) {
         try{
             const message = await Delete(`https://fanhub-server.onrender.com/api/gallery/images/${id}`);
@@ -43,6 +71,8 @@ function CollectionPage() {
 
     return (
         <div>
+            {error && <p>{error}</p>}
+            {loading && <p>loading... please wait!</p>}
             {collection && (
                 <header>
                     <li><img style={{ width: "200px" }} src={collection.img} /></li>

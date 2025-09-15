@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 function Homepage() {
   const [stories, setStories] = useState(null);
   const [collections, setCollections] = useState(null);

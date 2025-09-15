@@ -15,7 +15,7 @@ export function CollectionProvider({ children }) {
             setLoading(true);
             setError("");
             try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections`, {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${user.id}`, {
                     method: "GET",
                     credentials: "include",
                 });

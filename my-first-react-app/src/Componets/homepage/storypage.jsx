@@ -90,7 +90,7 @@ function HomeStoryPage() {
         setError("");
 
         try {
-            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${story.id}/like/love`, {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/like/love`, {
                 method: "POST",
                 credentials: "include",
             });
@@ -163,7 +163,7 @@ function HomeStoryPage() {
                             ❤️ write a review 
                         </button>
                     </li>
-                    <li><b>Synopsis:</b> {story.summary}</li>
+                    <li><b>Synopsis:</b> {story.story.summary}</li>
                 </header>
                 ) :(
                     <div>

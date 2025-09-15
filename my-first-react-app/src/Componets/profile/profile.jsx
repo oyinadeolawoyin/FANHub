@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useUser } from "./usersContext";
+import { useAuth } from "../auth/authContext";
 import { Outlet, Link } from "react-router-dom";
 
 function Profile() {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { id } = useParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,6 +28,8 @@ function Profile() {
           });
             
           const data = await response.json();
+          console.log("mmmm", data);
+          console.log("uuuuuuu", user);
   
           if (!response.ok) {
               setError(data.message || "Something is wrong. Try again!");
@@ -89,12 +91,12 @@ function Profile() {
         <main>
           <div>
             <li><Link to="about">About</Link></li>
-            <li><Link to={`stories/${user.id}`}>Stories</Link></li>
-            <li><Link to={`collections/${user.id}`}>Collections</Link></li>
-            <li><Link to={`gallery/${user.id}`}>Gallery</Link></li>
-            <li><Link to={`posts/${user.id}`}>Posts</Link></li>
-            <li><Link to={`following/${user.id}`}>Followings</Link></li>
-            <li><Link to={`followers/${user.id}`}>Followers</Link></li>
+            <li><Link to={`stories`}>Stories</Link></li>
+            <li><Link to={`collections`}>Collections</Link></li>
+            <li><Link to={`gallery`}>Gallery</Link></li>
+            <li><Link to={`posts`}>Posts</Link></li>
+            <li><Link to={`following`}>Followings</Link></li>
+            <li><Link to={`followers`}>Followers</Link></li>
 
             <div>
                 <Outlet /> 
@@ -114,12 +116,12 @@ function Profile() {
         <main>
           <div>
             <li><Link to="about">About</Link></li>
-            <li><Link to={`stories/${currectUser?.id}`}>Stories</Link></li>
-            <li><Link to={`collections/${currectUser?.id}`}>Collections</Link></li>
-            <li><Link to={`gallery/${currectUser?.id}`}>Gallery</Link></li>
-            <li><Link to={`posts/${currectUser?.id}`}>Posts</Link></li>
-            <li><Link to={`following/${currectUser?.id}`}>Following</Link></li>
-            <li><Link to={`followers/${currectUser?.id}`}>Followers</Link></li>
+            <li><Link to={`stories`}>Stories</Link></li>
+            <li><Link to={`collections`}>Collections</Link></li>
+            <li><Link to={`gallery`}>Gallery</Link></li>
+            <li><Link to={`posts`}>Posts</Link></li>
+            <li><Link to={`following`}>Following</Link></li>
+            <li><Link to={`followers`}>Followers</Link></li>
 
             <div>
                 <Outlet /> 

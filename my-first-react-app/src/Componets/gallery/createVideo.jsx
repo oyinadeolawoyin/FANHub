@@ -14,7 +14,6 @@ function UploadVideo() {
     const [loading, setLoading] = useState(false);
     const { setVideos, videos } = useVideos(); 
     const { collections } = useCollections();
-    // const [selectedCollectionId, setSelectedCollectionId] = useState("");
 
     console.log("collection", collections);
     console.log("vid", videos)

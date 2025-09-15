@@ -1,18 +1,47 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useStories } from "./storiesContext";
 import Delete from "../delete/delete";
 
 function StoryPage() {
     const { id } = useParams();
-    const { stories } = useStories();
+    const [story, setStory] = useState(null);
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [chapters, setChapters] = useState("");
     
-    const story = stories.find(storyElement => storyElement.id == id);
+    useEffect(() => {
+        async function fetchStory() {
+            console.log("i'm in here.....")
+            setError("");
+            setLoading(true);
+            try {
+                const response = await fetch(`https://fanhub-server.onrender.com/api/stories/story/${id}`, {
+                    method: "GET",
+                    credentials: "include",
+                });
+        
+                const data = await response.json();
+                console.log("data", data);
+                
+                if (!response.ok) {
+                    setError(data.message);
+                    return;
+                } 
+                setStory(data.story);
+                console.log("storyy", data.story);
+                
+            } catch(err) {
+                console.log("error", err);
+                alert("Something went wrong. Please try again.");
+            } finally{
+                setLoading(false);
+            }
+        };
+
+        fetchStory();
+    }, [id]);
 
     useEffect(() => {
         setLoading(false);
@@ -54,56 +83,55 @@ function StoryPage() {
             console.log("Failed to delete:", err.message);
         } 
     }
-    
-    console.log("chap", chapters);
-    if (!story) {
-        return <p>Story not found</p>;
-    }
 
     return (
         <div>
-            <header>
-                <li><img style={{ width: "200px" }} src={story.imgUrl} /></li>
-                <li>{story.title}</li>
-                <li>{story.summary}</li>
-                <li>{story.type}</li>
-                <li>{story.tags}</li>
-                <li>{story.status}</li>
-                <li>likes: {story.likes.length}</li>
-                <li>Reviews: {story.reviews.length}</li>
-            </header>
-
-            <main>
+            {story && (
                 <div>
-                    <button onClick={() => navigate(`/dashboard/story/${story.id}/create chapter`)}>
-                        New chapter
-                    </button>
+                    <header>
+                        <li><img style={{ width: "200px" }} src={story.story.imgUrl} /></li>
+                        <li>{story.story.title}</li>
+                        <li>{story.story.summary}</li>
+                        <li>{story.story.type}</li>
+                        <li>{story.story.tags}</li>
+                        <li>{story.story.status}</li>
+                        <li>Likes: {story.likes.length}</li> 
+                        <li>Reviews: {story.story.reviews.length}</li> 
+                    </header>
+
+                    <main>
+                        <div>
+                            <button onClick={() => navigate(`/dashboard/story/${story.story.id}/create chapter`)}>
+                                New chapter
+                            </button>
+                        </div>
+                        {chapters.length > 0 ? (
+                        chapters.map(chapter => (
+                            <div key={chapter.chapter.id}>
+                                <li onClick={() => navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
+                                <button
+                                    onClick={() => {
+                                        const confirmed = window.confirm("Are you sure you want to delete this chapter?");
+                                        if (confirmed) {
+                                        handleDelete(chapter.chapter.id);
+                                        }
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                                <button onClick={() => navigate(`/dashboard/story/${story.story.id}/update chapter/${chapter.chapter.id}`)}>
+                                    Edit
+                                </button>
+                            </div>
+                        ))
+                        ) : (
+                        <p>No chapters yet!</p>
+                        )}
+                        {loading && <p>Loading...please wait</p>}
+                        {error && <p>{error}</p>}
+                    </main>
                 </div>
-                {chapters.length > 0 ? (
-                chapters.map(chapter => (
-                    <div key={chapter.chapter.id}>
-                        <li onClick={() => navigate(`/dashboard/story/chapters/${chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
-                        <button
-                            onClick={() => {
-                                const confirmed = window.confirm("Are you sure you want to delete this chapter?");
-                                if (confirmed) {
-                                handleDelete(chapter.chapter.id);
-                                }
-                            }}
-                        >
-                            Delete
-                        </button>
-                        <button onClick={() => navigate(`/dashboard/story/${story.id}/update chapter/${chapter.chapter.id}`)}>
-                            Edit
-                        </button>
-                    </div>
-                ))
-                ) : (
-                <p>No chapters yet!</p>
-                )}
-                {loading && <p>Loading...please wait</p>}
-                {error && <p>{error}</p>}
-            </main>
+            )}
         </div>
     );
 }
