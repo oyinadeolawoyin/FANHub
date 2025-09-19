@@ -1,20 +1,30 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useAuth } from "../auth/authContext";
 import { Outlet, Link } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
 
 function Profile() {
   const { user } = useAuth();
-  const { id } = useParams();
+  // const [user, setUser] = useState(null);
+  const { id, username } = useParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [currectUser, setCurrentUser] = useState(null);
+  const [followed, setFollowed] = useState("follow");
   
   useEffect(() =>{
     if (user) {
       console.log("user", user, "id", id);
     }
   });
+
+  useEffect(() => {
+    if (!currectUser || !user) return;
+  
+    const followers = currectUser.followers || [];
+    const isFollowers = followers.some(f => Number(f.followerId) === Number(user.id));
+    setFollowed(isFollowers ? "Unfollow" : "Follow");
+  }, [currectUser, user]);  
 
   useEffect(() => {
     setLoading(true);
@@ -51,6 +61,7 @@ function Profile() {
     setError("");
     setLoading(true);
     console.log("id here", id);
+
     try {
       const response = await fetch(`https://fanhub-server.onrender.com/api/users/follower/${followerusername}`, {
         method: "POST",
@@ -64,8 +75,15 @@ function Profile() {
       if (!response.ok) {
           setError(data.message);
           return;
-      } 
-        
+      }  
+
+      const refreshed = await fetch(`https://fanhub-server.onrender.com/api/users/${id}`, {
+        method: "GET",
+        credentials: "include",
+      });
+      const refreshedData = await refreshed.json();
+      setCurrentUser(refreshedData.user);
+
     } catch(err) {
         console.log("error", err);
         alert("Something went wrong. Please try again.");
@@ -83,7 +101,7 @@ function Profile() {
      {user && Number(user.id) == Number(id) ?(
       <div>
         <header>
-          <h1>Hello {user.username || "Guest"}, this is your profile!</h1>
+          <h1>Hello {username || "Guest"}, this is your profile!</h1>
           <p>Here is the profile page</p>
           <p>Return <Link to="/">Home</Link></p>
         </header>
@@ -107,10 +125,10 @@ function Profile() {
     ):(
       <div>
         <header>
-          <h1>Hello {currectUser?.username || "Guest"}, this is your profile!</h1>
+          <h1>Hello {username || "Guest"}, this is your profile!</h1>
           <p>Here is the profile page</p>
           <p>Return <Link to="/">Home</Link></p>
-          <button onClick={() => follow(currectUser?.username)}>follow</button>
+          <button onClick={() => follow(username)}>{followed}</button>
         </header>
 
         <main>
