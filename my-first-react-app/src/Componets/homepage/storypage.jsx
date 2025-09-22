@@ -102,8 +102,11 @@ function HomeStoryPage() {
                 return;
             } 
             alert("liked!");
-            setLikes(prev => [...prev, data.liked]);
-    
+            if (data.like) {
+                setLikes(prev => prev.filter(like => like.userId !== data.like.userId));
+            } else {
+                setLikes(prev => [...prev, data]);
+            }                     
              
         } catch(err) {
             console.log("error", err);
@@ -177,7 +180,7 @@ function HomeStoryPage() {
                 {chapters.length > 0 ? (
                     chapters.map(chapter => (
                         <div key={chapter.chapter.id}>
-                            <li onClick={() => navigate(`/stories/${story.id}/chapters/${chapter.chapter.id}`)}><b>Title:</b>{chapter.chapter.title} <b>uploadedAt:</b> {chapter.chapter.uploadedAt}</li>
+                            <li onClick={() => navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`)}><b>Title:</b>{chapter.chapter.title} <b>uploadedAt:</b> {chapter.chapter.uploadedAt}</li>
                         </div>
                     ))
                 ):(

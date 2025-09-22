@@ -147,7 +147,7 @@ function Chapter() {
                 setError(data.message || "Something is wrong. Try again!");
                 return;
             } 
-            alert("liked!");
+            console.log("data", data);
 
             const setterMap = {
                 lovethis: setLovethis,
@@ -162,7 +162,43 @@ function Chapter() {
                 compellingplot: setCompellingplot,
                 strongdialogue: setStrongdialogue,
             };
-            setterMap[like]?.(prev => [...prev, data.liked]);
+           
+            const setter = setterMap[like];
+            if (!setter) return;
+    
+            // if (data.like) {
+            //     // Unlike: remove this user's like from the corresponding state
+            //     setter(prev => prev.filter(like => like.userId !== data.like.userId));
+            //     alert("Removed like!");
+            // } else if (data.liked) {
+            //     // Like: add the new like to the corresponding state
+            //     setter(prev => [...prev, data.liked]);
+            //     alert("Liked!");
+            // }
+
+            if (!data.liked) {
+                // Unlike
+                setter(prev => prev.filter(l => l.userId !== data.like.userId));
+            
+                // Also remove from chapter.likes
+                setChapter(ch => ({
+                    ...ch,
+                    likes: ch.likes.filter(like => !(like.userId === data.userId && like.like === data.like))
+                }));
+                alert("Removed like!");
+            } else if (data.liked) {
+                // Like
+                setter(prev => [...prev, data.liked]);
+            
+                // Also add to chapter.likes
+                setChapter(ch => ({
+                    ...ch,
+                    likes: [...ch.likes, data.liked]
+                }));
+                alert("Liked!");
+            }            
+            
+            
              
         } catch(err) {
             console.log("error", err);
@@ -275,17 +311,38 @@ function Chapter() {
                 return;
             }
     
-            alert("Liked!");
+            // alert("Liked!");
     
-            // Helper function to update likes for a comment or reply
-            const updateLikes = (commentList) =>
-                commentList.map((comment) =>
-                  comment.id === commentId
-                    ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-                    : { ...comment, replies: updateLikes(comment.replies || []) }
-                );
-              
-              setComments((prevComments) => updateLikes(prevComments));              
+            // Helper function to update likes recursively for comments and replies
+        const updateLikes = (commentList) =>
+            commentList.map((comment) => {
+                if (comment.id === commentId) {
+                    if (data.like) {
+                        // Unlike: remove this user's like
+                        return {
+                            ...comment,
+                            likes: (comment.likes || []).filter(
+                                (like) => like.userId !== data.userId
+                            ),
+                        };
+                    } else if (data.liked) {
+                        // Like: add the new like
+                        return {
+                            ...comment,
+                            likes: [...(comment.likes || []), data.liked],
+                        };
+                    }
+                }
+                // Recurse into replies
+                return {
+                    ...comment,
+                    replies: updateLikes(comment.replies || []),
+                };
+            });
+
+        setComments((prevComments) => updateLikes(prevComments));
+
+        alert(data.like ? "Removed like!" : "Liked!");            
     
         } catch (err) {
             console.log("error", err);

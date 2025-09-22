@@ -27,9 +27,6 @@ function HomepageCollections() {
         }
     }, [collection]);
 
-    console.log("ima", images);
-    console.log("likes", likes);
-    console.log("vid", videos);
 
     useEffect(() => {
         async function fetchCollection() {
@@ -65,7 +62,7 @@ function HomepageCollections() {
     async function likeCollection(e) {
         e.preventDefault();
         setError("");
-        alert("like collection!");
+
         try {
             const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}/like/love`, {
                 method: "POST",
@@ -79,7 +76,11 @@ function HomepageCollections() {
                 return;
             } 
             alert("liked!");
-            setLikes(prev => [...prev, data.liked]);
+            if (data.like) {
+                setLikes(prev => prev.filter(like => like.userId !== data.like.userId));
+            } else {
+                setLikes(prev => [...prev, data]);
+            }                     
     
         } catch(err) {
             console.log("error", err);
@@ -140,25 +141,66 @@ function HomepageCollections() {
             } 
             alert("liked!");
 
+            // if (name === "images") {
+            //     setImages(prev =>
+            //         prev.map(img =>
+            //             img.id === id 
+            //                 ? { ...img, likes: [...(img.likes || []), data.liked] }
+            //                 : img
+            //         )
+            //     );
+            //     console.log("imag", images);
+            // } else if (name === "videos") {
+            //     setVideos(prev =>
+            //         prev.map(vid =>
+            //             vid.id === id
+            //                 ? { ...vid, likes: [...(vid.likes || []), data.liked] }
+            //                 : vid
+            //         )
+            //     );
+            // }
+             
+
             if (name === "images") {
                 setImages(prev =>
-                    prev.map(img =>
-                        img.id === id 
-                            ? { ...img, likes: [...(img.likes || []), data.liked] }
-                            : img
-                    )
+                    prev.map(img => {
+                        if (img.id !== id) return img;
+            
+                        let newLikes = img.likes || [];
+            
+                        if (data.like) {
+                            // Remove the unlike
+                            newLikes = newLikes.filter(
+                                like => !(like.userId === data.userId && like.like === data.like)
+                            );
+                        } else if (data.liked) {
+                            // Add the like
+                            newLikes = [...newLikes, data.liked];
+                        }
+            
+                        return { ...img, likes: newLikes };
+                    })
                 );
-                console.log("imag", images);
             } else if (name === "videos") {
                 setVideos(prev =>
-                    prev.map(vid =>
-                        vid.id === id
-                            ? { ...vid, likes: [...(vid.likes || []), data.liked] }
-                            : vid
-                    )
+                    prev.map(vid => {
+                        if (vid.id !== id) return vid;
+            
+                        let newLikes = vid.likes || [];
+            
+                        if (data.like) {
+                            newLikes = newLikes.filter(
+                                like => !(like.userId === data.userId && like.like === data.like)
+                            );
+                        } else if (data.liked) {
+                            newLikes = [...newLikes, data.liked];
+                        }
+            
+                        return { ...vid, likes: newLikes };
+                    })
                 );
             }
-             
+
         } catch(err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");
@@ -298,27 +340,49 @@ function HomepageCollections() {
             alert("Liked!");
     
             // Helper function to update likes for a comment or reply
-            const updateLikes = (commentList) =>
-                commentList.map((comment) =>
-                    comment.id === commentId
-                    ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-                    : { ...comment, replies: updateLikes(comment.replies || []) }
-            );
+            // const updateLikes = (commentList) =>
+            //     commentList.map((comment) =>
+            //         comment.id === commentId
+            //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
+            //         : { ...comment, replies: updateLikes(comment.replies || []) }
+            // );
                 
-            if (name === "images") {
-                setImages((prev) =>
-                    prev.map((img) =>
-                        img.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
-                    )
-                );
-                } else if (name === "videos") {
-                setVideos((prev) =>
-                    prev.map((vid) =>
-                        vid.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
-                    )
-                );
-            }
-                            
+            // if (name === "images") {
+            //     setImages((prev) =>
+            //         prev.map((img) =>
+            //             img.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
+            //         )
+            //     );
+            //     } else if (name === "videos") {
+            //     setVideos((prev) =>
+            //         prev.map((vid) =>
+            //             vid.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
+            //         )
+            //     );
+            // }
+
+            const updateLikes = (commentList) =>
+                commentList.map(comment => {
+                    if (comment.id === commentId) {
+                        let newLikes = comment.likes || [];
+            
+                        if (data.like) {
+                            // Remove the like from the likes array
+                            newLikes = newLikes.filter(
+                                like => !(like.userId === data.userId && like.like === data.like)
+                            );
+                        } else if (data.liked) {
+                            // Add the like
+                            newLikes = [...newLikes, data.liked];
+                        }
+            
+                        return { ...comment, likes: newLikes };
+                    } else {
+                        // Recurse into replies
+                        return { ...comment, replies: updateLikes(comment.replies || []) };
+                    }
+        });
+                              
     
         } catch (err) {
             console.log("error", err);

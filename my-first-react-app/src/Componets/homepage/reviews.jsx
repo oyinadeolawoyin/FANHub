@@ -63,15 +63,40 @@ function Reviews() {
                 return;
             }
 
-            alert("Liked!");
+            // alert("Liked!");
             console.log("data like", data);
+            // setReviews(prev =>
+            //     prev.map(r =>
+            //       r.review.id === reviewId
+            //         ? { ...r, likes: [...r.likes, data.liked] } 
+            //         : r
+            //     )
+            // );   
+            
             setReviews(prev =>
-                prev.map(r =>
-                  r.review.id === reviewId
-                    ? { ...r, likes: [...r.likes, data.liked] } 
-                    : r
-                )
-            );              
+                prev.map(review => {
+                    if (review.review.id !== reviewId) return r;
+            
+                    // If server says it was unliked
+                    if (data.like) {
+                        return {
+                            ...review,
+                            likes: review.likes.filter(like => like.userId !== data.userId || like.like !== data.like)
+                        };
+                    }
+            
+                    // If server says it was liked
+                    if (data.liked) {
+                        return {
+                            ...review,
+                            likes: [...review.likes, data.liked]
+                        };
+                    }
+            
+                    return review;
+                })
+            );
+            
         } catch (err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");
