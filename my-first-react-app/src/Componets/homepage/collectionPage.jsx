@@ -367,12 +367,12 @@ function HomepageCollections() {
                         let newLikes = comment.likes || [];
             
                         if (data.like) {
-                            // Remove the like from the likes array
+                            // Unlike: remove from likes
                             newLikes = newLikes.filter(
                                 like => !(like.userId === data.userId && like.like === data.like)
                             );
                         } else if (data.liked) {
-                            // Add the like
+                            // Like: add to likes
                             newLikes = [...newLikes, data.liked];
                         }
             
@@ -381,7 +381,25 @@ function HomepageCollections() {
                         // Recurse into replies
                         return { ...comment, replies: updateLikes(comment.replies || []) };
                     }
-        });
+            });
+            
+            if (name === "images") {
+                setImages(prev =>
+                    prev.map(img =>
+                        img.id === id
+                            ? { ...img, comments: updateLikes(img.comments || []) }
+                            : img
+                    )
+                );
+            } else if (name === "videos") {
+                setVideos(prev =>
+                    prev.map(vid =>
+                        vid.id === id
+                            ? { ...vid, comments: updateLikes(vid.comments || []) }
+                            : vid
+                    )
+                );
+            }            
                               
     
         } catch (err) {

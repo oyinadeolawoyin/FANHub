@@ -72,13 +72,35 @@ function ProfilePosts() {
             alert("liked!");
 
             
+            // setPosts(prev =>
+            //     prev.map(post =>
+            //         post.post.id === id 
+            //             ? { ...post, likes: [...(post.likes || []), data.liked] }
+            //             : post
+            //     )
+            // );
+
             setPosts(prev =>
-                prev.map(post =>
-                    post.post.id === id 
-                        ? { ...post, likes: [...(post.likes || []), data.liked] }
-                        : post
-                )
+                prev.map(post => {
+                    if (post.post.id === id) {
+                        let newLikes = post.likes || [];
+            
+                        if (data.like) {
+                            // ✅ Unlike: remove the like
+                            newLikes = newLikes.filter(
+                                like => !(like.userId === data.userId && like.like === data.like)
+                            );
+                        } else if (data.liked) {
+                            // ✅ Like: add the new like
+                            newLikes = [...newLikes, data.liked];
+                        }
+            
+                        return { ...post, likes: newLikes };
+                    }
+                    return post;
+                })
             );
+            
             console.log("post", posts);
         
                 
@@ -203,18 +225,48 @@ function ProfilePosts() {
             alert("Liked!");
     
             // Helper function to update likes for a comment or reply
-            const updateLikes = (commentList) =>
-                commentList.map((comment) =>
-                    comment.id === commentId
-                    ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-                    : { ...comment, replies: updateLikes(comment.replies || []) }
-            );
+            // const updateLikes = (commentList) =>
+            //     commentList.map((comment) =>
+            //         comment.id === commentId
+            //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
+            //         : { ...comment, replies: updateLikes(comment.replies || []) }
+            // );
                 
+            // setPosts((prev) =>
+            //     prev.map((post) =>
+            //         post.post.id === id ? { ...post, comments: updateLikes(post.comments || []) } : post
+            //     )
+            // );
+
+            const updateLikes = (commentList) =>
+                commentList.map((comment) => {
+                    if (comment.id === commentId) {
+                        let newLikes = comment.likes || [];
+            
+                        if (data.like) {
+                            // ✅ Unlike: remove
+                            newLikes = newLikes.filter(
+                                like => !(like.userId === data.userId && like.like === data.like)
+                            );
+                        } else if (data.liked) {
+                            // ✅ Like: add
+                            newLikes = [...newLikes, data.liked];
+                        }
+            
+                        return { ...comment, likes: newLikes };
+                    } else {
+                        // ✅ Recurse into replies
+                        return { ...comment, replies: updateLikes(comment.replies || []) };
+                    }
+                });
+            
             setPosts((prev) =>
                 prev.map((post) =>
-                    post.post.id === id ? { ...post, comments: updateLikes(post.comments || []) } : post
+                    post.post.id === id
+                        ? { ...post, comments: updateLikes(post.comments || []) }
+                        : post
                 )
-            );
+            );            
              
                             
     

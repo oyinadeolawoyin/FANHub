@@ -254,6 +254,97 @@ function Gallery() {
         }
     }
 
+    // async function likeComment(e, commentId, name, id) {
+    //     e.preventDefault();
+    //     setError("");
+    
+    //     try {
+    //         const response = await fetch(
+    //             `https://fanhub-server.onrender.com/api/gallery/${name}/${id}/comments/${commentId}/like/love`,
+    //             {
+    //                 method: "POST",
+    //                 credentials: "include",
+    //             }
+    //         );
+    
+    //         const data = await response.json();
+    //         console.log('likk', data);
+    //         if (!response.ok) {
+    //             setError(data.message || "Something is wrong. Try again!");
+    //             return;
+    //         }
+    
+    //         alert("Liked!");
+    
+    //         // Helper function to update likes for a comment or reply
+    //         // const updateLikes = (commentList) =>
+    //         //     commentList.map((comment) =>
+    //         //         comment.id === commentId
+    //         //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
+    //         //         : { ...comment, replies: updateLikes(comment.replies || []) }
+    //         // );
+                
+    //         // if (name === "images") {
+    //         //     setImages((prev) =>
+    //         //         prev.map((img) =>
+    //         //             img.image.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
+    //         //         )
+    //         //     );
+    //         //     } else if (name === "videos") {
+    //         //     setVideos((prev) =>
+    //         //         prev.map((vid) =>
+    //         //             vid.video.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
+    //         //         )
+    //         //     );
+    //         // }
+            
+    //         const updateLikes = (commentList) =>
+    //             commentList.map(comment => {
+    //                 if (comment.id === commentId) {
+    //                     let newLikes = comment.likes || [];
+            
+    //                     if (data.like) {
+    //                         // Unlike: remove from likes
+    //                         newLikes = newLikes.filter(
+    //                             like => !(like.userId === data.userId && like.like === data.like)
+    //                         );
+    //                     } else if (data.liked) {
+    //                         // Like: add to likes
+    //                         newLikes = [...newLikes, data.liked];
+    //                     }
+            
+    //                     return { ...comment, likes: newLikes };
+    //                 } else {
+    //                     // Recurse into replies
+    //                     return { ...comment, replies: updateLikes(comment.replies || []) };
+    //                 }
+    //         });
+            
+    //         if (name === "images") {
+    //             setImages(prev =>
+    //                 prev.map(img =>
+    //                     img.id === id
+    //                         ? { ...img, comments: updateLikes(img.comments || []) }
+    //                         : img
+    //                 )
+    //             );
+    //         } else if (name === "videos") {
+    //             setVideos(prev =>
+    //                 prev.map(vid =>
+    //                     vid.id === id
+    //                         ? { ...vid, comments: updateLikes(vid.comments || []) }
+    //                         : vid
+    //                 )
+    //             );
+    //         }            
+                            
+    
+    //     } catch (err) {
+    //         console.log("error", err);
+    //         alert("Something went wrong. Please try again.");
+    //     }
+    // }
+
     async function likeComment(e, commentId, name, id) {
         e.preventDefault();
         setError("");
@@ -276,40 +367,18 @@ function Gallery() {
     
             alert("Liked!");
     
-            // Helper function to update likes for a comment or reply
-            // const updateLikes = (commentList) =>
-            //     commentList.map((comment) =>
-            //         comment.id === commentId
-            //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-            //         : { ...comment, replies: updateLikes(comment.replies || []) }
-            // );
-                
-            // if (name === "images") {
-            //     setImages((prev) =>
-            //         prev.map((img) =>
-            //             img.image.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
-            //         )
-            //     );
-            //     } else if (name === "videos") {
-            //     setVideos((prev) =>
-            //         prev.map((vid) =>
-            //             vid.video.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
-            //         )
-            //     );
-            // }
-
             const updateLikes = (commentList) =>
                 commentList.map(comment => {
                     if (comment.id === commentId) {
                         let newLikes = comment.likes || [];
             
                         if (data.like) {
-                            // Remove the like from the likes array
+                            // Unlike: remove from likes
                             newLikes = newLikes.filter(
                                 like => !(like.userId === data.userId && like.like === data.like)
                             );
                         } else if (data.liked) {
-                            // Add the like
+                            // Like: add to likes
                             newLikes = [...newLikes, data.liked];
                         }
             
@@ -318,8 +387,26 @@ function Gallery() {
                         // Recurse into replies
                         return { ...comment, replies: updateLikes(comment.replies || []) };
                     }
-            });            
-                            
+            });
+            
+            if (name === "images") {
+                setImages(prev =>
+                    prev.map(img =>
+                        img.image.id === id
+                            ? { ...img, comments: updateLikes(img.comments || []) }
+                            : img
+                    )
+                );
+            } else if (name === "videos") {
+                setVideos(prev =>
+                    prev.map(vid =>
+                        vid.video.id === id
+                            ? { ...vid, comments: updateLikes(vid.comments || []) }
+                            : vid
+                    )
+                );
+            }            
+                              
     
         } catch (err) {
             console.log("error", err);
