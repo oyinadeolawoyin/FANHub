@@ -142,6 +142,33 @@ function HomeStoryPage() {
         // }
     }
 
+    async function view(chapterId) {
+         // setError("");
+        // setLoading(true);
+        // console.log("id here", id);
+        try {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/chapters/${chapterId}/view`, {
+            method: "POST",
+            credentials: "include",
+            });
+
+            const data = await response.json();
+            console.log("data", data);
+            
+            if (!response.ok) {
+                setError(data.message);
+                return;
+            } 
+            
+        } catch(err) {
+            console.log("error", err);
+            alert("Something went wrong. Please try again.");
+        } 
+        // finally{
+        //     setLoading(false);
+        // }
+    }
+
     console.log("chap", chapters);
 
     return (
@@ -180,7 +207,12 @@ function HomeStoryPage() {
                 {chapters.length > 0 ? (
                     chapters.map(chapter => (
                         <div key={chapter.chapter.id}>
-                            <li onClick={() => navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`)}><b>Title:</b>{chapter.chapter.title} <b>uploadedAt:</b> {chapter.chapter.uploadedAt}</li>
+                            <li onClick={() => {
+                                view(chapter.chapter.id);
+                                navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`);
+                            }}>
+                                <b>Title:</b>{chapter.chapter.title} <b>uploadedAt:</b> {chapter.chapter.uploadedAt}
+                            </li>
                         </div>
                     ))
                 ):(

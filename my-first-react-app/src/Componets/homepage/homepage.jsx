@@ -70,6 +70,33 @@ function Homepage() {
           fetchCollections();
   }, []);
 
+  async function view(collectionId) {
+        // setError("");
+    // setLoading(true);
+    // console.log("id here", id);
+    try {
+        const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${collectionId}/view`, {
+        method: "POST",
+        credentials: "include",
+        });
+
+        const data = await response.json();
+        console.log("data", data);
+        
+        if (!response.ok) {
+            setError(data.message);
+            return;
+        } 
+        
+    } catch(err) {
+        console.log("error", err);
+        alert("Something went wrong. Please try again.");
+    } 
+    // finally{
+    //     setLoading(false);
+    // }
+  }
+
   return (
     <div>
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -102,7 +129,7 @@ function Homepage() {
     {collections && collections.length > 0 && (
                 <ul>
                     {collections.map((collection) => (
-                        <div key={collection.id}>
+                        <div key={collection?.id}>
                             <li>
                                 <img 
                                     style={ {width: "200px" } } 
@@ -113,9 +140,15 @@ function Homepage() {
                             <li>{collection?.description}</li>
                             <li>{collection?.tags}</li>
                             <li>{collection?.status}</li>
+                            <li>{collection?.views.length} Views</li>
 
-                            <button onClick={() => navigate(`/gallery/${collection.id}`)}>
-                            View
+                            <button 
+                                 onClick={() => {
+                                    view(collection?.id);
+                                    navigate(`/gallery/${collection.id}`);
+                                }
+                            }>
+                                View
                             </button>
                         </div>
                     ))}

@@ -338,28 +338,6 @@ function HomepageCollections() {
             }
     
             alert("Liked!");
-    
-            // Helper function to update likes for a comment or reply
-            // const updateLikes = (commentList) =>
-            //     commentList.map((comment) =>
-            //         comment.id === commentId
-            //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-            //         : { ...comment, replies: updateLikes(comment.replies || []) }
-            // );
-                
-            // if (name === "images") {
-            //     setImages((prev) =>
-            //         prev.map((img) =>
-            //             img.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
-            //         )
-            //     );
-            //     } else if (name === "videos") {
-            //     setVideos((prev) =>
-            //         prev.map((vid) =>
-            //             vid.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
-            //         )
-            //     );
-            // }
 
             const updateLikes = (commentList) =>
                 commentList.map(comment => {
@@ -453,6 +431,7 @@ function HomepageCollections() {
                     <li>{collection.user.username}</li>
                     <li>{collection.tags}</li>
                     <li>{collection.status}</li>
+                    <li>{collection.views.length}</li>
                     <li>
                         <button onClick={likeCollection}>
                             ❤️ {likes.length} {likes.length === 1 ? "Like" : "Likes"}

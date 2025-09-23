@@ -108,7 +108,7 @@ function StoryPage() {
                         {chapters.length > 0 ? (
                         chapters.map(chapter => (
                             <div key={chapter.chapter.id}>
-                                <li onClick={() => navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
+                                <li onClick={() => navigate(`/stories/${story.story.id}/chapters/${chapter.chapter.id}`)}>title: {chapter.chapter.title} uploadedAt: {chapter.chapter.uploadedAt} Views: {chapter.chapter.views.length} likes: {chapter.likes.length} comments: {chapter.comments.length} status:  {chapter.chapter.status}</li>
                                 <button
                                     onClick={() => {
                                         const confirmed = window.confirm("Are you sure you want to delete this chapter?");
