@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Delete from "../delete/delete";
 import { useAuth } from "../auth/authContext";
@@ -147,7 +147,6 @@ function Chapter() {
                 setError(data.message || "Something is wrong. Try again!");
                 return;
             } 
-            console.log("data", data);
 
             const setterMap = {
                 lovethis: setLovethis,
@@ -166,21 +165,8 @@ function Chapter() {
             const setter = setterMap[like];
             if (!setter) return;
     
-            // if (data.like) {
-            //     // Unlike: remove this user's like from the corresponding state
-            //     setter(prev => prev.filter(like => like.userId !== data.like.userId));
-            //     alert("Removed like!");
-            // } else if (data.liked) {
-            //     // Like: add the new like to the corresponding state
-            //     setter(prev => [...prev, data.liked]);
-            //     alert("Liked!");
-            // }
-
             if (!data.liked) {
-                // Unlike
                 setter(prev => prev.filter(l => l.userId !== data.like.userId));
-            
-                // Also remove from chapter.likes
                 setChapter(ch => ({
                     ...ch,
                     likes: ch.likes.filter(like => !(like.userId === data.userId && like.like === data.like))
@@ -198,8 +184,19 @@ function Chapter() {
                 alert("Liked!");
             }            
             
-            
-             
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            }
+           
         } catch(err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");
@@ -240,7 +237,17 @@ function Chapter() {
             console.log("com", data);
             setComments(prev => [...prev, data.comment]);
             setForm({ content: "" });
-            console.log("commm", comments);
+            
+            const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/commentpoint`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const socialData = await socialResponse.json();
+            if (!socialResponse.ok) {
+                setError(socialData.message || "Something is wrong. Try again!");
+                return;
+            } 
              
         } catch(err) {
             console.log("error", err);
@@ -250,12 +257,12 @@ function Chapter() {
         }
     };
 
-    async function writeReply(e, commentId) {
+    async function writeReply(e, commentId, commentername) {
         e.preventDefault();
         setError("");
 
         try {
-            const replyContent = `@${user.username} ${form.content}`;
+            const replyContent = `@${commentername}-@${user.username} ${form.content}`;
             const response = await fetch(
                 `https://fanhub-server.onrender.com/api/stories/${storyId}/chapters/${chapterId}/comments/${commentId}/reply`,
                 {
@@ -286,6 +293,17 @@ function Chapter() {
             setForm({ content: "" });
             setReplyingTo(null);
 
+            const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/commentpoint`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const socialData = await socialResponse.json();
+            if (!socialResponse.ok) {
+                setError(socialData.message || "Something is wrong. Try again!");
+                return;
+            } 
+
         } catch (err) {
             console.log("error", err);
         }
@@ -311,28 +329,26 @@ function Chapter() {
                 return;
             }
     
-            // alert("Liked!");
-    
-            // Helper function to update likes recursively for comments and replies
-        const updateLikes = (commentList) =>
-            commentList.map((comment) => {
-                if (comment.id === commentId) {
-                    if (data.like) {
-                        // Unlike: remove this user's like
-                        return {
-                            ...comment,
-                            likes: (comment.likes || []).filter(
-                                (like) => like.userId !== data.userId
-                            ),
-                        };
-                    } else if (data.liked) {
-                        // Like: add the new like
-                        return {
-                            ...comment,
-                            likes: [...(comment.likes || []), data.liked],
-                        };
+           
+            const updateLikes = (commentList) =>
+                commentList.map((comment) => {
+                    if (comment.id === commentId) {
+                        if (data.like) {
+                            // Unlike: remove this user's like
+                            return {
+                                ...comment,
+                                likes: (comment.likes || []).filter(
+                                    (like) => like.userId !== data.userId
+                                ),
+                            };
+                        } else if (data.liked) {
+                            // Like: add the new like
+                            return {
+                                ...comment,
+                                likes: [...(comment.likes || []), data.liked],
+                            };
+                        }
                     }
-                }
                 // Recurse into replies
                 return {
                     ...comment,
@@ -340,9 +356,22 @@ function Chapter() {
                 };
             });
 
-        setComments((prevComments) => updateLikes(prevComments));
+            setComments((prevComments) => updateLikes(prevComments));
 
-        alert(data.like ? "Removed like!" : "Liked!");            
+            alert(data.like ? "Removed like!" : "Liked!");   
+            
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
     
         } catch (err) {
             console.log("error", err);
@@ -374,6 +403,7 @@ function Chapter() {
             console.log("Failed to delete:", err.message);
         } 
     }
+
     return (
             <div>
             {loading && <p>Loading... please wait</p>}
@@ -478,7 +508,7 @@ function CommentItem({
 
       {/* Reply form */}
       {replyingTo?.id === comment.id && (
-        <form onSubmit={(e) => writeReply(e, comment.id)} style={{ marginTop: "0.5rem" }}>
+        <form onSubmit={(e) => writeReply(e, comment.id, comment.user.username)} style={{ marginTop: "0.5rem" }}>
           <textarea
             name="content"
             value={form.content}

@@ -2,17 +2,18 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../auth/authContext";
 import Delete from "../delete/delete";
 import { useParams } from "react-router-dom";
+import CreatePost from "../post/createPost";
 
 function ProfilePosts() {
-    // const { posts, error, loading } = usePosts();
-    // console.log("posts", posts);
-     const { id } = useParams();
+    const { id } = useParams();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useState([])
     const { user } = useAuth();
     const [form, setForm] = useState({ content: "" });
     const [replyingTo, setReplyingTo] = useState({ id: null, username: "" });
+    const [search, setSearch] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
     
     useEffect(() => {
         async function fetchPosts() {
@@ -43,7 +44,28 @@ function ProfilePosts() {
         };
 
         fetchPosts();
-    }, []);
+    }, [id]);
+
+    function handleSearch(e) {
+        e.preventDefault();
+       
+        if (posts) {
+            console.log("posts",posts);
+            const results = posts.filter(p => p.post.title.toLowerCase() === search.toLowerCase());
+            setSearchResults(results);      
+        }
+    }
+
+    useEffect(() => {
+        if (search.trim() === "") {
+          setSearchResults([]);
+        }
+    }, [search]);
+      
+
+    function handlePostCreated(newPost) {
+        setPosts((prev) => [newPost, ...prev]); // add new post to the top
+    }
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -70,15 +92,6 @@ function ProfilePosts() {
                 return;
             } 
             alert("liked!");
-
-            
-            // setPosts(prev =>
-            //     prev.map(post =>
-            //         post.post.id === id 
-            //             ? { ...post, likes: [...(post.likes || []), data.liked] }
-            //             : post
-            //     )
-            // );
 
             setPosts(prev =>
                 prev.map(post => {
@@ -223,20 +236,6 @@ function ProfilePosts() {
             }
     
             alert("Liked!");
-    
-            // Helper function to update likes for a comment or reply
-            // const updateLikes = (commentList) =>
-            //     commentList.map((comment) =>
-            //         comment.id === commentId
-            //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-            //         : { ...comment, replies: updateLikes(comment.replies || []) }
-            // );
-                
-            // setPosts((prev) =>
-            //     prev.map((post) =>
-            //         post.post.id === id ? { ...post, comments: updateLikes(post.comments || []) } : post
-            //     )
-            // );
 
             const updateLikes = (commentList) =>
                 commentList.map((comment) => {
@@ -308,59 +307,97 @@ function ProfilePosts() {
         <div>
             {loading && <p>loading.. please wait</p>}
             {error && <p>{error}</p>}
-
-            { posts.length > 0 && (
-                posts.map(post => (
-                    <div key={post.post.id}>
-                        <div>
-                            <li>{post.post.title}</li>
-                            <li><img style={{ width: "200px" }} src={post.post?.img} /></li>
-                            <li>{post.post.content}</li>
-                            <li>{post.post.uploadedAt} {post.likes.length} likes {post.comments.length} comments</li>
-                            <li><button onClick={(e) => likePost(e, post.post.id)}>❤️ Love {post.likes.length}</button></li>
-                        </div>
-                        
-                        <div>
-                            <form onSubmit={(e) => writeComment(e, post.post.id)}>
-                                <textarea
-                                    name="content"
-                                    value={form.content}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Comment Here..."
-                                />
-                                <button type="submit">Post</button>
-                            </form>
-
-                            {post.comments?.length > 0 && (
-                                <div>
-                                    <h4>Comments</h4>
-                                    {post.comments.map(comment => (
-                                        <CommentItem
-                                            key={comment.id}
-                                            comment={comment}
-                                            user={user}
-                                            userId={post.post.userId}
-                                            id={post.post.id}
-                                            replyingTo={replyingTo}
-                                            setReplyingTo={setReplyingTo}
-                                            writeReply={writeReply}
-                                            handleDelete={handleDelete}
-                                            likeComment={likeComment}
-                                            form={form}
-                                            handleChange={handleChange}
-                                        />
-
-                                    ))}
-                                </div>
-                            )}
-                        </div> 
-                    </div>
-                )))
-            }
+            <form onSubmit={(e) => handleSearch(e, "story")}>
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search posts by title..."
+                />
+                <button type="submit">Search Stories</button>
+            </form>
+            <div>
+                <CreatePost onPostCreated={handlePostCreated} />
+            </div>
+            <PostList
+                posts={searchResults.length > 0 ? searchResults : posts}
+                user={user}
+                replyingTo={replyingTo}
+                setReplyingTo={setReplyingTo}
+                form={form}
+                handleChange={handleChange}
+                writeComment={writeComment}
+                writeReply={writeReply}
+                handleDelete={handleDelete}
+                likeComment={likeComment}
+                likePost={likePost}
+            />
         </div>
     );
 }
+
+function PostList({ posts, user, replyingTo, setReplyingTo, form, handleChange, writeComment, writeReply, handleDelete, likeComment, likePost }) {
+    return (
+      <div> 
+        {posts.length > 0 && posts.map(post => (
+          <div key={post.post.id}>
+            <div>
+              <li>{post.post.title}</li>
+              {post.post.img !== null && (
+                <li>
+                  <img style={{ width: "200px" }} src={post.post?.img} />
+                </li>
+              )}
+              <li>{post.post.content}</li>
+              <li>
+                {post.post.uploadedAt} {post.likes.length} likes {post.comments.length} comments
+              </li>
+              <li>
+                <button onClick={(e) => likePost(e, post.post.id)}>
+                  ❤️ Love {post.likes.length}
+                </button>
+              </li>
+            </div>
+  
+            <div>
+              <form onSubmit={(e) => writeComment(e, post.post.id)}>
+                <textarea
+                  name="content"
+                  value={form.content}
+                  onChange={handleChange}
+                  required
+                  placeholder="Comment Here..."
+                />
+                <button type="submit">Post</button>
+              </form>
+  
+              {post.comments?.length > 0 && (
+                <div>
+                  <h4>Comments</h4>
+                  {post.comments.map(comment => (
+                    <CommentItem
+                      comment={comment}
+                      user={user}
+                      userId={post.post.userId}
+                      id={post.post.id}
+                      replyingTo={replyingTo}
+                      setReplyingTo={setReplyingTo}
+                      writeReply={writeReply}
+                      handleDelete={handleDelete}
+                      likeComment={likeComment}
+                      form={form}
+                      handleChange={handleChange}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+}
+  
 
 function CommentItem({
     comment,

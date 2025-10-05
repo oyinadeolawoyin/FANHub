@@ -77,10 +77,23 @@ function HomepageCollections() {
             } 
             alert("liked!");
             if (data.like) {
-                setLikes(prev => prev.filter(like => like.userId !== data.like.userId));
+                setLikes(prev => prev.filter(like => like.userId !== data.userId));
             } else {
                 setLikes(prev => [...prev, data]);
-            }                     
+            }  
+            
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
     
         } catch(err) {
             console.log("error", err);
@@ -140,27 +153,7 @@ function HomepageCollections() {
                 return;
             } 
             alert("liked!");
-
-            // if (name === "images") {
-            //     setImages(prev =>
-            //         prev.map(img =>
-            //             img.id === id 
-            //                 ? { ...img, likes: [...(img.likes || []), data.liked] }
-            //                 : img
-            //         )
-            //     );
-            //     console.log("imag", images);
-            // } else if (name === "videos") {
-            //     setVideos(prev =>
-            //         prev.map(vid =>
-            //             vid.id === id
-            //                 ? { ...vid, likes: [...(vid.likes || []), data.liked] }
-            //                 : vid
-            //         )
-            //     );
-            // }
              
-
             if (name === "images") {
                 setImages(prev =>
                     prev.map(img => {
@@ -200,6 +193,19 @@ function HomepageCollections() {
                     })
                 );
             }
+
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
 
         } catch(err) {
             console.log("error", err);
@@ -253,6 +259,18 @@ function HomepageCollections() {
             }
     
             setForm({ content: "" });
+
+            const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/commentpoint`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const socialData = await socialResponse.json();
+            if (!socialResponse.ok) {
+                setError(socialData.message || "Something is wrong. Try again!");
+                return;
+            }     
+        
     
         } catch (err) {
             console.error("error", err);
@@ -310,6 +328,17 @@ function HomepageCollections() {
 
             setForm({ content: "" });
             setReplyingTo(null);
+
+            const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/commentpoint`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const socialData = await socialResponse.json();
+            if (!socialResponse.ok) {
+                setError(socialData.message || "Something is wrong. Try again!");
+                return;
+            }     
 
         } catch (err) {
             console.log("error", err);
@@ -377,7 +406,20 @@ function HomepageCollections() {
                             : vid
                     )
                 );
-            }            
+            }    
+            
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
                               
     
         } catch (err) {
@@ -427,7 +469,7 @@ function HomepageCollections() {
             {collection ? (
                 <header>
                     <li><img style={{ width: "200px" }} src={collection.img} /></li>
-                    <li>{collection.name}</li>
+                    <li onClick={() => navigate(`/profile/${collection.user.username}/${collection.userId}`)}>{collection.name}</li>
                     <li>{collection.user.username}</li>
                     <li>{collection.tags}</li>
                     <li>{collection.status}</li>

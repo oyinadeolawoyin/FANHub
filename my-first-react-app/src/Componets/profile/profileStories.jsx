@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 function ProfileStories() {
-  // const { stories, loading, error } = useStories();
   const { id } = useParams();
   const [stories, setStories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([])
   
   useEffect(() => {
       async function fetchStories() {
@@ -42,6 +42,22 @@ function ProfileStories() {
       fetchStories();
     }, 
   []);
+
+
+  function handleSearch(e) {
+      e.preventDefault();
+      if (stories) {
+          console.log("stories", stories);
+          const results = stories.filter(s => s.title.toLowerCase() === search.toLowerCase());
+          setSearchResults(results);      
+      }
+  }
+
+  useEffect(() => {
+      if (search.trim() === "") {
+        setSearchResults([]);
+      }
+  }, [search]);
   
   if (loading) {
     return <div>Loading, please wait...</div>;
@@ -77,6 +93,29 @@ function ProfileStories() {
   return (
     <div>
       {error && <p style={{ color: "red" }}>{error}</p>}
+      <form onSubmit={(e) => handleSearch(e, "story")}>
+        <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search stories by title..."
+        />
+        <button type="submit">Search Stories</button>
+      </form>
+      <Stories
+          stories={searchResults.length > 0 ? searchResults : stories}
+          addToLibrary={addToLibrary}
+      />    
+    </div>
+  );
+}
+
+function Stories({ stories, addToLibrary }) {
+
+  const navigate = useNavigate();
+
+  return (
+    <div>
       {stories && stories.length > 0 ? (
             <ul>
             {stories.map((story) => (
@@ -88,7 +127,6 @@ function ProfileStories() {
                         />
                     </li>
                     <li onClick={()=> addToLibrary(story.id)}>{story.title}</li>
-                    {/* <li>{story.rate}</li> */}
                     <li>{story.summary}</li>
                     <li>{story.tags}</li>
                     <li>{story.status}</li>
@@ -105,9 +143,8 @@ function ProfileStories() {
         ) : (
         <p>No Story found.</p>
       )}
-
     </div>
-  );
+  )
 }
 
 export default ProfileStories;

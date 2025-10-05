@@ -21,8 +21,6 @@ function Dashboard() {
           <li><Link to="upload video">Upload Video</Link></li>
           <li><Link to="images">Images</Link></li>
           <li><Link to="videos">Videos</Link></li>
-          <li><Link to="share post">Share post</Link></li>
-          <li><Link to={`posts/${user?.id}`}>Posts</Link></li>
           <div>
              <Outlet /> 
           </div>

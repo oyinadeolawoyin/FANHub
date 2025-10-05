@@ -7,10 +7,10 @@ function Login() {
         username: "",
         password: "",
     });
-    const [error, setError] = useState("");
+    const [loginError, setLoginError] = useState("");
     const navigate = useNavigate();
     const { setUser } = useAuth();
-    const [loading, setLoading] = useState(false);
+    const [loginLoading, setLoginLoading] = useState(false);
 
     function handleChange(e) {
         const { name, value } = e.target;
@@ -22,8 +22,8 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
+        setLoginError("");
+        setLoginLoading(true);
     
         try {
             const response = await fetch("https://fanhub-server.onrender.com/api/auth/login", {
@@ -33,24 +33,27 @@ function Login() {
                 credentials: "include",
             });
     
-            if (!response.ok) {
-                setError(data.message || "Login failed");
+            const data = await response.json();
+
+            if (response.status === 500) {
+                navigate("/error", { state: { message: data.message || "Login failed" } });
                 return;
-            } else if (response.ok) {
-                const data = await response.json();
-                setUser(data.user);
-                navigate("/");
+            } else {
+                if (!response.ok && response.status !== 500) {
+                    setLoginError(data.message); 
+                    return;
+                }
             } 
-            
+           
+            setUser(data.user);
+            navigate("/");  
         } catch(err) {
-            setError("Something went wrong. Please try again.");
-            setLoading(false);
+            navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
+        } finally {
+            setLoginLoading(false);
         }
     };
     
-    if (loading) {
-        return <div>Loading, please wait...</div>;
-    }
     
     return (
         <div>
@@ -76,9 +79,13 @@ function Login() {
                       required 
                     />
                 </label>
-                <button type="submit">Log In</button>
+                <button type="submit" disabled={loginLoading}>
+                    {loginLoading ? "Loading..." : "Log In"}
+                </button>
             </form>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            <button type="button" onClick={() => navigate(`/forget-password`)}>Forget Password</button>
+            <p>Already have an account, go to <span onClick={() => navigate(`/signup`)}>sign up page</span></p>
+            {loginError && <p style={{ color: "red" }}>{loginError}</p>}
         </div>
     );
 }

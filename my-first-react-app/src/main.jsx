@@ -9,6 +9,10 @@ import Login from './Componets/auth/login.jsx';
 import Logout from './Componets/auth/logout.jsx';
 import Notification from './Componets/notification/notification.jsx';
 import Library from './Componets/library/library.jsx';
+import Usersettings from './Componets/auth/userSetting.jsx';
+import Forgetpassword from './Componets/auth/forgetpassword.jsx';
+import Resetpassword from './Componets/auth/resetpassword.jsx';
+import Errorpage from './Componets/error/error.jsx';
 
 import Createstory from './Componets/story/createStory.jsx';
 import Stories from './Componets/story/stories.jsx';
@@ -25,8 +29,6 @@ import UploadImage from './Componets/gallery/createImage.jsx';
 import Images from './Componets/gallery/images.jsx';
 import UploadVideo from './Componets/gallery/createVideo.jsx';
 import Videos from './Componets/gallery/videos.jsx';
-import CreatePost from './Componets/post/createPost.jsx';
-import Posts from './Componets/post/postPage.jsx';
 
 import About from './Componets/profile/about.jsx';
 import ProfileStories from './Componets/profile/profileStories.jsx';
@@ -37,8 +39,7 @@ import Follower from './Componets/profile/followers.jsx';
 import Following from './Componets/profile/following.jsx';
 
 import HomeStoryPage from './Componets/homepage/storypage.jsx';
-// import CreateReview from './Componets/homepage/createreview.jsx';
-import WriteReview from './Componets/homepage/collectionReview.jsx';
+import WriteReview from './Componets/homepage/writeReview.jsx';
 import Reviews from './Componets/homepage/reviews.jsx';
 import Chapter from './Componets/homepage/chapterPage.jsx';
 import HomepageCollections from './Componets/homepage/collectionPage.jsx';
@@ -47,12 +48,9 @@ import { AuthProvider } from './Componets/auth/authContext.jsx';
 import { UserProvider } from './Componets/profile/usersContext.jsx';
 import { StoriesProvider } from './Componets/story/storiesContext.jsx';
 import { CollectionProvider } from './Componets/gallery/collectionContext.jsx';
-import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
-import { VideosProvider } from './Componets/gallery/videosContext.jsx';
+// import { ImagesProvider } from './Componets/gallery/imagesContext.jsx';
+// import { VideosProvider } from './Componets/gallery/videosContext.jsx';
 import { PostsProvider } from './Componets/post/postContext.jsx';
-
-
-
 
 
 const router = createBrowserRouter([
@@ -81,13 +79,25 @@ const router = createBrowserRouter([
     element: <Library />
   },
   {
+    path: "settings/:id",
+    element: <Usersettings />
+  },
+  {
+    path: "forget-password",
+    element: <Forgetpassword />
+  },
+  {
+    path: "reset-password",
+    element: <Resetpassword />
+  },
+  {
+    path: "error",
+    element: <Errorpage />
+  },
+  {
     path: "/stories/:id",
     element: <HomeStoryPage />
   },
-  // {
-  //   path: "/review/:id",
-  //   element: <CreateReview />
-  // },
   {
     path: "/:name/:id/reviews",
     element: <Reviews />
@@ -139,14 +149,6 @@ const router = createBrowserRouter([
       {
         path: "videos",
         element: <Videos />
-      },
-      {
-        path: "share post",
-        element: <CreatePost />
-      },
-      {
-        path: "posts/:id",
-        element: <Posts />
       },
       {
         path: "story/:id",
@@ -216,13 +218,13 @@ createRoot(document.getElementById('root')).render(
       <UserProvider>
         <StoriesProvider>
          <CollectionProvider>
-          <ImagesProvider>
-            <VideosProvider>
+          {/* <ImagesProvider> */}
+            {/* <VideosProvider> */}
               <PostsProvider>
                 <RouterProvider router={router} />
               </PostsProvider>
-            </VideosProvider>
-          </ImagesProvider>
+            {/* </VideosProvider> */}
+          {/* </ImagesProvider> */}
          </CollectionProvider>
         </StoriesProvider>
       </UserProvider>

@@ -12,6 +12,9 @@ function Gallery() {
     const { id } = useParams();
     const [form, setForm] = useState({ content: "" });
     const [replyingTo, setReplyingTo] = useState({ id: null, username: "" });
+    const [search, setSearch] = useState("");
+    const [imageSearchResults, setImageSearchResults] = useState([]);
+    const [videoSearchResults, setVideoSearchResults] = useState([]);
 
     useEffect(() => {
         async function fetchMedias() {
@@ -51,6 +54,24 @@ function Gallery() {
 
         fetchMedias();
     }, []);
+
+    function handleSearch(e) {
+        e.preventDefault();
+        
+        if (images || videos) {
+            const imageResults = images.filter(i => i.image.caption.toLowerCase() === search.toLowerCase());
+            const videoResults = videos.filter(v => v.video.caption.toLowerCase() === search.toLowerCase());
+            setImageSearchResults(imageResults);
+            setVideoSearchResults(videoResults)      
+        }
+    }
+
+    useEffect(() => {
+        if (search.trim() === "") {
+            setImageSearchResults([]);
+            setVideoSearchResults([]);
+        }
+    }, [search]);
     
 
     function handleChange(e) {
@@ -78,25 +99,6 @@ function Gallery() {
                 return;
             } 
             alert("liked!");
-
-            // if (name === "images") {
-            //     setImages(prev =>
-            //         prev.map(img =>
-            //             img.image.id === id 
-            //                 ? { ...img, likes: [...(img.likes || []), data.liked] }
-            //                 : img
-            //         )
-            //     );
-            //     console.log("imag", images);
-            // } else if (name === "videos") {
-            //     setVideos(prev =>
-            //         prev.map(vid =>
-            //             vid.video.id === id
-            //                 ? { ...vid, likes: [...(vid.likes || []), data.liked] }
-            //                 : vid
-            //         )
-            //     );
-            // }
 
             if (name === "images") {
                 setImages(prev =>
@@ -253,97 +255,7 @@ function Gallery() {
             console.log("error", err);
         }
     }
-
-    // async function likeComment(e, commentId, name, id) {
-    //     e.preventDefault();
-    //     setError("");
-    
-    //     try {
-    //         const response = await fetch(
-    //             `https://fanhub-server.onrender.com/api/gallery/${name}/${id}/comments/${commentId}/like/love`,
-    //             {
-    //                 method: "POST",
-    //                 credentials: "include",
-    //             }
-    //         );
-    
-    //         const data = await response.json();
-    //         console.log('likk', data);
-    //         if (!response.ok) {
-    //             setError(data.message || "Something is wrong. Try again!");
-    //             return;
-    //         }
-    
-    //         alert("Liked!");
-    
-    //         // Helper function to update likes for a comment or reply
-    //         // const updateLikes = (commentList) =>
-    //         //     commentList.map((comment) =>
-    //         //         comment.id === commentId
-    //         //         ? { ...comment, likes: [...(comment.likes || []), data.liked] } // ✅ safe
-    //         //         : { ...comment, replies: updateLikes(comment.replies || []) }
-    //         // );
-                
-    //         // if (name === "images") {
-    //         //     setImages((prev) =>
-    //         //         prev.map((img) =>
-    //         //             img.image.id === id ? { ...img, comments: updateLikes(img.comments || []) } : img
-    //         //         )
-    //         //     );
-    //         //     } else if (name === "videos") {
-    //         //     setVideos((prev) =>
-    //         //         prev.map((vid) =>
-    //         //             vid.video.id === id ? { ...vid, comments: updateLikes(vid.comments || []) } : vid
-    //         //         )
-    //         //     );
-    //         // }
-            
-    //         const updateLikes = (commentList) =>
-    //             commentList.map(comment => {
-    //                 if (comment.id === commentId) {
-    //                     let newLikes = comment.likes || [];
-            
-    //                     if (data.like) {
-    //                         // Unlike: remove from likes
-    //                         newLikes = newLikes.filter(
-    //                             like => !(like.userId === data.userId && like.like === data.like)
-    //                         );
-    //                     } else if (data.liked) {
-    //                         // Like: add to likes
-    //                         newLikes = [...newLikes, data.liked];
-    //                     }
-            
-    //                     return { ...comment, likes: newLikes };
-    //                 } else {
-    //                     // Recurse into replies
-    //                     return { ...comment, replies: updateLikes(comment.replies || []) };
-    //                 }
-    //         });
-            
-    //         if (name === "images") {
-    //             setImages(prev =>
-    //                 prev.map(img =>
-    //                     img.id === id
-    //                         ? { ...img, comments: updateLikes(img.comments || []) }
-    //                         : img
-    //                 )
-    //             );
-    //         } else if (name === "videos") {
-    //             setVideos(prev =>
-    //                 prev.map(vid =>
-    //                     vid.id === id
-    //                         ? { ...vid, comments: updateLikes(vid.comments || []) }
-    //                         : vid
-    //                 )
-    //             );
-    //         }            
-                            
-    
-    //     } catch (err) {
-    //         console.log("error", err);
-    //         alert("Something went wrong. Please try again.");
-    //     }
-    // }
+  
 
     async function likeComment(e, commentId, name, id) {
         e.preventDefault();
@@ -454,7 +366,37 @@ function Gallery() {
         <div>
             {loading && <p>loading.. please wait</p>}
             {error && <p>{error}</p>}
+            <form onSubmit={(e) => handleSearch(e, "story")}>
+                <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search posts by title..."
+                />
+                <button type="submit">Search Stories</button>
+            </form>
+            <GalleryList
+                images={imageSearchResults.length > 0 ? imageSearchResults : images}
+                videos={videoSearchResults.length > 0 ? videoSearchResults: videos}
+                user={user}
+                replyingTo={replyingTo}
+                setReplyingTo={setReplyingTo}
+                form={form}
+                handleChange={handleChange}
+                writeComment={writeComment}
+                writeReply={writeReply}
+                handleDelete={handleDelete}
+                likeComment={likeComment}
+                likeMedia={likeMedia}
+            />
+        </div>
+    );
+}
 
+function GalleryList({ images, videos, user, replyingTo, setReplyingTo, form, handleChange, writeComment, writeReply, handleDelete, likeComment, likeMedia }) {
+    console.log("glimage", images, "glistVid", videos);
+    return (
+        <div>
             { images?.length > 0 && (
                 images.map(image => (
                     (image.image.collectionId === null) && (
@@ -570,7 +512,7 @@ function Gallery() {
                 )))
             }
         </div>
-    );
+    )
 }
 
 

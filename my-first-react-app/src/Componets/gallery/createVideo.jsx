@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVideos } from "./videosContext";
 import { useCollections } from "./collectionContext";
 
 function UploadVideo() {
@@ -9,14 +8,12 @@ function UploadVideo() {
         file: null,
         collectionId: "",
     });
+
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const { setVideos, videos } = useVideos(); 
     const { collections } = useCollections();
 
-    console.log("collection", collections);
-    console.log("vid", videos)
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -27,9 +24,7 @@ function UploadVideo() {
         }
     }; 
 
-    
-
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
         setError("");
         setLoading(true);
@@ -47,21 +42,24 @@ function UploadVideo() {
             });
     
             const data = await response.json();
-            console.log("datavideo", data);
-            if (!response.ok) {
-                setError(data.message);
-                setLoading(false);
-                return;
-            }
+          
+            if (response.status === 500) {
+              navigate("/error", { state: { message: data.message || "Process failed" } });
+              return;
+            } else {
+                if (!response.ok && response.status !== 500) {
+                    setError(data.message); 
+                    return;
+                }
+            } 
     
             alert("Uploaded!"); 
-            setVideos(prev => [...prev, data.video]);
     
             navigate("/dashboard/videos"); 
         } catch(err) {
-            console.log("err", error);
-            alert("Something went wrong. Please try again.");
-            setLoading(false);
+          navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
+        } finally {
+          setLoading(false);
         }
     };
     
@@ -70,47 +68,45 @@ function UploadVideo() {
         <div>
           <h2>Upload Video</h2>
       
-          {loading && <div>Loading, please wait...</div>}
+          <form onSubmit={handleSubmit}>
+            <label>
+              Caption:{" "}
+              <input
+                type="text"
+                name="caption"
+                value= {form.caption}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label>
+              Upload Video:{" "}
+              <input
+                type="file"
+                name="file"
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label htmlFor="collection">Choose Collection:</label>
+            <select 
+                id="collection"
+                name="collectionId"
+                value={form.collectionId} 
+                onChange={handleChange}
+            >
+                <option value="">-- Select a collection --</option>
+                {collections.map(collection => (
+                    <option key={collection.id} value={collection.id}>
+                        {collection.name}
+                    </option>
+                ))}
+            </select>
+            <button type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Upload"}
+            </button>
+          </form>
           {error && <p style={{ color: "red" }}>{error}</p>}
-      
-          {!loading && (
-            <form onSubmit={handleSubmit}>
-              <label>
-                Caption:{" "}
-                <input
-                  type="text"
-                  name="caption"
-                  value= {form.caption}
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <label>
-                Upload Video:{" "}
-                <input
-                  type="file"
-                  name="file"
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <label htmlFor="collection">Choose Collection:</label>
-              <select 
-                  id="collection"
-                  name="collectionId"
-                  value={form.collectionId} 
-                  onChange={handleChange}
-              >
-                  <option value="">-- Select a collection --</option>
-                  {collections.map(collection => (
-                      <option key={collection.id} value={collection.id}>
-                          {collection.name}
-                      </option>
-                  ))}
-              </select>
-              <button type="submit">Upload</button>
-            </form>
-          )}
         </div>
     );
 }      

@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCollections } from "./collectionContext";
+import { useAuth } from "../auth/authContext";
 
 function CreateCollection() {
-    console.log("here...")
     const [form, setForm] = useState({
         name: "",
         file: null,
@@ -11,6 +11,8 @@ function CreateCollection() {
         tags: "",
         status: "ongoing",
     });
+
+    const { user } = useAuth();
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
@@ -25,7 +27,7 @@ function CreateCollection() {
         }
     }; 
 
-    const handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
         setError("");
         setLoading(true);
@@ -45,20 +47,24 @@ function CreateCollection() {
             });
     
             const data = await response.json();
-            console.log("data", data);
-            if (!response.ok) {
-                setError(data.message || "Something is wrong. Try again!");
-                setLoading(false);
-                return;
-            }
+            if (response.status === 500) {
+              navigate("/error", { state: { message: data.message || "Process failed" } });
+              return;
+            } else {
+                if (!response.ok && response.status !== 500) {
+                    setError(data.message); 
+                    return;
+                }
+            } 
     
             alert("Created!");  
             setCollections(prev => [...prev, data.collection])
     
-            navigate("/dashboard"); 
+            navigate(`/dashboard/collections/${user.id}`); 
         } catch(err) {
-            alert("Something went wrong. Please try again.");
-            setLoading(false);
+          navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
+        } finally {
+          setLoading(false);
         }
     };
     
@@ -66,65 +72,64 @@ function CreateCollection() {
     return (
         <div>
           <h2>Add new collection</h2>
-      
-          {loading && <div>Loading, please wait...</div>}
+     
+          <form onSubmit={handleSubmit}>
+            <label>
+              Name:{" "}
+              <input
+                type="text"
+                name="name"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label>
+              Upload image:{" "}
+              <input
+                type="file"
+                name="file"
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label>
+              description:{" "}
+              <textarea
+                name="description"
+                value={form.summary}
+                onChange={handleChange}
+                required
+                placeholder="Write here..."
+              />
+            </label>
+            <label>
+              Tags:{" "}
+              <input
+                type="text"
+                name="tags"
+                value={form.tags}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <label>
+              Status:{" "}
+              <input
+                type="text"
+                name="status"
+                placeholder="ongoing/completed"
+                value={form.status}
+                onChange={handleChange}
+                required
+              />
+            </label>
+            <button type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Upload"}
+            </button>
+          </form>
+     
           {error && <p style={{ color: "red" }}>{error}</p>}
-      
-          {!loading && (
-            <form onSubmit={handleSubmit}>
-              <label>
-                Name:{" "}
-                <input
-                  type="text"
-                  name="name"
-                  value={form.title}
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <label>
-                Upload image:{" "}
-                <input
-                  type="file"
-                  name="file"
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <label>
-                description:{" "}
-                <textarea
-                  name="description"
-                  value={form.summary}
-                  onChange={handleChange}
-                  required
-                  placeholder="Write here..."
-                />
-              </label>
-              <label>
-                Tags:{" "}
-                <input
-                  type="text"
-                  name="tags"
-                  value={form.tags}
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <label>
-                Status:{" "}
-                <input
-                  type="text"
-                  name="status"
-                  placeholder="ongoing/completed"
-                  value={form.status}
-                  onChange={handleChange}
-                  required
-                />
-              </label>
-              <button type="submit">Create</button>
-            </form>
-          )}
         </div>
     );
 }      

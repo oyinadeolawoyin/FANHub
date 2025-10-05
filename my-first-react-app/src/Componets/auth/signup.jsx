@@ -11,12 +11,12 @@ function Signup() {
         gender: "",
         bio:"",
         file: "",
-        role: "USER"
     });
-    const [error, setError] = useState("");
+
+    const [singupError, setSignupError] = useState("");
     const navigate = useNavigate();
     const { setUser } = useAuth();
-    const [loading, setLoading] = useState(false);
+    const [signupLoading, setSignupLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -30,8 +30,8 @@ function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
-        setLoading(true);
+        setSignupError("");
+        setSignupLoading(true);
 
         const formData = new FormData();
         formData.append("username", form.username);
@@ -48,25 +48,27 @@ function Signup() {
                 body: formData,
                 credentials: "include",
             });
+
+            const data = await response.json();
             
-            if (!response.ok) {
-                setError(data.message || "Signup failed");
+            if (response.status === 500) {
+                navigate("/error", { state: { message: data.message || "Signup failed" } });
                 return;
-            } else if (response.ok) {
-                const data = await response.json();
-                console.log("data", data);
-                setUser(data.user);
-                navigate("/login");
+            } else {
+                if (!response.ok && response.status !== 500) {
+                    setSignupError(data.message); 
+                    return;
+                }
             } 
+
+            setUser(data.user);
+            navigate("/login");
         } catch(err) {
-            setError("Something went wrong. Please try again.");
-            setLoading(false);
+            navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
+        } finally {
+            setSignupLoading(false);
         }
     };
-
-    if (loading) {
-        return <div>Loading, please wait...</div>;
-    }
 
     return (
         <div>
@@ -123,17 +125,6 @@ function Signup() {
                     />
                 </label>
                 <label>
-                    Enter your Role:{" "}
-                    <input
-                      type="text"
-                      name="role"
-                      placeholder="Enter ADMIN/USER/SPONSOR"
-                      value={form.role}
-                      onChange={handleChange}
-                      required 
-                    />
-                </label>
-                <label>
                     bio:{" "}
                     <input
                         type="text"
@@ -142,11 +133,11 @@ function Signup() {
                         onChange={handleChange}
                     />
                 </label>
-                <button type="submit" disabled={loading}>
-                    {loading ? "Logging in..." : "Sign Up"}
+                <button type="submit" disabled={signupLoading}>
+                    {signupLoading ? "loading..." : "Sign Up"}
                 </button>
             </form>
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            {singupError && <p style={{ color: "red" }}>{singupError}</p>}
         </div>
     );
 }

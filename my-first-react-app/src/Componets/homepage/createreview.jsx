@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-
+import { useAuth } from "../auth/authContext";
 
 function CreateReview() {
     const [form, setForm] = useState({
@@ -16,6 +16,9 @@ function CreateReview() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const { id } = useParams();
+    const { user } = useAuth();
+
+    // console.log("authUser", user);
     
     function handleChange(e) {
         const { name, value } = e.target;
@@ -45,8 +48,20 @@ function CreateReview() {
           setLoading(false);
           return;
         }
-    
-        console.log("review", data);
+        
+        const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/reviewpoint`, {
+            method: "POST",
+            credentials: "include",
+        });
+       
+        if (!socialResponse.ok) {
+            setError(socialData.message || "Something is wrong. Try again!");
+            return;
+        }  
+        
+        const socialData = await socialResponse.json();
+        
+        console.log("sociallll", socialData.message);
         alert( "Review created!");
         navigate(`/story/${id}`);
       } catch (err) {

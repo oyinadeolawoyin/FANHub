@@ -6,40 +6,57 @@ function ProfileCollections() {
   const [collections, setCollections] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-   const { id } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams()
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
-    useEffect(() => {
-        async function fetchCollections() {
-            setError("");
-            setLoading(true);
-            try {
-                const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}`, {
-                    method: "GET",
-                    credentials: "include",
-                });
-        
-                const data = await response.json();
-                console.log("data", data);
-                
-                if (!response.ok) {
-                    setError(data.message);
-                    return;
-                } 
-                setCollections(data.collections);
-                console.log("collect", collections);
-                
-            } catch(err) {
-                console.log("error", err);
-                alert("Something went wrong. Please try again.");
-            } finally{
-                setLoading(false);
-            }
-        };
-  
-        fetchCollections();
-      }, 
-    []);
+  useEffect(() => {
+      async function fetchCollections() {
+          setError("");
+          setLoading(true);
+          try {
+              const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}`, {
+                  method: "GET",
+                  credentials: "include",
+              });
+      
+              const data = await response.json();
+              console.log("data", data);
+              
+              if (!response.ok) {
+                  setError(data.message);
+                  return;
+              } 
+              setCollections(data.collections);
+              console.log("collect", collections);
+              
+          } catch(err) {
+              console.log("error", err);
+              alert("Something went wrong. Please try again.");
+          } finally{
+              setLoading(false);
+          }
+      };
+
+      fetchCollections();
+    }, 
+  []);
+
+
+  function handleSearch(e) {
+      e.preventDefault();
+      if (collections) {
+          console.log("collections",collections);
+          const results = collections.filter(c => c.name.toLowerCase() === search.toLowerCase());
+          setSearchResults(results);      
+      }
+  }
+
+  useEffect(() => {
+      if (search.trim() === "") {
+        setSearchResults([]);
+      }
+  }, [search]);
 
   async function addToLibrary(id) {
     // setError("");
@@ -68,6 +85,30 @@ function ProfileCollections() {
     // }
   }
 
+  return (
+    <div>
+      <form onSubmit={(e) => handleSearch(e, "story")}>
+        <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search stories by title..."
+        />
+        <button type="submit">Search Stories</button>
+      </form>
+      <Collections
+          collections={searchResults.length > 0 ? searchResults : collections}
+          loading={loading}
+          error={error}
+          addToLibrary={addToLibrary}
+      /> 
+
+    </div>
+  );
+}
+
+function Collections({ collections, addToLibrary, loading, error }) {
+  const navigate = useNavigate();
   return (
     <div>
       {collections && collections.length > 0 ? (
@@ -99,9 +140,8 @@ function ProfileCollections() {
               {error && <p style={{ color: "red" }}>{error}</p>}
           </div>
       )}
-
     </div>
-  );
+  )
 }
 
 export default ProfileCollections;

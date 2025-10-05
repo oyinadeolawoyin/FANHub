@@ -53,7 +53,18 @@ function CreateChapter() {
           const errData = await streakRes.json();
           console.warn("Streak update failed:", errData.message || "Unknown error");
         }
-    
+        
+        const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/writingpoint`, {
+          method: "POST",
+          credentials: "include",
+        });
+
+        const socialData = await socialResponse.json();
+        console.log("soc", socialData);
+        if (!socialResponse.ok) {
+            setError(socialData.message || "Something is wrong. Try again!");
+            return;
+        }   
         alert(data.message || "Chapter created!");
         navigate(`/dashboard/story/${id}`);
       } catch (err) {

@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { usePosts } from "./postContext";
+// import { usePosts } from "./postContext";
 
-function CreatePost() {
+function CreatePost({ onPostCreated }) {
     const [form, setForm] = useState({
         title: "",
         content: "",
@@ -10,9 +9,8 @@ function CreatePost() {
     });
     console.log("Uploading file:", form.file); 
     const [error, setError] = useState("");
-    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
-    const { posts, setPosts } = usePosts();
+    // const { posts, setPosts } = usePosts();
 
     const handleChange = (e) => {
       const { name, value, files } = e.target;
@@ -50,20 +48,26 @@ function CreatePost() {
                 return;
             }
             
-            setPosts(data.posts); 
-            console.log("posts", posts);
+            // setPosts(data.posts); 
+            // console.log("posts", posts);
             alert("created!")
-            navigate(`/dashboard`); 
+            
+            // 👇 Call back up to ProfilePosts to update UI immediately
+            if (onPostCreated) {
+              onPostCreated(data.posts);
+            }
+            
         } catch(err) {
             alert("Something went wrong. Please try again.");
-            setLoading(false);
+        } finally {
+          setLoading(false);
         }
     };
     
     
     return (
         <div>
-          <h2>Create chapter</h2>
+          <h2>Create Post</h2>
       
           {loading && <div>Loading, please wait...</div>}
           {error && <p style={{ color: "red" }}>{error}</p>}
@@ -99,7 +103,6 @@ function CreatePost() {
                   name="file"
                   accept="image/*"
                   onChange={handleChange}
-                  required
                 />
               </label>
               <button type="submit">Create</button>

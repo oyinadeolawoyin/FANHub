@@ -3,10 +3,12 @@ import Delete from "../delete/delete";
 import { useAuth } from "../auth/authContext";
 
 function Videos() {
+    const { user } = useAuth()
     const [videos, setVideos] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const { user } = useAuth()
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deletmessage, setDeletemessage] = useState("");
 
     useEffect(() => {
         if (!user || !user.id) return;
@@ -23,17 +25,20 @@ function Videos() {
 
                 const data = await response.json();
 
-                if (!response.ok) {
-                    setError(data.message || "Something is wrong. Try again!");
-                    console.log(data.message);
+                if (response.status === 500) {
+                    navigate("/error", { state: { message: data.message || "Process failed" } });
                     return;
-                }
-
-                console.log("Fetched videos:", data.videos); 
+                } else {
+                    if (!response.ok && response.status !== 500) {
+                        setError(data.message); 
+                        return;
+                    }
+                } 
+        
                 setVideos(data.videos);
 
             } catch (err) {
-                setError(err.message);
+                navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
             } finally {
                 setLoading(false);
             }
@@ -43,46 +48,55 @@ function Videos() {
     }, [user]);
 
     async function handleDeleteVideo(id) {
+        setDeleteLoading(true);
         try{
             const message = await Delete(`https://fanhub-server.onrender.com/api/gallery/videos/${id}`);
-            alert(message);
-            setVideos(prev => prev.filter(s => s.id !== id))
+            setDeletemessage(message);
+            setVideos(prev => prev.filter(s => Number(s.id) !== Number(id)))
         } catch(err) {
-            console.log("Failed to delete:", err.message);
-        } 
+            navigate("/error", { state: { message:  "Network error: Please check your internet connection." } });
+        } finally {
+            setDeleteLoading(false);
+        }
     }
 
     return (
         <div>
-            {loading && <p>loading.. please wait</p>}
-            {error && <p>{error}</p>}
-
-            { videos && (
-                videos.length > 0 ? (
-                    videos.map(video => (
-                        <div key={video.video.id}>
-                            <li>{video.video.uploadedAt} likes: {video.likes.length} comments: {video.comments.length} </li>
-                            <li>
-                                <video 
-                                    src={video.video.url} 
-                                    controls 
-                                    style={{ width: "200px" }} 
-                                />
-                            </li>
-                            <li>{video.video.caption}</li>
-                            <button
-                                onClick={() => {
-                                const confirmed = window.confirm("Are you sure you want to delete this video?");
-                                if (confirmed) {
-                                    handleDeleteVideo(video.video.id);
-                                }
-                                }}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                ))): (<p>No vidoe yet!</p>)
+            {loading ? (
+                <p>loading.. please wait</p>
+            ) : (
+                <div>
+                    {videos && (
+                        videos.length > 0 ? (
+                            videos.map(video => (
+                                <div key={video.video.id}>
+                                    <li>{video.video.uploadedAt} likes: {video.likes.length} comments: {video.comments.length} </li>
+                                    <li>
+                                        <video 
+                                            src={video.video.url} 
+                                            controls 
+                                            style={{ width: "200px" }} 
+                                        />
+                                    </li>
+                                    <li>{video.video.caption}</li>
+                                    <button type="submit" disabled={deleteLoading}
+                                        onClick={() => {
+                                        const confirmed = window.confirm("Are you sure you want to delete this video?");
+                                        if (confirmed) {
+                                            handleDeleteVideo(video.video.id);
+                                        }
+                                        }}
+                                    >
+                                        {deleteLoading ? "Loading..." : "Delete" || deletmessage !== "" && {deletmessage} }
+                                    </button>
+                                </div>
+                        ))): (
+                            <p>No vidoe yet!</p>
+                        )
+                    )}
+                </div>
             )}
+            {error && <p>{error}</p>}
         </div>
     );
 }

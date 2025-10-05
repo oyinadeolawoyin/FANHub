@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
 
 function HomeStoryPage() {
+    const { user } = useAuth();
     const { id } = useParams();
     const [story, setStory] = useState(null);
     const navigate = useNavigate();
@@ -103,10 +105,23 @@ function HomeStoryPage() {
             } 
             alert("liked!");
             if (data.like) {
-                setLikes(prev => prev.filter(like => like.userId !== data.like.userId));
+                setLikes(prev => prev.filter(like => like.userId !== data.userId));
             } else {
                 setLikes(prev => [...prev, data]);
-            }                     
+            }         
+            
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
              
         } catch(err) {
             console.log("error", err);
@@ -150,16 +165,49 @@ function HomeStoryPage() {
             const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${id}/chapters/${chapterId}/view`, {
             method: "POST",
             credentials: "include",
-            });
-
+            })
+            
             const data = await response.json();
             console.log("data", data);
-            
+
             if (!response.ok) {
                 setError(data.message);
                 return;
             } 
+        
+            const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${id}/social/readingpoint`, {
+                method: "POST",
+                credentials: "include",
+            });
+
+            const socialData = await socialResponse.json();
+            console.log("soc", socialData);   
             
+            // if (!socialResponse.ok) {
+            // const errorData = await socialResponse.json().catch(() => ({}));
+            // setError(errorData.message || "Something is wrong. Try again!");
+            // return;
+            // }
+
+            if (!socialResponse.ok) {
+                setError(data.message);
+                return;
+            } 
+            
+            const streakRes = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/readingStreak`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+            });
+            
+            const streakData = await streakRes.json();
+            console.log("streak", streakData);
+
+            if (!streakRes.ok) {
+                const errData = await streakRes.json();
+                console.warn("Streak update failed:", errData.message || "Unknown error");
+            }
+      
         } catch(err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");

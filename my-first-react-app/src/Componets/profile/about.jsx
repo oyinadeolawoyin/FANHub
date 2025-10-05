@@ -1,11 +1,51 @@
-import { useUser } from "./usersContext";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 function About() {
-    const { user } = useUser();
+    const { id } = useParams();
+    const [user, setUser] = useState(null);
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setLoading(true);
+        setError("");
+    
+        async function fetchUser() {
+            try {
+              const response = await fetch(`https://fanhub-server.onrender.com/api/users/${id}`, {
+                method: "GET",
+                credentials: "include",
+              });
+                
+              const data = await response.json();
+              console.log("mmmm", data);
+            //   console.log("uuuuuuu", user);
+      
+              if (!response.ok) {
+                  setError(data.message || "Something is wrong. Try again!");
+                  return;
+              }
+              
+              setUser(data.user);
+              
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchUser();
+    }, []);
+
     return (
         <div>
+            {error && <p>{error}</p>}
+            {loading && <p>Loading... please wait!</p>}
           <main>
             <div>
                 <p></p>
+                {user?.img && <img src={user?.img} style={{height: "100px", width: "100px"}}/>}
                 Bio: {user?.bio} <br />
                 Instagram: {user?.instagram || "No link yet"} <br />
                 Facebook: {user?.facebook || "No link yet"} <br />

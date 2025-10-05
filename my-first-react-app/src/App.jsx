@@ -19,7 +19,7 @@ const App = () => {
             <li><Link to={`profile/${user?.username}/${user?.id}`}>profile</Link></li>
             <li><Link to="dashboard">Dashboard</Link></li>
             <li><Link to={`library/${user?.id}`}>Library</Link></li>
-            <li><Link to="setting">Setting</Link></li>
+            <li><Link to={`settings/${user?.id}`}>Setting</Link></li>
             <li><Link to={`notification/${user?.id}`}>Notification</Link></li>
           </ul>
         </nav>

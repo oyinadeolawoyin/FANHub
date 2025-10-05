@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../auth/authContext";
+import Delete from "../delete/delete";
 
 function Reviews() {
+    const { user } = useAuth();
     const { id, name } = useParams();
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
@@ -63,21 +66,10 @@ function Reviews() {
                 return;
             }
 
-            // alert("Liked!");
             console.log("data like", data);
-            // setReviews(prev =>
-            //     prev.map(r =>
-            //       r.review.id === reviewId
-            //         ? { ...r, likes: [...r.likes, data.liked] } 
-            //         : r
-            //     )
-            // );   
-            
             setReviews(prev =>
                 prev.map(review => {
-                    if (review.review.id !== reviewId) return r;
-            
-                    // If server says it was unliked
+                    if (review.review.id !== reviewId) return review;
                     if (data.like) {
                         return {
                             ...review,
@@ -85,7 +77,6 @@ function Reviews() {
                         };
                     }
             
-                    // If server says it was liked
                     if (data.liked) {
                         return {
                             ...review,
@@ -96,11 +87,41 @@ function Reviews() {
                     return review;
                 })
             );
+
+            if (data.liked) {
+                const socialResponse = await fetch(`https://fanhub-server.onrender.com/api/users/${user.id}/social/likepoint`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+    
+                const socialData = await socialResponse.json();
+                if (!socialResponse.ok) {
+                    setError(socialData.message || "Something is wrong. Try again!");
+                    return;
+                }     
+            } 
             
         } catch (err) {
             console.log("error", err);
             alert("Something went wrong. Please try again.");
         }
+    }
+
+
+    async function handleDelete(reviewId) {
+        try{
+            const message = name === "stories"
+            ? await Delete(`https://fanhub-server.onrender.com/api/stories/${id}/reviews/${reviewId}`)
+            : await Delete(`https://fanhub-server.onrender.com/api/gallery/collections/${id}/reviews/${reviewId}`);   
+            
+            alert("delete message", message);
+            console.log("mess", message);
+            
+            setReviews(prev => prev.filter(s => s.id !== Number(reviewId)))
+            
+        } catch(err) {
+            console.log("Failed to delete:", err.message);
+        } 
     }
 
     return (
@@ -130,6 +151,16 @@ function Reviews() {
                                 ❤️ {review.likes.length} {review.likes.length === 1 ? "Like" : "Likes"}
                             </button>
                         </li>
+                        <button
+                            onClick={() => {
+                                const confirmed = window.confirm("Are you sure you want to delete this chapter?");
+                                if (confirmed) {
+                                handleDelete(review.review.id);
+                                }
+                            }}
+                        >
+                            Delete
+                        </button>
                     </div>
                 ))
             ) : (
