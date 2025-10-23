@@ -1,0 +1,16 @@
+export const warnings = [
+    "Violence",
+    "Gore / Graphic Descriptions",
+    "Death / Loss",
+    "Abuse (Physical / Emotional)",
+    "Sexual Content",
+    "Strong Language / Profanity",
+    "Drug or Alcohol Use",
+    "Mental Health / Depression / Suicide",
+    "Discrimination / Racism / Sexism",
+    "Self-harm",
+    "Horror / Frightening Scenes",
+    "Sensitive Religious Themes",
+    "War / Torture",
+    "Child Abuse / Neglect",
+];  
