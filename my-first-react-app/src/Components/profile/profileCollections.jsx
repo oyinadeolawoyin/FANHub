@@ -1,9 +1,15 @@
+// ============================================
+// PROFILE COLLECTIONS.JSX - Updated (Lucide + Responsive Search)
+// ============================================
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Search, Heart, Star, BookOpen, X, Eye } from "lucide-react"; // ✅ Lucide icons
 
 function ProfileCollections() {
-  const { id } = useParams()
+  const { id } = useParams();
   const navigate = useNavigate();
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,182 +17,243 @@ function ProfileCollections() {
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [libraryLoading, setLibraryLoading] = useState(false);
-  const [libraryStatus, setLibraryStatus] = useState({}); 
+  const [libraryStatus, setLibraryStatus] = useState({});
 
   useEffect(() => {
-      async function fetchCollections() {
-          setError("");
-          setLoading(true);
-          try {
-              const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collections/${id}`, {
-                  method: "GET",
-                  credentials: "include",
-              });
-      
-              const data = await response.json();
-              
-              if (response.status === 500) {
-                navigate("/error", { state: { message: data.message || "Process failed" } });
-                return;
-              } else {
-                  if (!response.ok && response.status !== 500) {
-                      setError(data.message); 
-                      return;
-                  }
-              } 
-
-              setCollections(data.collections);
-
-              //Build an object for stories already in library
-              const statusMap = {};
-              data.collections.forEach((collection) => {
-                statusMap[collection.id] = collection.readinglist?.length > 0; // true if in library
-              });
-
-              //Update library status state
-              setLibraryStatus((prev) => ({
-                ...prev,
-                ...statusMap,
-              }));
-              
-          }  catch (err) {
-            navigate("/error", {
-              state: { message: "Network error: Please check your internet connection." },
-            });
-          } finally {
-            setLoading(false);
+    async function fetchCollections() {
+      setError("");
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `https://fanhub-server.onrender.com/api/gallery/collections/${id}/published`,
+          {
+            method: "GET",
+            credentials: "include",
           }
-      };
+        );
 
-      fetchCollections();
-    }, 
-  [id]);
+        const data = await response.json();
 
+        if (response.status === 500) {
+          navigate("/error", {
+            state: { message: data.message || "Process failed" },
+          });
+          return;
+        } else if (!response.ok && response.status !== 500) {
+          setError(data.message);
+          return;
+        }
 
-  function handleSearch(e) {
-      e.preventDefault();
-      if (collections) {
-          const results = collections.filter(c => c.name.toLowerCase() === search.toLowerCase());
-          setSearchResults(results);      
+        setCollections(data.collections);
+
+        const statusMap = {};
+        data.collections.forEach((collection) => {
+          statusMap[collection.id] = collection.library.length > 0;
+        });
+        setLibraryStatus((prev) => ({ ...prev, ...statusMap }));
+      } catch (err) {
+        navigate("/error", {
+          state: { message: err.message },
+        });
+      } finally {
+        setLoading(false);
       }
+    }
+
+    fetchCollections();
+  }, [id, navigate]);
+
+  // 🔍 Search handler
+  function handleSearch(e) {
+    e.preventDefault();
+    if (collections) {
+      const results = collections.filter((c) =>
+        c.name.toLowerCase().includes(search.toLowerCase())
+      );
+      setSearchResults(results);
+    }
   }
 
   useEffect(() => {
-      if (search.trim() === "") {
-        setSearchResults([]);
-      }
+    if (search.trim() === "") setSearchResults([]);
   }, [search]);
 
   async function addToLibrary(id) {
     setError("");
     setLibraryLoading(true);
-    
+
     try {
-      const response = await fetch(`https://fanhub-server.onrender.com/api/gallery/collection/${id}/readinglist`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `https://fanhub-server.onrender.com/api/gallery/collection/${id}/readinglist`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
 
       if (response.status === 500) {
-        navigate("/error", { state: { message: data.message || "Process failed" } });
+        navigate("/error", {
+          state: { message: data.message || "Process failed" },
+        });
         return;
-      } else {
-          if (!response.ok && response.status !== 500) {
-              setError(data.message); 
-              return;
-          }
-      } 
-        
+      } else if (!response.ok && response.status !== 500) {
+        setError(data.message);
+        return;
+      }
+
       setLibraryStatus((prev) => ({
         ...prev,
-        [id]: !prev[id], // switch between true and false
+        [id]: !prev[id],
       }));
-
-    }  catch (err) {
+    } catch (err) {
       navigate("/error", {
-        state: { message: "Network error: Please check your internet connection." },
+        state: { message: err.message },
       });
     } finally {
       setLibraryLoading(false);
     }
   }
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]" role="status">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading collections...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {loading ? (<p>Loading... please wait</p>):(
-        <div>
-          <form onSubmit={(e) => handleSearch(e, "story")}>
-            <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search stories by title..."
-            />
-            <button type="submit">Search Stories</button>
-          </form>
-          <Collections
-              collections={searchResults.length > 0 ? searchResults : collections}
-              loading={loading}
-              addToLibrary={addToLibrary}
-              libraryLoading={libraryLoading}
-              libraryStatus={libraryStatus}
-          /> 
+    <div className="space-y-6">
+      {/* 🔍 Search bar with icon */}
+      <form onSubmit={handleSearch} className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search..."
+            className="pl-10 text-sm sm:text-base"
+            aria-label="Search collections"
+          />
+          <Search
+            onClick={handleSearch}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer w-5 h-5"
+          />
+        </div>
+      </form>
+
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive rounded-lg" role="alert">
+          <p className="text-destructive font-medium">{error}</p>
         </div>
       )}
-      {error && <p style={{ color: "red" }}>{error}</p>}  
+
+      <Collections
+        collections={searchResults.length > 0 ? searchResults : collections}
+        loading={loading}
+        addToLibrary={addToLibrary}
+        libraryLoading={libraryLoading}
+        libraryStatus={libraryStatus}
+      />
     </div>
   );
 }
 
-
-function Collections({
-  collections,
-  addToLibrary,
-  libraryStatus,
-  libraryLoading,
-}) {
+// ==================== Collections ====================
+function Collections({ collections, addToLibrary, libraryStatus, libraryLoading }) {
   const navigate = useNavigate();
+
+  if (collections.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground text-lg">No collections found</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      {collections.length > 0 ? (
-        <ul>
-          {collections.map((collection) => (
-            <div key={collection.id}>
-              <li>
-                <img style={{ width: "200px" }} src={collection.img} />
-              </li>
-              <li>{collection.name}</li>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {collections.map((collection) => (
+        <Card
+          key={collection.id}
+          className="overflow-hidden hover:shadow-xl transition-all group"
+          onClick={() => navigate(`/gallery/${collection.id}`)}
+        >
+          <div
+            className="relative cursor-pointer"
+            role="button"
+            tabIndex="0"
+            aria-label={`View collection: ${collection.name}`}
+          >
+            <img
+              src={collection.img}
+              alt={collection.name}
+              className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
 
-              <button
-                disabled={libraryLoading}
-                onClick={() => addToLibrary(collection.id)}
-              >
-                {libraryLoading
-                  ? "Loading..."
-                  : libraryStatus[collection.id]
-                  ? "❌ Remove from Library"
-                  : "📚 Add to Library"}
-              </button>
+          <CardContent className="p-4 space-y-3">
+            <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-primary transition-colors">
+              {collection.name}
+            </h3>
 
-              <li>{collection.description}</li>
-              <li>{collection.tags}</li>
-              <li>{collection.status}</li>
-              <li>{collection.likes.length} likes</li>
-              <li>{collection.review.length} reviews</li>
-              <li>
-                {collection.images.length + collection.videos.length} medias
-              </li>
-              <button onClick={() => navigate(`/gallery/${collection.id}`)}>
-                View
-              </button>
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {collection.description}
+            </p>
+
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="px-2 py-1 bg-primary/10 text-primary rounded">
+                {collection.primarygenre}
+              </span>
+              {collection.secondarygenre && (
+                <span className="px-2 py-1 bg-accent/10 text-primary rounded">
+                  {collection.secondarygenre}
+                </span>
+              )}
+              <span className="px-2 py-1 bg-primary/10 text-secondary-foreground rounded">
+                {collection.status}
+              </span>
             </div>
-          ))}
-        </ul>
-      ) : (
-        <div>
-          <p>No collection!</p>
-        </div>
-      )}
+
+            {/* Stats icons */}
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <Eye className="w-4 h-4 text-blue-500" /> {collection._count.views}
+              </span>
+              <span className="flex items-center gap-1">
+                <Heart className="w-4 h-4 text-red-500" /> {collection._count.likes}
+              </span>
+              <span className="flex items-center gap-1">
+                <Star className="w-4 h-4 text-yellow-500" /> {collection._count.review}
+              </span>
+            </div>
+
+            <Button
+              disabled={libraryLoading}
+              onClick={() => addToLibrary(collection.id)}
+              className="w-full"
+            >
+              {libraryLoading ? (
+                "Loading..."
+              ) : libraryStatus[collection.id] ? (
+                <>
+                  Remove from Library
+                </>
+              ) : (
+                <>
+                  Add to Library
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   );
 }

@@ -1,0 +1,1548 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* === THE VOICES – BLACK & BLUE THEME === */
+@layer base {
+  :root {
+    /* --- Light Mode: Clean & Minimal --- */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 210 90% 56%; /* Vivid blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 85% 60%; /* Blue accent */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 210 90% 56%;
+    --radius: 0.6rem;
+
+    /* Light Palette */
+    --background-color: #f9fafb;
+    --foreground-color: #1e293b;
+    --card-bg: #f9fafb;
+    --card-text: #1e293b;
+    --header-bg: #f9fafb;
+    --header-text: #1e293b;
+    --button-bg: #2563eb;
+    --button-text: #ffffff;
+    --border-color: #e2e8f0;
+    --hover-bg: #dbeafe;
+    --accent-color: #3b82f6;
+    --secondary-text: #64748b;
+    --creative-gradient: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
+    --input-bg: #f8fafc;
+    --input-text: #1e293b;
+  }
+
+  .dark {
+    /* --- Dark Mode: Deep Navy & Blue Accents --- */
+    --background: 225 25% 12%; /* slightly lighter than black */
+    --foreground: 210 40% 98%;
+    --card: 225 25% 15%;
+    --card-foreground: 210 40% 98%;
+    --popover: 225 25% 15%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 90% 56%;
+    --primary-foreground: 225 25% 12%;
+    --secondary: 225 25% 18%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 225 25% 18%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 210 85% 60%;
+    --accent-foreground: 210 40% 98%;
+    --border: 225 25% 18%;
+    --input: 225 25% 18%;
+    --ring: 210 90% 56%;
+
+    /* Dark Palette */
+    --background-color: #0f1a2d; /* dark navy-blue */
+    --foreground-color: #f8fafc;
+    --card-bg: #141d33;  
+    --dropdown-border: #2563eb;
+    --card-text: #f8fafc;
+    --header-bg: #0f1a2d;
+    --header-text: #f8fafc;
+    --button-bg: #2563eb;
+    --button-text: #ffffff;
+    --border-color: #1e2a44;
+    --accent-color: #3b82f6;
+    --secondary-text: #94a3b8;
+    --creative-gradient: linear-gradient(135deg, #2563eb, #3b82f6, #60a5fa);
+    --input-bg: #1e2a44;
+    --input-text: #f8fafc;
+  }
+}
+
+/* === BASE STYLING === */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    background-color: var(--background-color);
+    color: var(--foreground-color);
+    transition: background-color 0.6s ease, color 0.6s ease;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  p, article, .prose {
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    font-weight: 600;
+  }
+}
+
+/* === COMPONENTS === */
+@layer components {
+  .card {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    border: 1px solid var(--border-color);
+    @apply rounded-2xl shadow-sm p-5 transition-all duration-500;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.25);
+    transform: translateY(-3px);
+  }
+
+  .header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    border-bottom: 1px solid var(--border-color);
+    @apply w-full py-4 px-6 font-semibold transition-all duration-500;
+    backdrop-filter: blur(12px);
+  }
+
+  .btn {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-300;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+    background-image: linear-gradient(135deg, #2563eb, #3b82f6);
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.35);
+    background-image: linear-gradient(135deg, #3b82f6, #60a5fa);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
+  }
+
+  /* Scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+  }
+
+  /* === FORM STYLING === */
+  /* Shadcn Select Theming */
+  .themed-select-trigger {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--input-text) !important;
+  }
+
+  .themed-select-trigger:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.3) !important;
+  }
+
+  .themed-select-trigger [data-placeholder] {
+    color: var(--secondary-text) !important;
+  }
+
+  .themed-select-trigger span {
+    color: var(--input-text) !important;
+  }
+
+  .themed-select-content {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+    color: var(--foreground-color) !important;
+  }
+
+  .themed-select-item {
+    color: var(--foreground-color) !important;
+  }
+
+  .themed-select-item:hover {
+    background-color: rgba(37, 99, 235, 0.1) !important;
+  }
+
+  .themed-select-item[data-state="checked"] {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+  }
+
+  /* Image Upload Styles */
+  .image-upload-label {
+    border-color: var(--border-color);
+    background-color: rgba(37, 99, 235, 0.02);
+  }
+
+  .image-upload-label:hover {
+    border-color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.05);
+  }
+
+  .upload-icon-wrapper {
+    background-color: rgba(37, 99, 235, 0.15);
+  }
+
+  .upload-icon {
+    color: #2563eb;
+  }
+
+  /* Video Upload Styles */
+  .video-upload-label {
+    border-color: var(--border-color);
+    background-color: rgba(239, 68, 68, 0.02);
+  }
+
+  .video-upload-label:hover {
+    border-color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.05);
+  }
+
+  .video-icon-wrapper {
+    background-color: rgba(239, 68, 68, 0.15);
+  }
+
+  .video-icon {
+    color: #ef4444;
+  }
+
+  /* Form Card Styles */
+  .form-card-wrapper {
+    border-color: var(--border-color);
+    background-color: var(--card-bg);
+  }
+
+  .form-card-header {
+    border-color: var(--border-color);
+  }
+
+  .form-card-icon {
+    background-color: rgba(37, 99, 235, 0.1);
+  }
+
+  .icon-primary {
+    color: #2563eb;
+  }
+
+  /* Genre Select Wrapper */
+  .genre-select-wrapper {
+    border-color: var(--border-color);
+    background-color: rgba(37, 99, 235, 0.02);
+  }
+}
+
+/* === UTILITIES === */
+@layer utilities {
+  .text-theme {
+    color: var(--foreground-color);
+  }
+
+  .text-secondary {
+    color: var(--secondary-text);
+  }
+
+  .bg-theme {
+    background-color: var(--background-color);
+  }
+
+  .bg-card-theme {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+  }
+
+  .border-theme {
+    border-color: var(--border-color);
+  }
+
+  .hover-theme:hover {
+    background-color: rgba(37, 99, 235, 0.1);
+  }
+
+  .gradient-text {
+    background: var(--creative-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* General input style for both themes */
+input, textarea, select {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+  background-color: var(--input-bg);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset !important;
+  -webkit-text-fill-color: var(--input-text) !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Make sure select options have proper colors */
+select option {
+  background-color: var(--card-bg);
+  color: var(--foreground-color);
+}
+
+/* === ANIMATIONS === */
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Comment/Reply Like Button Animation */
+@keyframes ping-once {
+  0% { 
+    transform: scale(1); 
+  }
+  50% { 
+    transform: scale(1.3); 
+  }
+  100% { 
+    transform: scale(1); 
+  }
+}
+
+/* Utility classes for animations */
+.animate-spin-slow { 
+  animation: spin-slow 10s linear infinite; 
+}
+
+.animate-fadeIn { 
+  animation: fadeIn 0.3s ease-out; 
+}
+
+.animate-ping-once { 
+  animation: ping-once 0.4s ease-in-out; 
+}
+
+/* === MODAL ACTION BUTTONS === */
+/* Add these styles to your index.css file */
+
+/* Base Modal Action Button */
+.modal-action-btn {
+  position: relative;
+  padding: 0.75rem 1.25rem !important;
+  border-radius: 9999px !important;
+  background: transparent !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden;
+}
+
+.modal-action-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: -1;
+}
+
+.modal-action-btn:hover::before {
+  opacity: 0.08;
+  transform: scale(1);
+}
+
+.modal-action-btn:active {
+  transform: scale(0.95);
+}
+
+/* Icon Animation */
+.icon-animate {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-action-btn:hover .icon-animate {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.modal-action-btn:active .icon-animate {
+  transform: scale(0.9);
+}
+
+/* Comment Button */
+.comment-btn {
+  color: var(--secondary-text);
+}
+
+.comment-btn:hover {
+  color: #3b82f6 !important;
+  background: transparent !important;
+}
+
+.comment-btn::before {
+  background: #3b82f6;
+}
+
+/* Like Button */
+.like-btn {
+  color: var(--secondary-text);
+}
+
+.like-btn:hover {
+  color: #ef4444 !important;
+  background: transparent !important;
+}
+
+.like-btn.liked {
+  color: #ef4444 !important;
+}
+
+.like-btn::before {
+  background: #ef4444;
+}
+
+.like-btn.liked .icon-animate {
+  animation: heartbeat 0.6s ease-in-out;
+}
+
+/* Bookmark Button */
+.bookmark-btn {
+  color: var(--secondary-text);
+}
+
+.bookmark-btn:hover {
+  color: #f59e0b !important;
+  background: transparent !important;
+}
+
+.bookmark-btn.bookmarked {
+  color: #f59e0b !important;
+}
+
+.bookmark-btn::before {
+  background: #f59e0b;
+}
+
+.bookmark-btn.bookmarked .icon-animate {
+  animation: bookmarkSave 0.5s ease-in-out;
+}
+
+/* Ripple Effect on Click */
+.modal-action-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.modal-action-btn:active::after {
+  animation: ripple 0.6s ease-out;
+}
+
+/* === KEYFRAME ANIMATIONS === */
+
+/* Heartbeat Animation for Like */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.2); }
+  60% { transform: scale(1); }
+}
+
+/* Bookmark Save Animation */
+@keyframes bookmarkSave {
+  0% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1;
+  }
+  50% { 
+    transform: translateY(-8px) scale(1.2); 
+    opacity: 0.8;
+  }
+  100% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1;
+  }
+}
+
+/* Ripple Effect */
+@keyframes ripple {
+  0% {
+    opacity: 0.3;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.5);
+  }
+}
+
+/* Pulse Glow Effect */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px 5px currentColor;
+  }
+}
+
+/* Enhanced Ping Animation */
+@keyframes ping-once {
+  0% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.4); 
+    opacity: 0.8;
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+}
+
+/* Bounce Animation */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Rotate Shake */
+@keyframes rotateShake {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg); }
+  75% { transform: rotate(10deg); }
+  100% { transform: rotate(0deg); }
+}
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* === HOVER SHINE EFFECT === */
+.modal-action-btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.modal-action-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.modal-action-btn:hover::after {
+  width: 300px;
+  height: 300px;
+}
+
+/* === LOADING STATE === */
+.modal-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.modal-action-btn:disabled .icon-animate {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* === MOBILE TOUCH OPTIMIZATION === */
+@media (max-width: 768px) {
+  .modal-action-btn {
+    padding: 0.875rem 1.5rem !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .modal-action-btn:active {
+    transform: scale(0.9);
+  }
+}
+
+/* === DARK MODE ENHANCEMENTS === */
+.dark .modal-action-btn::before {
+  opacity: 0;
+}
+
+.dark .modal-action-btn:hover::before {
+  opacity: 0.12;
+}
+
+/* === ACCESSIBILITY === */
+.modal-action-btn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* === ENHANCED ACTION BUTTONS WITH ANIMATIONS === */
+
+/* Base Action Button Styles */
+.action-btn {
+  position: relative;
+  padding: 0.5rem 1rem !important;
+  border-radius: 9999px !important;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: visible;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid transparent;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+/* Comment Button */
+.action-btn.comment {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.action-btn.comment:hover {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.action-btn.comment:hover .icon-animate {
+  animation: bounce 0.5s ease-in-out;
+}
+
+/* Like Button - Not Liked State */
+.action-btn.like {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.action-btn.like:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Like Button - Liked State */
+.action-btn.like.liked {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border-color: #ef4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.action-btn.like.liked:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.5);
+}
+
+.action-btn.like.liked .icon-animate {
+  animation: heartbeat 0.6s ease-in-out;
+}
+
+/* Library/Bookmark Button - Not Saved State */
+.action-btn.library {
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.action-btn.library:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Library/Bookmark Button - Saved State */
+.action-btn.library.saved {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  border-color: #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.action-btn.library.saved:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  box-shadow: 0 6px 16px rgba(245, 158, 11, 0.5);
+}
+
+.action-btn.library.saved .icon-animate {
+  animation: bookmarkSave 0.5s ease-in-out;
+}
+
+/* Success Toast Animation */
+@keyframes successToast {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.action-btn.success-flash {
+  animation: successToast 0.4s ease-out;
+}
+
+/* Icon Animations */
+.icon-animate {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover .icon-animate {
+  transform: scale(1.1);
+}
+
+.action-btn:active .icon-animate {
+  transform: scale(0.9);
+}
+
+/* Pulse Animation for Active State */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.action-btn.liked::before,
+.action-btn.saved::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0;
+  animation: pulse-ring 0.6s ease-out;
+}
+
+/* Sparkle Effect on Click */
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+.sparkle {
+  position: absolute;
+  pointer-events: none;
+  animation: sparkle 0.6s ease-out;
+}
+
+/* Count Number Animation */
+.count-number {
+  display: inline-block;
+  min-width: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.action-btn.liked .count-number,
+.action-btn.saved .count-number {
+  animation: countUp 0.3s ease-out;
+}
+
+@keyframes countUp {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Tooltip on Hover */
+.action-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.action-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Disabled State */
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.action-btn:disabled .icon-animate {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading Spinner */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.action-btn.loading .icon-animate {
+  animation: spin 1s linear infinite;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .action-btn {
+    padding: 0.625rem 1.25rem !important;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .action-btn::after {
+    display: none; /* Hide tooltips on mobile */
+  }
+}
+
+/* Dark Mode Adjustments */
+.dark .action-btn::after {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+}
+
+/* Accessibility - Focus Visible */
+.action-btn:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* === KEYFRAME ANIMATIONS === */
+
+/* Heartbeat for Like */
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.2); }
+  60% { transform: scale(1); }
+}
+
+/* Bookmark Save */
+@keyframes bookmarkSave {
+  0% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1;
+  }
+  50% { 
+    transform: translateY(-8px) scale(1.2); 
+    opacity: 0.8;
+  }
+  100% { 
+    transform: translateY(0) scale(1); 
+    opacity: 1;
+  }
+}
+
+/* Bounce for Comment */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Pulse for Loading */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Add these styles to your index.css file for beautiful Quill content display */
+
+/* === QUILL CHAPTER CONTENT STYLING === */
+
+.chapter-content {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.chapter-content .ql-editor {
+  padding: 0 !important;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--foreground-color);
+}
+
+/* Paragraphs */
+.chapter-content .ql-editor p {
+  margin-bottom: 1.5rem;
+  text-align: justify;
+  text-indent: 2rem; /* First line indent for novel-like appearance */
+}
+
+.chapter-content .ql-editor p:first-of-type {
+  text-indent: 0; /* No indent for first paragraph */
+}
+
+/* Headings */
+.chapter-content .ql-editor h1,
+.chapter-content .ql-editor h2,
+.chapter-content .ql-editor h3 {
+  font-family: inherit;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+  color: var(--foreground-color);
+  text-indent: 0;
+}
+
+.chapter-content .ql-editor h1 {
+  font-size: 2rem;
+}
+
+.chapter-content .ql-editor h2 {
+  font-size: 1.75rem;
+}
+
+.chapter-content .ql-editor h3 {
+  font-size: 1.5rem;
+}
+
+/* Text Formatting */
+.chapter-content .ql-editor strong {
+  font-weight: 700;
+  color: var(--foreground-color);
+}
+
+.chapter-content .ql-editor em {
+  font-style: italic;
+  color: var(--foreground-color);
+}
+
+.chapter-content .ql-editor u {
+  text-decoration: underline;
+}
+
+.chapter-content .ql-editor s {
+  text-decoration: line-through;
+}
+
+/* Links */
+.chapter-content .ql-editor a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  transition: all 0.2s ease;
+}
+
+.chapter-content .ql-editor a:hover {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+/* Lists */
+.chapter-content .ql-editor ul,
+.chapter-content .ql-editor ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+}
+
+.chapter-content .ql-editor ul li,
+.chapter-content .ql-editor ol li {
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  text-indent: 0;
+}
+
+.chapter-content .ql-editor ul li {
+  list-style-type: disc;
+}
+
+.chapter-content .ql-editor ol li {
+  list-style-type: decimal;
+}
+
+/* Nested Lists */
+.chapter-content .ql-editor ul ul,
+.chapter-content .ql-editor ol ol {
+  margin: 0.5rem 0;
+}
+
+/* Blockquotes */
+.chapter-content .ql-editor blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: var(--secondary-text);
+  background-color: rgba(37, 99, 235, 0.05);
+  padding: 1rem 1.5rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  text-indent: 0;
+}
+
+/* Code Blocks */
+.chapter-content .ql-editor pre {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+  margin: 2rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.chapter-content .ql-editor code {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: var(--foreground-color);
+}
+
+/* Images */
+.chapter-content .ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 2rem auto;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Videos */
+.chapter-content .ql-editor .ql-video {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16/9;
+  border-radius: 0.75rem;
+  margin: 2rem auto;
+  display: block;
+}
+
+/* Horizontal Rules */
+.chapter-content .ql-editor hr {
+  border: none;
+  border-top: 2px solid var(--border-color);
+  margin: 3rem 0;
+}
+
+/* Text Alignment */
+.chapter-content .ql-editor .ql-align-center {
+  text-align: center;
+  text-indent: 0;
+}
+
+.chapter-content .ql-editor .ql-align-right {
+  text-align: right;
+  text-indent: 0;
+}
+
+.chapter-content .ql-editor .ql-align-justify {
+  text-align: justify;
+}
+
+/* Text Indentation */
+.chapter-content .ql-editor .ql-indent-1 {
+  padding-left: 3rem;
+}
+
+.chapter-content .ql-editor .ql-indent-2 {
+  padding-left: 6rem;
+}
+
+.chapter-content .ql-editor .ql-indent-3 {
+  padding-left: 9rem;
+}
+
+/* Font Sizes */
+.chapter-content .ql-editor .ql-size-small {
+  font-size: 0.875rem;
+}
+
+.chapter-content .ql-editor .ql-size-large {
+  font-size: 1.5rem;
+}
+
+.chapter-content .ql-editor .ql-size-huge {
+  font-size: 2rem;
+}
+
+/* Colors */
+.chapter-content .ql-editor .ql-color-white {
+  color: #ffffff;
+}
+
+.chapter-content .ql-editor .ql-color-black {
+  color: #000000;
+}
+
+.chapter-content .ql-editor .ql-color-red {
+  color: #ef4444;
+}
+
+.chapter-content .ql-editor .ql-color-blue {
+  color: #3b82f6;
+}
+
+.chapter-content .ql-editor .ql-color-green {
+  color: #10b981;
+}
+
+.chapter-content .ql-editor .ql-color-yellow {
+  color: #f59e0b;
+}
+
+.chapter-content .ql-editor .ql-color-purple {
+  color: #8b5cf6;
+}
+
+/* Background Colors */
+.chapter-content .ql-editor .ql-bg-white {
+  background-color: #ffffff;
+}
+
+.chapter-content .ql-editor .ql-bg-black {
+  background-color: #000000;
+}
+
+.chapter-content .ql-editor .ql-bg-red {
+  background-color: #ef4444;
+}
+
+.chapter-content .ql-editor .ql-bg-blue {
+  background-color: #3b82f6;
+}
+
+/* Font Families */
+.chapter-content .ql-editor .ql-font-serif {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.chapter-content .ql-editor .ql-font-monospace {
+  font-family: 'Courier New', monospace;
+}
+
+/* === RESPONSIVE DESIGN === */
+
+@media (max-width: 768px) {
+  .chapter-content .ql-editor {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .chapter-content .ql-editor p {
+    text-indent: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .chapter-content .ql-editor h1 {
+    font-size: 1.75rem;
+  }
+
+  .chapter-content .ql-editor h2 {
+    font-size: 1.5rem;
+  }
+
+  .chapter-content .ql-editor h3 {
+    font-size: 1.25rem;
+  }
+
+  .chapter-content .ql-editor blockquote {
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .chapter-content .ql-editor .ql-indent-1 {
+    padding-left: 2rem;
+  }
+
+  .chapter-content .ql-editor .ql-indent-2 {
+    padding-left: 4rem;
+  }
+
+  .chapter-content .ql-editor .ql-indent-3 {
+    padding-left: 6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .chapter-content .ql-editor {
+    font-size: 0.95rem;
+  }
+
+  .chapter-content .ql-editor p {
+    text-indent: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .chapter-content .ql-editor h1 {
+    font-size: 1.5rem;
+  }
+
+  .chapter-content .ql-editor h2 {
+    font-size: 1.25rem;
+  }
+
+  .chapter-content .ql-editor h3 {
+    font-size: 1.125rem;
+  }
+}
+
+/* === DARK MODE ADJUSTMENTS === */
+
+.dark .chapter-content .ql-editor {
+  color: var(--foreground-color);
+}
+
+.dark .chapter-content .ql-editor h1,
+.dark .chapter-content .ql-editor h2,
+.dark .chapter-content .ql-editor h3 {
+  color: var(--foreground-color);
+}
+
+.dark .chapter-content .ql-editor blockquote {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: var(--secondary-text);
+}
+
+.dark .chapter-content .ql-editor pre {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.dark .chapter-content .ql-editor code {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+/* === SELECTION STYLING === */
+
+.chapter-content .ql-editor ::selection {
+  background-color: rgba(37, 99, 235, 0.3);
+  color: var(--foreground-color);
+}
+
+.dark .chapter-content .ql-editor ::selection {
+  background-color: rgba(59, 130, 246, 0.4);
+  color: var(--foreground-color);
+}
+
+/* === READING FOCUS MODE === */
+
+.chapter-content.reading-focus .ql-editor {
+  max-width: 42rem;
+  margin: 0 auto;
+  font-size: 1.25rem;
+  line-height: 1.9;
+}
+
+/* === PRINT STYLES === */
+
+@media print {
+  .chapter-content .ql-editor {
+    font-size: 12pt;
+    line-height: 1.6;
+    color: #000000;
+  }
+
+  .chapter-content .ql-editor p {
+    margin-bottom: 1rem;
+  }
+
+  .chapter-content .ql-editor a {
+    color: #000000;
+    text-decoration: underline;
+  }
+
+  .chapter-content .ql-editor img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Add these styles to your global CSS or library.css */
+
+/* Tweet Content Styling for Quill HTML */
+.tweet-content {
+  /* Reset Quill default styles that might interfere */
+  font-family: inherit;
+  line-height: 1.6;
+}
+
+.tweet-content p {
+  margin-bottom: 0.5rem;
+}
+
+.tweet-content strong {
+  font-weight: 600;
+}
+
+.tweet-content em {
+  font-style: italic;
+}
+
+.tweet-content u {
+  text-decoration: underline;
+}
+
+.tweet-content s {
+  text-decoration: line-through;
+}
+
+.tweet-content h1,
+.tweet-content h2,
+.tweet-content h3 {
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.tweet-content h1 {
+  font-size: 1.25rem;
+}
+
+.tweet-content h2 {
+  font-size: 1.125rem;
+}
+
+.tweet-content h3 {
+  font-size: 1rem;
+}
+
+.tweet-content ul,
+.tweet-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.tweet-content ul {
+  list-style-type: disc;
+}
+
+.tweet-content ol {
+  list-style-type: decimal;
+}
+
+.tweet-content li {
+  margin-bottom: 0.25rem;
+}
+
+.tweet-content blockquote {
+  border-left: 3px solid rgba(37, 99, 235, 0.5);
+  padding-left: 1rem;
+  margin-left: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.tweet-content code {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-size: 0.875em;
+}
+
+.dark .tweet-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tweet-content pre {
+  background-color: rgba(0, 0, 0, 0.05);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+
+.dark .tweet-content pre {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tweet-content a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.tweet-content a:hover {
+  color: #1d4ed8;
+}
+
+/* Line clamp for preview */
+.tweet-content.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Video play button triangle */
+.tweet-content + .border-l-12 {
+  border-left-width: 12px;
+}
+
+/* Ensure images in content don't break layout */
+.tweet-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+/* Hide empty paragraphs from Quill */
+.tweet-content p:empty {
+  display: none;
+}
+
+.tweet-content [style*="background-color"] {
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}

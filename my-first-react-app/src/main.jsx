@@ -19,6 +19,8 @@ import Resetpassword from './Components/auth/resetpassword.jsx';
 import Errorpage from './Components/error/error.jsx';
 import Homestories from './Components/homepage/stories.jsx';
 import Homecollections from './Components/homepage/collections.jsx';
+import HomeRecommendationPage from './Components/homepage/recommedation.jsx';
+import SingleReview from './Components/homepage/reviewPage.jsx';
 
 import Createstory from './Components/story/createStory.jsx';
 import Stories from './Components/story/stories.jsx';
@@ -35,6 +37,8 @@ import UploadImage from './Components/gallery/createImage.jsx';
 import Images from './Components/gallery/images.jsx';
 import UploadVideo from './Components/gallery/createVideo.jsx';
 import Videos from './Components/gallery/videos.jsx';
+import RecommendationListPage from './Components/recommendationList/recommendationList.jsx';
+import RecommendationPage from './Components/recommendationList/recommendationPage.jsx';
 
 import About from './Components/profile/about.jsx';
 import ProfileStories from './Components/profile/profileStories.jsx';
@@ -44,6 +48,7 @@ import ProfilePosts from './Components/profile/profilePosts.jsx';
 import Follower from './Components/profile/followers.jsx';
 import Following from './Components/profile/following.jsx';
 import UserTweets from './Components/profile/userTweets.jsx';
+import ProfileRecommendationPage from './Components/profile/recommendation.jsx';
 
 import HomeStoryPage from './Components/homepage/storypage.jsx';
 import WriteReview from './Components/homepage/writeReview.jsx';
@@ -52,8 +57,10 @@ import Chapter from './Components/homepage/chapterPage.jsx';
 import HomepageCollections from './Components/homepage/collectionPage.jsx';
 
 import { AuthProvider } from './Components/auth/authContext.jsx';
-
 import { CollectionProvider } from './Components/gallery/collectionContext.jsx';
+import { UserProvider } from './Components/auth/usersContext.jsx';
+import { ThemeProvider } from './Components/theme/themeContext.jsx';
+import { RecommendationProvider } from './Components/recommendationList/recommendationContext.jsx';
 
 
 const router = createBrowserRouter([
@@ -144,6 +151,14 @@ const router = createBrowserRouter([
     element: <HomepageCollections />
   },
   {
+    path: "recommendation/:id",
+    element: <HomeRecommendationPage />
+  },
+  {
+    path: "/:name/:id/review/:reviewId",
+    element: <SingleReview />
+  },
+  {
     path: "dashboard",
     element: <Dashboard />,
     children: [
@@ -160,7 +175,7 @@ const router = createBrowserRouter([
         element: <CreateCollection />
       },
       {
-        path: "collections/:id",
+        path: "visual stories/:id",
         element: <Collections />
       },
       {
@@ -203,6 +218,14 @@ const router = createBrowserRouter([
         path: "collections/collection/:id",
         element: <CollectionPage />
       },
+      {
+        path: "recommendation list",
+        element: <RecommendationListPage />
+      },
+      {
+        path: "recommendation/:id",
+        element: <RecommendationPage />
+      }
     ]
   },
   {
@@ -218,15 +241,19 @@ const router = createBrowserRouter([
         element: <ProfileStories />
       },
       {
-        path: "collections",
+        path: "visual stories",
         element: <ProfileCollections />
+      },
+      {
+        path: "recommendations",
+        element: <ProfileRecommendationPage />
       },
       {
         path: "gallery",
         element: <Gallery />
       },
       {
-        path: "posts",
+        path: "wall",
         element: <ProfilePosts />
       },
       {
@@ -247,20 +274,18 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      {/* <UserProvider> */}
-        {/* <StoriesProvider> */}
-         <CollectionProvider>
-          {/* <ImagesProvider> */}
-            {/* <VideosProvider> */}
-              {/* <PostsProvider> */}
-                <RouterProvider router={router} />
-              {/* </PostsProvider> */}
-            {/* </VideosProvider> */}
-          {/* </ImagesProvider> */}
-         </CollectionProvider>
-        {/* </StoriesProvider> */}
-      {/* </UserProvider> */}
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <UserProvider>
+          {/* <StoriesProvider> */}
+          <CollectionProvider>
+            <RecommendationProvider>
+              <RouterProvider router={router} />
+            </RecommendationProvider>
+          </CollectionProvider>
+          {/* </StoriesProvider> */}
+        </UserProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

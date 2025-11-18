@@ -67,9 +67,10 @@ export const tags = [
   "Feedback",
   "Support",
   "Review",
-  "daily writing experience",
+  "Daily writing experience",
   "Fresh stories",
   "Q&A",
   "MotivationalQuote",
-  "WritingHabit"
+  "WritingHabit",
+  "Recommendation"
 ];
