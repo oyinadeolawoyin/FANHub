@@ -42,7 +42,7 @@ export default function Header({ user, darkMode, setDarkMode }) {
         <nav className="flex justify-between items-center px-4 md:px-6 py-4">
             {/* LOGO */}
             <div className="flex items-center gap-2">
-                <Link to="/">
+                <Link to="/homestories">
                     <SquareLogo theme={darkMode ? "dark" : "light"} size={18} />
                 </Link>
             </div>
@@ -55,8 +55,8 @@ export default function Header({ user, darkMode, setDarkMode }) {
             <Link to="/homestories" className="nav-link">
                 Stories
             </Link>
-            <Link to="/homecollections" className="nav-link">
-                Collections
+            <Link to="/visual stories" className="nav-link">
+                Visual stories
             </Link>
             </div>
 

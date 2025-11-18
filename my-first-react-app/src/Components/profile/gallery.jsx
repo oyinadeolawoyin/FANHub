@@ -1,5 +1,5 @@
 // ============================================
-// GALLERY.JSX - Touch Swipe Navigation + Infinite Scroll Pagination
+// GALLERY.JSX - Touch Swipe Navigation + Infinite Scroll Pagination + Touch-Friendly Search
 // ============================================
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -202,6 +202,14 @@ function Gallery() {
     setCurrentPage(1);
   }
 
+  // ✅ Clear search
+  function clearSearch() {
+    setSearch("");
+    setImageSearchResults([]);
+    setVideoSearchResults([]);
+    setCurrentPage(1);
+  }
+
   // ✅ Like handler for modal
   async function likeMediaModal(e, name, mediaId) {
     if (e) e.stopPropagation();
@@ -369,18 +377,35 @@ function Gallery() {
 
   return (
     <div className="space-y-6">
-      {/* ✅ Search */}
-      <form onSubmit={handleSearch} className="relative flex items-center">
-        <Input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by caption..."
-          className="w-full pr-10"
-        />
-        <button type="submit" className="absolute right-3 text-gray-500 hover:text-primary">
+      {/* ✅ Enhanced Search with Touch-Friendly Button */}
+      <form onSubmit={handleSearch} className="relative flex items-center gap-2">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by caption..."
+            className="w-full pr-10"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+        <Button 
+          type="submit" 
+          size="icon"
+          className="flex-shrink-0"
+          aria-label="Search"
+        >
           <Search size={18} />
-        </button>
+        </Button>
       </form>
 
       {error && (

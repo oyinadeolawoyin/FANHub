@@ -21,6 +21,7 @@ import Homestories from './Components/homepage/stories.jsx';
 import Homecollections from './Components/homepage/collections.jsx';
 import HomeRecommendationPage from './Components/homepage/recommedation.jsx';
 import SingleReview from './Components/homepage/reviewPage.jsx';
+import RecommendationsPage from './Components/homepage/recommendationsPage.jsx';
 
 import Createstory from './Components/story/createStory.jsx';
 import Stories from './Components/story/stories.jsx';
@@ -73,7 +74,7 @@ const router = createBrowserRouter([
         element: <Homestories />
       },
       {
-        path: "homecollections",
+        path: "visual stories",
         element: <Homecollections />
       },
     ]
@@ -153,6 +154,10 @@ const router = createBrowserRouter([
   {
     path: "recommendation/:id",
     element: <HomeRecommendationPage />
+  },
+  {
+    path: "recommendations",
+    element: <RecommendationsPage />
   },
   {
     path: "/:name/:id/review/:reviewId",

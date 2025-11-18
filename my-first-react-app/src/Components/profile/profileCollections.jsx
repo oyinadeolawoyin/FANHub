@@ -1,12 +1,12 @@
 // ============================================
-// PROFILE COLLECTIONS.JSX - Updated (Lucide + Responsive Search)
+// PROFILE COLLECTIONS.JSX - Updated (Lucide + Responsive Search + Touch-Friendly Button)
 // ============================================
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Heart, Star, BookOpen, X, Eye } from "lucide-react"; // ✅ Lucide icons
+import { Search, Heart, Star, BookOpen, X, Eye } from "lucide-react";
 
 function ProfileCollections() {
   const { id } = useParams();
@@ -74,6 +74,12 @@ function ProfileCollections() {
     }
   }
 
+  // Clear search
+  function clearSearch() {
+    setSearch("");
+    setSearchResults([]);
+  }
+
   useEffect(() => {
     if (search.trim() === "") setSearchResults([]);
   }, [search]);
@@ -129,22 +135,39 @@ function ProfileCollections() {
 
   return (
     <div className="space-y-6">
-      {/* 🔍 Search bar with icon */}
+      {/* 🔍 Enhanced Search bar with icon and touch-friendly button */}
       <form onSubmit={handleSearch} className="flex items-center gap-2">
         <div className="relative flex-1">
           <Input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search..."
-            className="pl-10 text-sm sm:text-base"
+            placeholder="Search collections..."
+            className="pl-10 pr-10 text-sm sm:text-base"
             aria-label="Search collections"
           />
           <Search
-            onClick={handleSearch}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground cursor-pointer w-5 h-5"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none w-5 h-5"
           />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
         </div>
+        <Button 
+          type="submit" 
+          size="icon"
+          className="flex-shrink-0"
+          aria-label="Search"
+        >
+          <Search size={18} />
+        </Button>
       </form>
 
       {error && (
@@ -236,7 +259,10 @@ function Collections({ collections, addToLibrary, libraryStatus, libraryLoading 
 
             <Button
               disabled={libraryLoading}
-              onClick={() => addToLibrary(collection.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                addToLibrary(collection.id);
+              }}
               className="w-full"
             >
               {libraryLoading ? (

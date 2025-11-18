@@ -162,7 +162,7 @@ function HomeRecommendationPage() {
                         <ol className="flex items-center space-x-2 text-sm" style={{ color: "var(--secondary-text)" }}>
                             <li>
                                 <button 
-                                    onClick={() => navigate('/homestories')}
+                                    onClick={() => navigate('/recommendations')}
                                     className="hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-1 transition-colors"
                                     style={{ color: "var(--accent-color)" }}
                                 >

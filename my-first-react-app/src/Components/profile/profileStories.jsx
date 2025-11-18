@@ -1,12 +1,12 @@
 // ============================================
-// PROFILE STORIES.JSX - Redesigned with Icons
+// PROFILE STORIES.JSX - Redesigned with Icons + Touch-Friendly Search
 // ============================================
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BookOpen, Heart, Eye, Search, Star } from "lucide-react";
+import { BookOpen, Heart, Eye, Search, Star, X } from "lucide-react";
 
 function ProfileStories() {
   const { id } = useParams();
@@ -69,6 +69,11 @@ function ProfileStories() {
     }
   }
 
+  function clearSearch() {
+    setSearch("");
+    setSearchResults([]);
+  }
+
   useEffect(() => {
     if (search.trim() === "") setSearchResults([]);
   }, [search]);
@@ -114,17 +119,37 @@ function ProfileStories() {
 
   return (
     <div className="space-y-6">
-      {/* Search Form */}
-      <form onSubmit={handleSearch} className="relative">
-        <Input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search stories by title..."
-          className="pl-10"
-          aria-label="Search stories"
-        />
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+      {/* Enhanced Search Form with Touch-Friendly Button */}
+      <form onSubmit={handleSearch} className="flex items-center gap-2">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search stories by title..."
+            className="pl-10 pr-10"
+            aria-label="Search stories"
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+        <Button 
+          type="submit" 
+          size="icon"
+          className="flex-shrink-0"
+          aria-label="Search"
+        >
+          <Search size={18} />
+        </Button>
       </form>
 
       {error && (
@@ -218,7 +243,10 @@ function Stories({ stories, addToLibrary, libraryLoading, libraryStatus }) {
 
               <Button
                 disabled={libraryLoading === story.id}
-                onClick={() => addToLibrary(story.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToLibrary(story.id);
+                }}
                 className="w-full btn"
                 aria-label={isInLibrary ? "Remove from library" : "Add to library"}
               >

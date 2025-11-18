@@ -363,18 +363,37 @@ function ProfilePosts() {
         {/* Search Bar */}
         <div className="space-y-4">
           <h1 className="text-2xl font-bold gradient-text">My Posts</h1>
-          <div className="relative w-full">
-            <Input
-              type="search"
-              placeholder="Search posts by title or content..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch(e)}
-              className="pl-10 bg-card-theme border-theme"
-              aria-label="Search posts"
-            />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          </div>
+          {/* Search Bar with Touch-Friendly Button */}
+          <form onSubmit={handleSearch} className="relative flex items-center gap-2">
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search posts by title or content..."
+                className="w-full pr-10 bg-card-theme border-theme"
+                aria-label="Search posts"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+            <Button 
+              type="submit" 
+              size="icon"
+              className="flex-shrink-0"
+              aria-label="Search"
+            >
+              <Search size={18} />
+            </Button>
+          </form>
         </div>
 
         {/* Create Post */}
@@ -545,6 +564,7 @@ function ProfilePosts() {
         {!hasMoreToShow && currentPosts.length > 0 && (
           <p className="text-center text-gray-500 py-4">You've reached the end!</p>
         )}
+        
 
         {error && <p className="text-red-500 text-center">{error}</p>}
       </main>

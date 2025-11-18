@@ -164,7 +164,7 @@ function HomeStoryPage() {
         setLibraryLoading(true);
 
         try {
-            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${storyId}/`, {
+            const response = await fetch(`https://fanhub-server.onrender.com/api/stories/${storyId}/library`, {
             method: "POST",
             credentials: "include",
             });

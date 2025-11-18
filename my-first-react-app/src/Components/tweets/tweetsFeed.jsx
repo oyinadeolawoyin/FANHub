@@ -1,5 +1,5 @@
 // ============================================
-// FILE: tweetsFeed.jsx - ENHANCED WITH USERTWEETS STYLE
+// FILE: tweetsFeed.jsx - WITH TOAST MODAL & CLICKABLE AVATARS
 // ============================================
 
 import React, { useEffect, useState, useRef } from "react";
@@ -9,6 +9,7 @@ import CommentList from "../comment/commentList";
 import { tags } from "../genre/tags";
 import Delete from "../delete/delete";
 import Header from "../css/header";
+import { useToast, useConfirm, Toast, ConfirmDialog } from "../utils/toast-modal";
 
 import {
   Card,
@@ -71,6 +72,10 @@ function TweetFeed({ url, single = false }) {
   const [selectedTweet, setSelectedTweet] = useState(null);
   const [showModalComments, setShowModalComments] = useState(false);
 
+  // Toast and Confirm hooks
+  const { toast, showToast, closeToast } = useToast();
+  const { confirm, showConfirm, closeConfirm } = useConfirm();
+
   // Theme state
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("theme");
@@ -122,14 +127,12 @@ function TweetFeed({ url, single = false }) {
         if (single) {
           setTweets([data.tweet || data]);
           setHasMore(false);
-          // Set library status for single tweet
           const tweet = data.tweet || data;
           setLibraryStatus({ [tweet.id]: tweet.library?.length > 0 });
         } else {
           const newTweets = data.tweets || data;
           if (!cancelled) {
             setTweets((prev) => (page === 0 ? newTweets : [...prev, ...newTweets]));
-            // Set library status for fetched tweets
             const libraryState = {};
             newTweets.forEach((t) => {
               libraryState[t.id] = t.library?.length > 0;
@@ -220,7 +223,10 @@ function TweetFeed({ url, single = false }) {
         { method: "POST", credentials: "include" }
       );
       const data = await res.json();
-      if (!res.ok) return setError(data.message);
+      if (!res.ok) {
+        showToast(data.message || "Failed to like tweet", "error");
+        return;
+      }
       const liked = data.message === "Liked!";
       const diff = liked ? 1 : -1;
       setTweets((prev) =>
@@ -269,21 +275,22 @@ function TweetFeed({ url, single = false }) {
     setTimeframe(e.target.value);
   }
 
-  // Delete tweet
+  // Delete tweet - UPDATED WITH CONFIRM DIALOG
   async function handleDelete(tweetId) {
     setDeletingId(tweetId);
     try {
-      await Delete(`https://fanhub-server.onrender.com/api/tweets/${tweetId}`);
+      const message = await Delete(`https://fanhub-server.onrender.com/api/tweets/${tweetId}`);
       setTweets((prev) => prev.filter((t) => Number(t.id) !== Number(tweetId)));
       if (selectedTweet?.id === tweetId) closeModal();
+      showToast(message || "Tweet deleted successfully!", "success");
     } catch (err) {
-      navigate("/error", { state: { message: err.message } });
+      showToast("Failed to delete tweet. Please try again.", "error");
     } finally {
       setDeletingId(null);
     }
   }
 
-  // Add/Remove library - FIXED
+  // Add/Remove library - FIXED WITH TOAST
   async function addToLibrary(tweetId, isModal = false) {
     setLibraryLoading(tweetId);
     try {
@@ -302,7 +309,14 @@ function TweetFeed({ url, single = false }) {
             library: newStatus ? [{ id: 1 }] : [],
           });
         }
-      } else setError(data.message);
+        
+        showToast(
+          newStatus ? "Added to library!" : "Removed from library",
+          "success"
+        );
+      } else {
+        showToast(data.message || "Failed to update library", "error");
+      }
     } finally {
       setLibraryLoading(null);
     }
@@ -342,6 +356,11 @@ function TweetFeed({ url, single = false }) {
     }
   }
 
+  // Navigate to profile
+  const navigateToProfile = (username, userId) => {
+    navigate(`/profile/${username}/${userId}/about`);
+  };
+
   if (error && tweets.length === 0) {
     return (
       <div>
@@ -357,6 +376,26 @@ function TweetFeed({ url, single = false }) {
     <div className="min-h-screen bg-background-color transition-colors duration-500">
       {/* Header */}
       <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
+
+      {/* Toast Notification */}
+      <Toast 
+        message={toast.message} 
+        type={toast.type} 
+        isOpen={toast.isOpen} 
+        onClose={closeToast} 
+      />
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={confirm.isOpen}
+        onClose={closeConfirm}
+        onConfirm={confirm.onConfirm}
+        title={confirm.title}
+        description={confirm.description}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="destructive"
+      />
 
       {/* Main Layout */}
       <div className="pt-20 flex gap-6 max-w-7xl mx-auto px-4">
@@ -594,18 +633,28 @@ function TweetFeed({ url, single = false }) {
                     <CardHeader className="pb-3">
                       {/* User Info & Actions */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Avatar className="w-10 h-10">
-                            <AvatarImage src={tweet.user?.avatar} alt={`${tweet.user?.username}'s avatar`} />
-                            <AvatarFallback
-                              className="bg-blue-600 text-white font-bold"
-                              style={{ backgroundColor: "#2563eb" }}
-                            >
-                              {tweet.user?.username?.charAt(0).toUpperCase() || "U"}
-                            </AvatarFallback>
-                          </Avatar>
+                        <div 
+                          className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity group"
+                          onClick={() => navigateToProfile(tweet.user.username, tweet.user.id)}
+                        >
+                          <div className="relative">
+                            <Avatar className="w-10 h-10 ring-2 ring-transparent group-hover:ring-blue-500 transition-all">
+                              <AvatarImage 
+                                src={tweet.user?.avatar} 
+                                alt={`${tweet.user?.username}'s avatar`}
+                              />
+                              <AvatarFallback
+                                className="bg-blue-600 text-white font-bold"
+                                style={{ backgroundColor: "#2563eb" }}
+                              >
+                                {tweet.user?.username?.charAt(0).toUpperCase() || "U"}
+                              </AvatarFallback>
+                            </Avatar>
+                            {/* Click indicator */}
+                            <div className="absolute inset-0 rounded-full border-2 border-blue-500 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                          </div>
                           <div>
-                            <p className="font-semibold text-base text-theme">
+                            <p className="font-semibold text-base text-theme group-hover:text-blue-600 transition-colors">
                               {tweet.user?.username || "Unknown"}
                             </p>
                             <p className="text-xs text-secondary">
@@ -646,7 +695,11 @@ function TweetFeed({ url, single = false }) {
                               {isOwner && (
                                 <DropdownMenuItem
                                   onClick={() => {
-                                    if (window.confirm("Delete this tweet?")) handleDelete(tweet.id);
+                                    showConfirm(
+                                      "Delete Tweet",
+                                      "Are you sure you want to delete this tweet? This action cannot be undone.",
+                                      () => handleDelete(tweet.id)
+                                    );
                                   }}
                                   disabled={deletingId === tweet.id}
                                   className="text-destructive"
@@ -865,18 +918,25 @@ function TweetFeed({ url, single = false }) {
         <div className="fixed inset-0 z-50 bg-black/90 flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 bg-card-theme border-b border-theme">
-            <div className="flex items-center gap-3">
-              <Avatar className="w-10 h-10">
-                <AvatarImage src={selectedTweet.user?.avatar} />
-                <AvatarFallback 
-                  className="bg-blue-600 text-white font-bold flex items-center justify-center"
-                  style={{ backgroundColor: "#2563eb" }}
-                >
-                  {selectedTweet.user?.username?.charAt(0).toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity group"
+              onClick={() => navigateToProfile(selectedTweet.user.username, selectedTweet.user.id)}
+            >
+              <div className="relative">
+                <Avatar className="w-10 h-10 ring-2 ring-transparent group-hover:ring-blue-500 transition-all">
+                  <AvatarImage src={selectedTweet.user?.avatar} />
+                  <AvatarFallback 
+                    className="bg-blue-600 text-white font-bold flex items-center justify-center"
+                    style={{ backgroundColor: "#2563eb" }}
+                  >
+                    {selectedTweet.user?.username?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                {/* Click indicator */}
+                <div className="absolute inset-0 rounded-full border-2 border-blue-500 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+              </div>
               <div className="flex flex-col">
-                <span className="text-theme font-semibold text-base">
+                <span className="text-theme font-semibold text-base group-hover:text-blue-600 transition-colors">
                   {selectedTweet.user?.username}
                 </span>
                 <span className="text-secondary text-xs">

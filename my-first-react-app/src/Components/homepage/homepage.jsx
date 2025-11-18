@@ -8,7 +8,7 @@ function Homepage() {
         <nav>
           <ul>
             <li><Link to="homestories">Stories</Link></li>
-            <li><Link to="homecollections">Collections</Link></li>
+            <li><Link to="visual stories">Visual stories</Link></li>
             
           </ul>
         </nav>

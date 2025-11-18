@@ -6,7 +6,6 @@ export function SquareLogo({ theme = "light", size = 20 }) {
 
   // Filters for eagle emoji: keeps it readable in dark/light mode
   const blueEagleFilter = "brightness(0) saturate(100%) invert(36%) sepia(89%) saturate(2450%) hue-rotate(198deg) brightness(95%) contrast(95%)";
-  const whiteEagleFilter = "brightness(0) invert(1)";
 
   return (
     <div

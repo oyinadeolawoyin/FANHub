@@ -17,8 +17,10 @@ import {
   Trash2,
   MoreVertical,
   Play,
+  Search
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +37,11 @@ function UserTweets() {
   const navigate = useNavigate();
 
   const [tweets, setTweets] = useState([]);
+
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchMode, setIsSearchMode] = useState(false);
+
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -44,7 +51,6 @@ function UserTweets() {
   const [libraryLoading, setLibraryLoading] = useState(null);
   const [libraryStatus, setLibraryStatus] = useState({});
   const [likeLoadingId, setLikeLoadingId] = useState(null);
-  const [isSearchMode, setIsSearchMode] = useState(false);
   const [selectedTweet, setSelectedTweet] = useState(null);
   const [showModalComments, setShowModalComments] = useState(false);
 
@@ -210,6 +216,28 @@ function UserTweets() {
     }
   }
 
+  function handleSearch(e) {
+    e.preventDefault();
+    if (tweets) {
+      const results = tweets.filter(
+        (tweet) =>
+          tweet.title.toLowerCase().includes(search.toLowerCase()) ||
+          tweet.content.toLowerCase().includes(search.toLowerCase())
+      );
+      setSearchResults(results);
+      // **Crucially sets search mode to display results**
+      setIsSearchMode(true); 
+    }
+  }
+
+  useEffect(() => {
+    if (search.trim() === "") {
+      setSearchResults([]);
+      // **Crucially resets search mode to show all tweets**
+      setIsSearchMode(false); 
+    }
+  }, [search]);
+
   if (loading && tweets.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -223,9 +251,45 @@ function UserTweets() {
 
   return (
     <div className="space-y-6">
+
+      {/* Search Bar (NEW SECTION) */}
+      <div className="space-y-4 max-w-4xl mx-auto px-4 sm:px-0">
+        <h1 className="text-2xl font-bold gradient-text">My Tweets</h1>
+        <form onSubmit={handleSearch} className="relative flex items-center gap-2">
+          <div className="relative flex-1">
+            <Input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search tweets by title or content..."
+              className="w-full pr-10 bg-card-theme border-theme"
+              aria-label="Search posts"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                aria-label="Clear search"
+              >
+                <X size={18} />
+              </button>
+            )}
+          </div>
+          <Button 
+            type="submit" 
+            size="icon"
+            className="flex-shrink-0"
+            aria-label="Search"
+          >
+            <Search size={18} />
+          </Button>
+        </form>
+      </div>
+
       {/* Tweets List */}
       <div className="space-y-6 max-w-4xl mx-auto">
-        {tweets.map((tweet) => {
+      {(isSearchMode ? searchResults : tweets).map((tweet) => {
           const isOwner = user?.id === tweet.userId;
 
           return (
@@ -404,6 +468,13 @@ function UserTweets() {
         {!isSearchMode && <div ref={observerRef} style={{ height: "1px" }} />}
         {loading && <p className="text-center text-muted-foreground">Loading more...</p>}
         {!hasMore && tweets.length > 0 && <p className="text-center text-muted-foreground">You've reached the end!</p>}
+
+        {/* NEW: No results message */}
+        {isSearchMode && searchResults.length === 0 && (
+          <p className="text-center text-muted-foreground py-10">
+            No tweets found matching your search term.
+          </p>
+        )}
       </div>
 
       {/* Fullscreen Modal */}

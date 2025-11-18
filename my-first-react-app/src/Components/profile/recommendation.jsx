@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListChecks, BookOpen, Heart, Star, MessageCircle, Loader2 } from 'lucide-react';
+import { ListChecks, BookOpen, Heart, Star, MessageCircle, Loader2, Search, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function ProfileRecommendationPage() {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const { id } = useParams(); // Get userId from route params
   const navigate = useNavigate();
 
@@ -33,6 +37,28 @@ export default function ProfileRecommendationPage() {
     }
   };
 
+  // Search handler
+  function handleSearch(e) {
+    e.preventDefault();
+    if (recommendations.length) {
+      const results = recommendations.filter((rec) =>
+        rec.title.toLowerCase().includes(search.toLowerCase()) ||
+        rec.description?.toLowerCase().includes(search.toLowerCase())
+      );
+      setSearchResults(results);
+    }
+  }
+
+  // Clear search
+  function clearSearch() {
+    setSearch("");
+    setSearchResults([]);
+  }
+
+  useEffect(() => {
+    if (search.trim() === "") setSearchResults([]);
+  }, [search]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[40vh]">
@@ -40,6 +66,8 @@ export default function ProfileRecommendationPage() {
       </div>
     );
   }
+
+  const displayedRecommendations = searchResults.length > 0 ? searchResults : recommendations;
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -58,8 +86,41 @@ export default function ProfileRecommendationPage() {
         </p>
       </div>
 
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="flex items-center gap-2 mb-6">
+        <div className="relative flex-1">
+          <Input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search recommendation lists..."
+            className="pl-10 pr-10"
+            aria-label="Search recommendations"
+          />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none" />
+          {search && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              aria-label="Clear search"
+            >
+              <X size={18} />
+            </button>
+          )}
+        </div>
+        <Button 
+          type="submit" 
+          size="icon"
+          className="flex-shrink-0"
+          aria-label="Search"
+        >
+          <Search size={18} />
+        </Button>
+      </form>
+
       {/* Empty State */}
-      {recommendations.length === 0 ? (
+      {displayedRecommendations.length === 0 ? (
         <Card className="p-8 sm:p-12 text-center border-2 border-dashed">
           <div className="flex flex-col items-center gap-4">
             <div className="p-4 bg-blue-100 dark:bg-blue-900/20 rounded-full">
@@ -67,10 +128,12 @@ export default function ProfileRecommendationPage() {
             </div>
             <div className="max-w-md">
               <h3 className="text-lg sm:text-xl font-semibold text-theme mb-2">
-                No recommendation lists yet
+                {search ? "No matching recommendations" : "No recommendation lists yet"}
               </h3>
               <p className="text-sm sm:text-base text-secondary">
-                This user hasn't published any recommendation lists
+                {search 
+                  ? "Try adjusting your search terms" 
+                  : "This user hasn't published any recommendation lists"}
               </p>
             </div>
           </div>
@@ -78,7 +141,7 @@ export default function ProfileRecommendationPage() {
       ) : (
         /* Recommendation Lists Grid */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {recommendations.map((rec) => (
+          {displayedRecommendations.map((rec) => (
             <Card
               key={rec.id}
               className="group overflow-hidden cursor-pointer p-0 hover:shadow-lg transition-shadow duration-300"

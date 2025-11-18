@@ -6,6 +6,7 @@ import Header from "../css/header";
 import SmartAvatar from "../utils/SmartAvatar";
 import { Star, Heart, Trash2, Calendar, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useToast, useConfirm, Toast, ConfirmDialog } from "../utils/toast-modal";
 
 function Reviews() {
     const { user } = useAuth();
@@ -16,7 +17,10 @@ function Reviews() {
     const [reviews, setReviews] = useState([]);
     const [likeLoadingId, setLikeLoadingId] = useState(null);
     const [deletingId, setDeletingId] = useState(null);
-    const [deletemessage, setDeletemessage] = useState("");
+
+    // Toast and Confirm hooks
+    const { toast, showToast, closeToast } = useToast();
+    const { confirm, showConfirm, closeConfirm } = useConfirm();
 
     const [darkMode, setDarkMode] = useState(() => {
         const saved = localStorage.getItem("theme");
@@ -123,10 +127,10 @@ function Reviews() {
                 ? await Delete(`https://fanhub-server.onrender.com/api/stories/${id}/reviews/${reviewId}`)
                 : await Delete(`https://fanhub-server.onrender.com/api/gallery/collections/${id}/reviews/${reviewId}`);   
             
-            setDeletemessage(message);
+            showToast(message || "Review deleted successfully!", "success");
             setReviews(prev => prev.filter(r => Number(r.id) !== Number(reviewId)));
         } catch(err) {
-            navigate("/error", { state: { message: "Network error: Please check your internet connection." } });
+            showToast("Failed to delete review. Please try again.", "error");
         } finally {
             setDeletingId(null);
         }
@@ -168,6 +172,27 @@ function Reviews() {
         <>
             <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
             <div className="h-10"></div>
+            
+            {/* Toast Notification */}
+            <Toast 
+                message={toast.message} 
+                type={toast.type} 
+                isOpen={toast.isOpen} 
+                onClose={closeToast} 
+            />
+
+            {/* Confirm Dialog */}
+            <ConfirmDialog
+                isOpen={confirm.isOpen}
+                onClose={closeConfirm}
+                onConfirm={confirm.onConfirm}
+                title={confirm.title}
+                description={confirm.description}
+                confirmText="Delete"
+                cancelText="Cancel"
+                variant="destructive"
+            />
+
             <div className="min-h-screen py-8 px-4" style={{ backgroundColor: "var(--background-color)", paddingTop: "100px" }}>
                 <div className="max-w-5xl mx-auto">
                     {/* Header */}
@@ -184,13 +209,6 @@ function Reviews() {
                     {error && (
                         <div className="mb-6 bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-800 rounded-lg p-4 animate-fadeIn" role="alert">
                             <p className="text-red-700 dark:text-red-400">{error}</p>
-                        </div>
-                    )}
-
-                    {/* Delete Success Message */}
-                    {deletemessage && (
-                        <div className="mb-6 bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-800 rounded-lg p-4 animate-fadeIn" role="alert">
-                            <p className="text-green-700 dark:text-green-400">{deletemessage}</p>
                         </div>
                     )}
 
@@ -236,7 +254,7 @@ function Reviews() {
                                                 {review.title}
                                             </h2>
                                             <div className="flex flex-wrap items-center gap-4 text-sm" style={{ color: "var(--secondary-text)" }}>
-                                                <span className="font-medium" style={{ color: "var(--accent-color)" }}
+                                                <span className="font-medium cursor-pointer hover:underline" style={{ color: "var(--accent-color)" }}
                                                  onClick={() => navigate(`/profile/${review.user.username}/${review.userId}/about`)}
                                                 >
                                                     {review.user?.username || 'Anonymous User'}
@@ -340,10 +358,11 @@ function Reviews() {
                                             <Button
                                                 disabled={deletingId === review.id}
                                                 onClick={() => {
-                                                    const confirmed = window.confirm("Are you sure you want to delete this review?");
-                                                    if (confirmed) {
-                                                        handleDelete(review.id);
-                                                    }
+                                                    showConfirm(
+                                                        "Delete Review",
+                                                        "Are you sure you want to delete this review? This action cannot be undone.",
+                                                        () => handleDelete(review.id)
+                                                    );
                                                 }}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/30 transition-all hover:scale-105 active:scale-95"
                                             >
