@@ -1,8 +1,8 @@
-// storypage.jsx - Enhanced with accessibility and beautiful design
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
 import Header from "../css/header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
     Heart, 
     BookOpen, 
@@ -216,17 +216,40 @@ function HomeStoryPage() {
 
     if (loading) {
         return (
-            <>
-                <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
-                <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background-color)", paddingTop: "80px" }}>
-                    <div className="text-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-t-blue-500 border-gray-300 dark:border-gray-700 rounded-full animate-spin mx-auto"></div>
-                        <p className="text-lg" style={{ color: "var(--foreground-color)" }}>Loading story...</p>
-                    </div>
+          <>
+            <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
+            <div
+              className="min-h-screen px-4 sm:px-6 lg:px-8 py-8"
+              style={{ backgroundColor: "var(--background-color)", paddingTop: "80px" }}
+            >
+              <div className="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
+                {/* Left: Cover Skeleton */}
+                <div className="lg:col-span-1">
+                  <div className="w-full h-96 rounded-2xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                  <div className="space-y-3 mt-6">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div key={i} className="w-full h-12 rounded-xl bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                    ))}
+                  </div>
                 </div>
-            </>
+      
+                {/* Right: Info Skeleton */}
+                <div className="lg:col-span-2 space-y-4">
+                  <div className="h-12 w-3/4 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse" />
+                  <div className="h-6 w-1/2 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse mt-2" />
+                  <div className="h-6 w-1/3 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse mt-2" />
+                  <div className="h-48 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse mt-4" />
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    {Array.from({ length: 2 }).map((_, i) => (
+                      <div key={i} className="h-20 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
         );
-    }
+    }      
 
     if (!story) {
         return (

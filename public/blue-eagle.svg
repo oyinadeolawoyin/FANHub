@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <style>
+    .blue-eagle {
+      filter: brightness(0) saturate(100%) invert(36%) sepia(89%) saturate(2450%) hue-rotate(198deg) brightness(95%) contrast(95%);
+    }
+  </style>
+
+  <!-- Background square to match your React component -->
+  <rect x="0" y="0" width="64" height="64" rx="10" ry="10" fill="#ffffff" stroke="#e2e8f0" stroke-width="1"/>
+
+  <!-- Eagle emoji as text -->
+  <text x="50%" y="50%" font-size="32" text-anchor="middle" dominant-baseline="middle" class="blue-eagle">
+    🦅
+  </text>
+</svg>

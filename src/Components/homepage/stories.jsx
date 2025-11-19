@@ -1,4 +1,3 @@
-// stories.jsx - Enhanced with Header and beautiful search bar
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import GenreSelector from "../genre/genreSelector";
@@ -6,6 +5,7 @@ import { useAuth } from "../auth/authContext";
 import Header from "../css/header";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Eye, Heart, Loader2, X, ChevronDown, BookOpen, FileText, Zap } from "lucide-react";
 
@@ -219,7 +219,22 @@ function Homestories() {
     }
   }, [search]);
   
-
+  const StorySkeleton = () => (
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ backgroundColor: "var(--card-bg)" }}
+    >
+      {/* Image skeleton */}
+      <Skeleton className="w-full aspect-[2/3] rounded-xl" />
+  
+      <div className="p-2 space-y-2">
+        {/* Title skeleton lines */}
+        <Skeleton className="h-4 w-3/4 rounded-md" />
+        <Skeleton className="h-4 w-1/2 rounded-md" />
+      </div>
+    </div>
+  );
+  
   return (
     <div
       className="min-h-screen transition-colors duration-500"
@@ -398,6 +413,15 @@ function Homestories() {
             </div>
           </div>
 
+          {/* SKELETON LOADING CARDS */}
+          {storyLoading && stories.length === 0 && (
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <StorySkeleton key={i} />
+              ))}
+            </div>
+          )}
+
           {/* Stories Grid */}
           <section aria-label="Story list">
             {stories.length === 0 && !storyLoading ? (
@@ -477,19 +501,6 @@ function Homestories() {
               </div>
             )}
           </section>
-
-          {/* Loading Indicator */}
-          {storyLoading && (
-            <div className="flex justify-center items-center py-12">
-              <div className="text-center space-y-4">
-                <Loader2 className="w-12 h-12 animate-spin mx-auto" style={{ color: "var(--accent-color)" }} />
-                <p className="text-lg font-medium" style={{ color: "var(--secondary-text)" }}>
-                  Loading more stories...
-                </p>
-              </div>
-            </div>
-          )}
-
         </div>
       </main>
     </div>

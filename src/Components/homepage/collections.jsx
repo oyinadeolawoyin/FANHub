@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Eye, Heart, Loader2, X, ChevronDown, BookOpen } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Homecollections() {
   const navigate = useNavigate();
@@ -144,6 +145,22 @@ function Homecollections() {
     setCollectionHasMore(true);
   };
 
+  const CollectionSkeleton = () => (
+    <div
+      className="rounded-xl overflow-hidden"
+      style={{ backgroundColor: "var(--card-bg)" }}
+    >
+      {/* Image skeleton */}
+      <Skeleton className="w-full aspect-[2/3] rounded-xl" />
+  
+      <div className="p-2 space-y-2">
+        {/* Title skeleton lines */}
+        <Skeleton className="h-4 w-3/4 rounded-md" />
+        <Skeleton className="h-4 w-1/2 rounded-md" />
+      </div>
+    </div>
+  );  
+
   return (
     <div
       className="min-h-screen transition-colors duration-500"
@@ -208,6 +225,14 @@ function Homecollections() {
             </DropdownMenu>
           </div>
 
+          {collectionLoading && collections.length === 0 && (
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <CollectionSkeleton key={i} />
+              ))}
+            </div>
+          )}
+
           {/* Collections Grid */}
           <section aria-label="Collection list">
             {collections.length === 0 && !collectionLoading ? (
@@ -269,13 +294,6 @@ function Homecollections() {
               </div>
             )}
           </section>
-
-          {/* Loading */}
-          {collectionLoading && (
-            <div className="flex justify-center items-center py-12">
-              <Loader2 className="w-12 h-12 animate-spin text-accent-color" />
-            </div>
-          )}
         </div>
       </main>
     </div>

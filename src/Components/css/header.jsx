@@ -42,23 +42,47 @@ export default function Header({ user, darkMode, setDarkMode }) {
         <nav className="flex justify-between items-center px-4 md:px-6 py-4">
             {/* LOGO */}
             <div className="flex items-center gap-2">
-                <Link to="/homestories">
+                <Link to="/">
                     <SquareLogo theme={darkMode ? "dark" : "light"} size={18} />
                 </Link>
             </div>
 
             {/* DESKTOP NAV */}
-            <div className="hidden md:flex items-center gap-8">
-            <Link to="/tweets" className="nav-link">
-                Community
-            </Link>
-            <Link to="/homestories" className="nav-link">
-                Stories
-            </Link>
-            <Link to="/visual stories" className="nav-link">
-                Visual stories
-            </Link>
-            </div>
+            {user ? (
+              <div className="hidden md:flex items-center gap-8">
+                <Link to="/tweets" className="nav-link">
+                  Community
+                </Link>
+                <Link to="/homestories" className="nav-link">
+                  Stories
+                </Link>
+                <Link to="/visual stories" className="nav-link">
+                  Visual stories
+                </Link>
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center gap-4">
+                <Link 
+                  to="/login" 
+                  className="px-4 py-2 rounded-md transition-all duration-300 font-medium"
+                  style={{
+                    color: "var(--button-bg)",
+                  }}
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="px-4 py-2 rounded-md transition-all duration-300 font-medium"
+                  style={{
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--button-text)",
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
 
             {/* RIGHT SIDE */}
             <div className="flex items-center gap-3">
@@ -78,8 +102,9 @@ export default function Header({ user, darkMode, setDarkMode }) {
                 )}
             </button>
 
-            {/* 📱 MOBILE MENU (Hamburger) */}
-            <div className="md:hidden">
+            {/* 📱 MOBILE MENU (Hamburger) - Only show if user is logged in */}
+            {user && (
+              <div className="md:hidden">
                 <Sheet>
                 <SheetTrigger asChild>
                     <button
@@ -128,29 +153,36 @@ export default function Header({ user, darkMode, setDarkMode }) {
                         <Layers className="w-5 h-5 text-pink-400" />
                         Collections
                     </Link>
-
-                    {!user && (
-                        <>
-                        <Link
-                            to="/signup"
-                            className="auth-btn"
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            Signup
-                        </Link>
-                        <Link
-                            to="/login"
-                            className="auth-btn"
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            Login
-                        </Link>
-                        </>
-                    )}
                     </div>
                 </SheetContent>
                 </Sheet>
-            </div>
+              </div>
+            )}
+
+            {/* Mobile Login/Signup buttons for non-authenticated users */}
+            {!user && (
+              <div className="flex md:hidden items-center gap-2">
+                <Link 
+                  to="/login" 
+                  className="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-300"
+                  style={{
+                    color: "var(--button-bg)",
+                  }}
+                >
+                  Login
+                </Link>
+                <Link 
+                  to="/signup" 
+                  className="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-300"
+                  style={{
+                    backgroundColor: "var(--button-bg)",
+                    color: "var(--button-text)",
+                  }}
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
 
             {/* USER AVATAR */}
             {user && (

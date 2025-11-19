@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const RecommendationsPage = () => {
   const { user } = useAuth();
@@ -224,25 +225,42 @@ const RecommendationsPage = () => {
             {[...Array(8)].map((_, idx) => (
               <div
                 key={idx}
-                className="rounded-lg overflow-hidden animate-pulse"
+                className="rounded-lg overflow-hidden flex flex-col"
                 style={{
                   backgroundColor: "var(--card-bg)",
                   border: "1px solid var(--border-color)",
                 }}
               >
-                <div
-                  className="h-40"
-                  style={{ backgroundColor: "var(--border-color)" }}
-                />
-                <div className="p-4 space-y-3">
+                {/* Cover Image Skeleton */}
+                <Skeleton className="h-40 w-full" />
+
+                {/* Card Content Skeleton */}
+                <div className="p-4 flex flex-col flex-1 space-y-3">
+                  <Skeleton className="h-4 w-3/4 rounded" />
+                  <Skeleton className="h-3 w-full rounded" />
+                  <Skeleton className="h-3 w-2/3 rounded" />
+
+                  {/* Story Previews Skeleton */}
+                  <div className="flex gap-1 mt-2">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="w-12 h-16 rounded" />
+                    ))}
+                  </div>
+
+                  {/* Avatar & Stats Skeleton */}
                   <div
-                    className="h-4 rounded"
-                    style={{ backgroundColor: "var(--border-color)" }}
-                  />
-                  <div
-                    className="h-3 rounded w-2/3"
-                    style={{ backgroundColor: "var(--border-color)" }}
-                  />
+                    className="flex items-center justify-between mt-auto pt-3 border-t"
+                    style={{ borderColor: "var(--border-color)" }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Skeleton className="w-6 h-6 rounded-full" />
+                      <Skeleton className="h-3 w-16 rounded" />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-3 w-8 rounded" />
+                      <Skeleton className="h-3 w-6 rounded" />
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

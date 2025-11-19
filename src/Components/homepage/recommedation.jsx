@@ -4,7 +4,7 @@ import { useAuth } from "../auth/authContext";
 import CommentList from "../comment/commentList";
 import Header from "../css/header";
 import { BookOpen, Eye, Clock, Heart, MessageSquare, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function HomeRecommendationPage() {
     const { id } = useParams();
@@ -119,15 +119,51 @@ function HomeRecommendationPage() {
         return (
             <>
                 <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
-                <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background-color)", paddingTop: "80px" }}>
-                    <div className="text-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-t-blue-500 border-gray-300 dark:border-gray-700 rounded-full animate-spin mx-auto"></div>
-                        <p className="text-lg" style={{ color: "var(--foreground-color)" }}>Loading recommendation...</p>
+                <div className="min-h-screen px-4 sm:px-6 lg:px-8 pt-32" style={{ backgroundColor: "var(--background-color)" }}>
+                    {/* Skeleton for Header Image & Info */}
+                    <div className="flex flex-col lg:flex-row gap-8 mb-12">
+                        {/* Cover Image Skeleton */}
+                        <Skeleton className="lg:w-1/3 h-72 rounded-2xl shadow-2xl" />
+    
+                        {/* Info Skeleton */}
+                        <div className="flex-1 space-y-6">
+                            <Skeleton className="h-12 w-3/4 rounded-lg" /> {/* Title */}
+                            <div className="flex items-center gap-3">
+                                <Skeleton className="w-12 h-12 rounded-full" /> {/* Creator avatar */}
+                                <Skeleton className="h-4 w-32 rounded" /> {/* Creator name */}
+                            </div>
+                            <Skeleton className="h-24 w-full rounded-xl" /> {/* Description */}
+                            <div className="flex gap-4">
+                                <Skeleton className="h-10 w-24 rounded-xl" /> {/* Like button */}
+                                <Skeleton className="h-10 w-24 rounded-xl" /> {/* Another button */}
+                            </div>
+                        </div>
+                    </div>
+    
+                    {/* Skeleton for Stories Grid */}
+                    <div className="mb-16">
+                        <Skeleton className="h-8 w-1/3 mb-6" /> {/* Stories heading */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {[...Array(8)].map((_, idx) => (
+                                <Skeleton key={idx} className="h-64 w-full rounded-2xl" />
+                            ))}
+                        </div>
+                    </div>
+    
+                    {/* Skeleton for Comments Section */}
+                    <div className="p-6 sm:p-8 rounded-2xl shadow-lg">
+                        <Skeleton className="h-8 w-1/3 mb-6" /> {/* Comments heading */}
+                        {[...Array(3)].map((_, idx) => (
+                            <div key={idx} className="flex items-center gap-4 mb-4">
+                                <Skeleton className="w-10 h-10 rounded-full" />
+                                <Skeleton className="h-4 w-full rounded" />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </>
         );
-    }
+    }    
 
     if (!recommendation) {
         return (

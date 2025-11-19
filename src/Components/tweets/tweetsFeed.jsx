@@ -1,7 +1,3 @@
-// ============================================
-// FILE: tweetsFeed.jsx - WITH TOAST MODAL & CLICKABLE AVATARS
-// ============================================
-
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../auth/authContext";
@@ -10,6 +6,7 @@ import { tags } from "../genre/tags";
 import Delete from "../delete/delete";
 import Header from "../css/header";
 import { useToast, useConfirm, Toast, ConfirmDialog } from "../utils/toast-modal";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import {
   Card,
@@ -840,8 +837,25 @@ function TweetFeed({ url, single = false }) {
             {/* Infinite scroll observer */}
             {!single && <div ref={observerRef} style={{ height: "1px" }} aria-hidden="true" />}
             {loading && (
-              <div className="text-center text-muted-foreground py-6" role="status">
-                Loading more...
+              <div className="space-y-6">
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i} className="overflow-hidden border-theme bg-card-theme p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Skeleton className="w-10 h-10 rounded-full" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-4 w-3/4 rounded" />
+                        <Skeleton className="h-3 w-1/2 rounded" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-6 w-full rounded mb-3" />
+                    <Skeleton className="h-40 w-full rounded" />
+                    <div className="flex items-center gap-4 mt-3">
+                      <Skeleton className="h-6 w-16 rounded" />
+                      <Skeleton className="h-6 w-16 rounded" />
+                      <Skeleton className="h-6 w-16 rounded" />
+                    </div>
+                  </Card>
+                ))}
               </div>
             )}
             {!hasMore && tweets.length > 0 && (

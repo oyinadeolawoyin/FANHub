@@ -44,7 +44,7 @@ function Login() {
       }
 
       setUser(data.user);
-      navigate("/homestories");
+      navigate("/");
     } catch (err) {
       navigate("/error", {
         state: { message: "Network error: Please check your internet connection." },

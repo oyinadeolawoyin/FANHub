@@ -5,6 +5,7 @@ import CommentList from "../comment/commentList";
 import Header from "../css/header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Heart,
   BookMarked,
@@ -472,20 +473,32 @@ function HomepageCollections() {
     return (
       <>
         <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
-        <div
-          className="min-h-screen flex items-center justify-center"
-          style={{ backgroundColor: "var(--background-color)", paddingTop: "80px" }}
-        >
-          <div className="text-center space-y-4">
-            <Loader2 className="w-16 h-16 mx-auto animate-spin" style={{ color: "var(--accent-color)" }} />
-            <p className="text-lg" style={{ color: "var(--foreground-color)" }}>
-              Loading collection...
-            </p>
+        <div className="min-h-screen flex flex-col items-center justify-start pt-24 px-4 gap-8 bg-background">
+          {/* Sidebar Skeleton */}
+          <div className="w-full max-w-6xl grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-1 flex flex-col gap-4">
+              <Skeleton className="w-full h-[450px] rounded-2xl" />
+              <Skeleton className="w-full h-12 rounded-xl" />
+              <Skeleton className="w-full h-12 rounded-xl" />
+              <Skeleton className="w-full h-12 rounded-xl" />
+            </div>
+  
+            {/* Main content skeleton */}
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              <Skeleton className="w-3/4 h-10 rounded-lg" />
+              <Skeleton className="w-1/2 h-6 rounded-lg" />
+              <Skeleton className="w-full h-32 rounded-xl" />
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(6)].map((_, idx) => (
+                  <Skeleton key={idx} className="w-full h-64 rounded-xl" />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </>
     );
-  }
+  }  
 
   if (!collection) {
     return (

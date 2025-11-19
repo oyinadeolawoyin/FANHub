@@ -6,6 +6,8 @@ import CommentList from "../comment/commentList";
 import Header from "../css/header";
 import { ChevronLeft, ChevronRight, Eye, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+
 
 function Chapter() {
     const { storyId, chapterId } = useParams();
@@ -193,17 +195,44 @@ function Chapter() {
 
     if (loading) {
         return (
-            <>
-                <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
-                <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "var(--background-color)", paddingTop: "80px" }}>
-                    <div className="text-center space-y-4">
-                        <div className="w-16 h-16 border-4 border-t-blue-500 border-gray-300 dark:border-gray-700 rounded-full animate-spin mx-auto"></div>
-                        <p className="text-lg" style={{ color: "var(--foreground-color)" }}>Loading chapter...</p>
-                    </div>
-                </div>
-            </>
+          <>
+            <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
+            <div className="min-h-screen flex flex-col items-center justify-start pt-20 px-4" style={{ backgroundColor: "var(--background-color)" }}>
+              {/* Chapter title */}
+              <Skeleton className="h-10 w-3/4 mb-4" />
+              {/* Chapter meta */}
+              <Skeleton className="h-6 w-1/3 mb-8" />
+              
+              {/* Breadcrumb */}
+              <div className="flex space-x-2 mb-6">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-4 w-8" />
+              </div>
+      
+              {/* Chapter content */}
+              <div className="space-y-4 w-full max-w-4xl">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <Skeleton key={i} className="h-6 w-full" />
+                ))}
+              </div>
+      
+              {/* Reactions */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-8 w-full max-w-4xl">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} className="h-16 w-full rounded-xl" />
+                ))}
+              </div>
+      
+              {/* Comments */}
+              <div className="mt-12 space-y-4 w-full max-w-4xl">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton key={i} className="h-20 w-full rounded-2xl" />
+                ))}
+              </div>
+            </div>
+          </>
         );
-    }
+    }  
 
     if (!chapter) {
         return (

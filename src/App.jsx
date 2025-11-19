@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import NotificationsSetup from "./Components/notification/notificationSetup";
 import { useState, useEffect } from "react";
 import { Heart, MessageCircle, BookOpen, Eye } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -23,6 +24,7 @@ const App = () => {
   const [storiesApi, setStoriesApi] = useState(null);
   const [collectionsApi, setCollectionsApi] = useState(null);
   const [recommendationsApi, setRecommendationsApi] = useState(null);
+  const [topWritersApi, setTopWritersApi] = useState(null);
   const [topWriters, setTopWriters] = useState([]);
   const [stories, setStories] = useState([]);
   const [collections, setCollections] = useState([]);
@@ -30,6 +32,11 @@ const App = () => {
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("theme") === "dark"
   );
+
+  const loadingStories = stories.length === 0;
+  const loadingCollections = collections.length === 0;
+  const loadingRecommendations = recommendations.length === 0;
+  const loadingTopWriters = topWriters.length === 0;
 
   useEffect(() => {
     if (darkMode) {
@@ -244,6 +251,12 @@ const App = () => {
     return () => clearInterval(interval);
   }, [recommendationsApi]);
 
+  useEffect(() => {
+    if (!topWritersApi) return;
+    const interval = setInterval(() => topWritersApi.scrollNext(), 6000);
+    return () => clearInterval(interval);
+  }, [topWritersApi]);  
+
   const handleStoryClick = async (storyId) => {
     try {
       await fetch(`https://fanhub-server.onrender.com/api/stories/${storyId}/view`, {
@@ -275,6 +288,18 @@ const App = () => {
       console.error("Failed to view collection:", err);
     }
   };
+
+  function SkeletonCard() {
+    return (
+      <div className="animate-pulse">
+        {/* Image */}
+        <div className="rounded-xl bg-gray-300 dark:bg-gray-700 aspect-[2/3]"></div>
+  
+        {/* Title */}
+        <div className="mt-2 h-3 w-3/4 rounded bg-gray-300 dark:bg-gray-700"></div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -350,151 +375,203 @@ const App = () => {
         </section>
 
         {/* STORIES SECTION */}
-        {stories.length > 0 && (
-          <section className="w-full max-w-7xl mx-auto mb-12">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h2
-                className="text-2xl md:text-3xl font-bold"
-                style={{ color: "var(--foreground-color)" }}
-              >
-                Stories 📖
-              </h2>
-              <Link 
-                to="/homestories" 
-                className="text-sm font-medium hover:underline transition-all"
-                style={{ color: "var(--button-bg)" }}
-              >
-                View All
-              </Link>
-            </div>
-
-            <Carousel 
-              setApi={setStoriesApi} 
-              opts={{ align: "start", loop: true }} 
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {stories.map((story) => (
-                  <CarouselItem 
-                    key={story.id} 
-                    className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
-                  >
-                    <StoryCard story={story} onClick={handleStoryClick} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
-              <CarouselNext className="hidden sm:flex right-2 md:right-4" />
-            </Carousel>
-          </section>
-        )}
-
-        {/* VISUAL STORIES (COLLECTIONS) SECTION */}
-        {collections.length > 0 && (
-          <section className="w-full max-w-7xl mx-auto mb-12">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h2
-                className="text-2xl md:text-3xl font-bold"
-                style={{ color: "var(--foreground-color)" }}
-              >
-                Visual Stories 🎨
-              </h2>
-              <Link 
-                to="/visual stories" 
-                className="text-sm font-medium hover:underline transition-all"
-                style={{ color: "var(--button-bg)" }}
-              >
-                View All
-              </Link>
-            </div>
-
-            <Carousel 
-              setApi={setCollectionsApi} 
-              opts={{ align: "start", loop: true }} 
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {collections.map((collection) => (
-                  <CarouselItem 
-                    key={collection.id} 
-                    className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
-                  >
-                    <CollectionCard collection={collection} onClick={handleCollectionClick} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
-              <CarouselNext className="hidden sm:flex right-2 md:right-4" />
-            </Carousel>
-          </section>
-        )}
-
-        {/* CURATED RECOMMENDATIONS SECTION */}
-        {recommendations.length > 0 && (
-          <section className="w-full max-w-7xl mx-auto mb-12">
-            <div className="flex items-center justify-between mb-4 px-2">
-              <h2
-                className="text-2xl md:text-3xl font-bold"
-                style={{ color: "var(--foreground-color)" }}
-              >
-                Curated Reading Lists 📚
-              </h2>
-              <Link 
-                to="/recommendations" 
-                className="text-sm font-medium hover:underline transition-all"
-                style={{ color: "var(--button-bg)" }}
-              >
-                View All
-              </Link>
-            </div>
-
-            <Carousel 
-              setApi={setRecommendationsApi} 
-              opts={{ align: "start", loop: true }} 
-              className="w-full"
-            >
-              <CarouselContent className="-ml-2 md:-ml-4">
-                {recommendations.map((rec) => (
-                  <CarouselItem 
-                    key={rec.id} 
-                    className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-                  >
-                    <RecommendationCard recommendation={rec} darkMode={darkMode} navigate={navigate} />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
-              <CarouselNext className="hidden sm:flex right-2 md:right-4" />
-            </Carousel>
-          </section>
-        )}
-
-        {/* TOP WRITERS */}
-        {topWriters.length > 0 && (
-          <section className="w-full max-w-7xl mx-auto">
-            <h2
-              className="text-2xl md:text-3xl font-bold mb-4 px-2"
-              style={{ color: "var(--foreground-color)" }}
-            >
-              Top Writers of the Week to Follow ✨
-            </h2>
-  
-            <div
-              className="flex overflow-x-auto gap-4 pb-4 scrollbar-hide px-1 md:px-2 snap-x snap-mandatory"
-              style={{
-                scrollBehavior: "smooth",
-                WebkitOverflowScrolling: "touch",
-              }}
-            >
-              {topWriters.map((writer) => (
-                <div key={writer.id} className="snap-start">
-                  <TopWriterCard writer={writer} darkMode={darkMode} />
-                </div>
+        <section className="w-full max-w-7xl mx-auto mb-12">
+          {loadingStories ? (
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4 px-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
               ))}
             </div>
-          </section>
-        )}
-     
+          ) : stories.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h2
+                  className="text-2xl md:text-3xl font-bold"
+                  style={{ color: "var(--foreground-color)" }}
+                >
+                  Stories 📖
+                </h2>
+                <Link
+                  to="/homestories"
+                  className="text-sm font-medium hover:underline transition-all"
+                  style={{ color: "var(--button-bg)" }}
+                >
+                  View All
+                </Link>
+              </div>
+
+              <Carousel
+                setApi={setStoriesApi}
+                opts={{ align: "start", loop: true }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {stories.map((story) => (
+                    <CarouselItem
+                      key={story.id}
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                    >
+                      <StoryCard story={story} onClick={handleStoryClick} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
+                <CarouselNext className="hidden sm:flex right-2 md:right-4" />
+              </Carousel>
+            </>
+          ) : null}
+        </section>
+
+        {/* VISUAL STORIES (COLLECTIONS) SECTION */}
+        <section className="w-full max-w-7xl mx-auto mb-12">
+          {loadingCollections ? (
+            // 🔹 Loading Skeletons
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-4 px-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : collections.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h2
+                  className="text-2xl md:text-3xl font-bold"
+                  style={{ color: "var(--foreground-color)" }}
+                >
+                  Visual Stories 🎨
+                </h2>
+                <Link
+                  to="/visual stories"
+                  className="text-sm font-medium hover:underline transition-all"
+                  style={{ color: "var(--button-bg)" }}
+                >
+                  View All
+                </Link>
+              </div>
+
+              <Carousel
+                setApi={setCollectionsApi}
+                opts={{ align: "start", loop: true }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {collections.map((collection) => (
+                    <CarouselItem
+                      key={collection.id}
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                    >
+                      <CollectionCard
+                        collection={collection}
+                        onClick={handleCollectionClick}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
+                <CarouselNext className="hidden sm:flex right-2 md:right-4" />
+              </Carousel>
+            </>
+          ) : null}
+        </section>
+
+        {/* CURATED RECOMMENDATIONS SECTION */}
+        <section className="w-full max-w-7xl mx-auto mb-12">
+          {loadingRecommendations ? (
+            // 🔹 Loading Skeletons
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : recommendations.length > 0 ? (
+            <>
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h2
+                  className="text-2xl md:text-3xl font-bold"
+                  style={{ color: "var(--foreground-color)" }}
+                >
+                  Curated Reading Lists 📚
+                </h2>
+                <Link
+                  to="/recommendations"
+                  className="text-sm font-medium hover:underline transition-all"
+                  style={{ color: "var(--button-bg)" }}
+                >
+                  View All
+                </Link>
+              </div>
+
+              <Carousel
+                setApi={setRecommendationsApi}
+                opts={{ align: "start", loop: true }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {recommendations.map((rec) => (
+                    <CarouselItem
+                      key={rec.id}
+                      className="pl-2 md:pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+                    >
+                      <RecommendationCard
+                        recommendation={rec}
+                        darkMode={darkMode}
+                        navigate={navigate}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
+                <CarouselNext className="hidden sm:flex right-2 md:right-4" />
+              </Carousel>
+            </>
+          ) : null}
+        </section>
+        
+        {/* TOP WRITERS */}
+        <section className="w-full max-w-7xl mx-auto">
+          {loadingTopWriters ? (
+            // 🔹 Loading Skeletons for Top Writers
+            <div className="flex gap-4 overflow-x-auto px-2 py-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-36 md:w-44 h-52 rounded-lg bg-gray-200 dark:bg-gray-700 animate-pulse"
+                />
+              ))}
+            </div>
+          ) : topWriters.length > 0 ? (
+            <>
+              <h2
+                className="text-2xl md:text-3xl font-bold mb-4 px-2"
+                style={{ color: "var(--foreground-color)" }}
+              >
+                Top Writers of the Week to Follow ✨
+              </h2>
+
+              <Carousel
+                opts={{ align: "start", loop: true }}
+                setApi={setTopWritersApi}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2 md:-ml-4">
+                  {topWriters.map((writer) => (
+                    <CarouselItem
+                      key={writer.id || writer._id}
+                      className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6"
+                    >
+                      <TopWriterCard writer={writer} darkMode={darkMode} />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+
+                <CarouselPrevious className="hidden sm:flex left-2 md:left-4" />
+                <CarouselNext className="hidden sm:flex right-2 md:right-4" />
+              </Carousel>
+            </>
+          ) : null}
+        </section>
       </main>
     </div>
   );
