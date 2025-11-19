@@ -1,7 +1,7 @@
 import React from "react";
 
 // Square Logo Component - Black & Blue Theme
-export function SquareLogo({ theme = "light", size = 20 }) {
+export function SquareLogo({ theme = "light", size = 10 }) {
   const isDark = theme === "dark";
 
   // Filters for eagle: keeps it readable in dark/light mode

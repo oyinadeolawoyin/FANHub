@@ -43,7 +43,7 @@ export default function Header({ user, darkMode, setDarkMode }) {
             {/* LOGO */}
             <div className="flex items-center gap-2">
                 <Link to="/">
-                    <SquareLogo theme={darkMode ? "dark" : "light"} size={18} />
+                    <SquareLogo theme={darkMode ? "dark" : "light"} size={15} />
                 </Link>
             </div>
 
