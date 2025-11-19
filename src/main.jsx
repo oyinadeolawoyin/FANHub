@@ -67,17 +67,15 @@ import { RecommendationProvider } from './Components/recommendationList/recommen
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    children: [
-      {
-        path: "homestories",
-        element: <Homestories />
-      },
-      {
-        path: "visual stories",
-        element: <Homecollections />
-      },
-    ]
+    element: <App />
+  },
+  {
+    path: "homestories",
+    element: <Homestories />
+  },
+  {
+    path: "visual stories",
+    element: <Homecollections />
   },
   {
     path: "signup",
