@@ -22,6 +22,9 @@ import Homecollections from './Components/homepage/collections.jsx';
 import HomeRecommendationPage from './Components/homepage/recommedation.jsx';
 import SingleReview from './Components/homepage/reviewPage.jsx';
 import RecommendationsPage from './Components/homepage/recommendationsPage.jsx';
+import Blog from './Components/Blog/blog.jsx';
+import Service from './Components/service/service.jsx';
+import AboutUs from './Components/aboutUs/aboutUs.jsx';
 
 import Createstory from './Components/story/createStory.jsx';
 import Stories from './Components/story/stories.jsx';
@@ -68,6 +71,18 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />
+  },
+  {
+    path: "blog",
+    element: <Blog />
+  },
+  {
+    path: "about us",
+    element: <AboutUs />
+  },
+  {
+    path: "service",
+    element: <Service />
   },
   {
     path: "homestories",

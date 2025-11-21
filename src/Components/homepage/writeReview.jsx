@@ -4,6 +4,7 @@ import { useAuth } from "../auth/authContext";
 import { useToast } from "../utils/toast-modal";
 import Header from "../css/header";
 import { Star, Sparkles, BookOpen, Feather, CheckCircle2, AlertCircle } from "lucide-react";
+import Footer from "../css/footer";
 
 function WriteReview() {
     const [form, setForm] = useState({
@@ -357,6 +358,9 @@ function WriteReview() {
                     </div>
                 </div>
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

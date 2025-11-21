@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AddToRecommendationList from "../recommendationList/recommendationModal";
+import Footer from "../css/footer";
 
 function HomeStoryPage() {
     const { user } = useAuth();
@@ -627,6 +628,9 @@ function HomeStoryPage() {
                     </section>
                 </article>
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

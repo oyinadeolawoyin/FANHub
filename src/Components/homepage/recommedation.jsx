@@ -5,6 +5,7 @@ import CommentList from "../comment/commentList";
 import Header from "../css/header";
 import { BookOpen, Eye, Clock, Heart, MessageSquare, User } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Footer from "../css/footer";
 
 function HomeRecommendationPage() {
     const { id } = useParams();
@@ -438,6 +439,9 @@ function HomeRecommendationPage() {
                     </section>
                 </article>
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

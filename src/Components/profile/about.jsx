@@ -4,7 +4,8 @@ import {
   FaInstagram, 
   FaFacebookF, 
   FaTwitter, 
-  FaDiscord 
+  FaDiscord, 
+  FaPatreon
 } from "react-icons/fa";
 import { 
   Loader2, 
@@ -23,6 +24,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import DiscordIcon from "../css/discord";
 
 function About() {
   const { id } = useParams();
@@ -126,12 +128,19 @@ function About() {
       url: user.discord, 
       color: "from-indigo-500 to-purple-500",
       bgColor: "bg-gradient-to-br from-indigo-500/10 to-purple-500/10"
+    },
+    { 
+      name: "Patroen", 
+      icon: FaPatreon, 
+      url: user.donation, 
+      color: "from-indigo-500 to-purple-500",
+      bgColor: "bg-gradient-to-br from-indigo-500/10 to-purple-500/10"
     }
   ];
 
   const contentStats = [
     { label: "Stories", value: user._count?.stories || 0, icon: BookOpen, color: "text-blue-500" },
-    { label: "Collections", value: user._count?.collection || 0, icon: Bookmark, color: "text-purple-500" },
+    { label: "Visual stories", value: user._count?.collection || 0, icon: Bookmark, color: "text-purple-500" },
     { label: "Images", value: user._count?.images || 0, icon: Image, color: "text-pink-500" },
     { label: "Videos", value: user._count?.videos || 0, icon: Video, color: "text-red-500" },
     { label: "Lists", value: user._count?.recommendations || 0, icon: ListChecks, color: "text-green-500" }

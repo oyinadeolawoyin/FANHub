@@ -16,6 +16,7 @@ import {
 import Header from "./Components/css/header";
 import "./Components/css/index.css";
 import { useFollow } from "./Components/profile/useFollow";
+import Footer from "./Components/css/footer";
 
 const App = () => {
   const { user } = useAuth();
@@ -195,34 +196,24 @@ const App = () => {
   const [featuredContent] = useState([
     {
       id: 1,
-      title: "The Future of Web Development",
-      author: "Sarah Chen",
-      description:
-        "Exploring the latest trends in modern web architecture and design patterns.",
-      category: "Technology",
+      imgSrc: "/carousel-images/the-voices.png", 
+      alt: "The Voices - Let's soar background image", // Keep alt descriptive for accessibility
+      title: "THE VOICES",
+      subtitle: "Let's soar",
     },
     {
       id: 2,
-      title: "Building Communities That Last",
-      author: "Marcus Williams",
-      description:
-        "Insights on creating engaging and sustainable online communities.",
-      category: "Community",
+      imgSrc: "/carousel-images/storytelling.png", 
+      alt: "Storytelling - Igniting imagination background image",
+      title: "STORYTELLING",
+      subtitle: "Igniting imagination",
     },
     {
       id: 3,
-      title: "Stories That Inspire Change",
-      author: "Elena Rodriguez",
-      description:
-        "How authentic storytelling can transform lives and perspectives.",
-      category: "Inspiration",
-    },
-    {
-      id: 4,
-      title: "The Art of Digital Expression",
-      author: "James Park",
-      description: "Discovering new ways to share ideas in the digital age.",
-      category: "Creative",
+      imgSrc: "/carousel-images/community.png", 
+      alt: "Community - Where connections thrive background image",
+      title: "COMMUNITY",
+      subtitle: "Where connections thrive",
     },
   ]);
 
@@ -325,45 +316,22 @@ const App = () => {
             <CarouselContent className="-ml-2 md:-ml-4">
               {featuredContent.map((item) => (
                 <CarouselItem key={item.id} className="pl-2 md:pl-4">
-                  <div
-                    className="rounded-lg overflow-hidden p-[1px] transition-all duration-500"
-                    style={{
-                      background: "linear-gradient(135deg, #60a5fa, #a855f7, #ec4899)",
-                    }}
-                  >
-                    <div
-                      className="rounded-lg p-6 h-56 sm:h-64 flex flex-col justify-between"
-                      style={{
-                        backgroundColor: "var(--card-bg)",
-                        color: "var(--card-text)",
-                      }}
-                    >
-                      <div>
-                        <span className="text-xs font-semibold px-3 py-1 rounded-full"
-                              style={{
-                                backgroundColor: darkMode ? "rgba(255,255,255,0.15)" : "rgba(59,130,246,0.15)",
-                                color: "var(--button-bg)",
-                              }}>
-                          {item.category}
-                        </span>
-                        <h3 className="text-2xl font-bold mt-2 mb-1">{item.title}</h3>
-                        <p className="text-sm opacity-80">{item.description}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center font-semibold"
-                          style={{
-                            background: "linear-gradient(135deg, #60a5fa, #a78bfa)",
-                            color: "#fff",
-                          }}
-                        >
-                          {item.author[0]}
-                        </div>
-                        <div>
-                          <p className="text-xs opacity-70">Featured Writer</p>
-                          <p className="font-semibold">{item.author}</p>
-                        </div>
-                      </div>
+                  <div className="relative rounded-lg overflow-hidden w-full h-56 sm:h-64 lg:h-80 xl:h-96 2xl:h-[30rem]"> 
+                    {/* 1. Background Image */}
+                    <img
+                      src={item.imgSrc}
+                      alt={item.alt}
+                      className="w-full h-full object-cover" 
+                    />
+
+                    {/* 2. Text Overlay Container */}
+                    <div className="absolute inset-0 flex flex-col justify-end p-4 md:p-8 bg-black/30 transition-all duration-300">
+                      <h2 className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-white mb-2 leading-none">
+                        {item.title}
+                      </h2>
+                      <p className="text-base md:text-xl lg:text-2xl font-medium text-white/80">
+                        {item.subtitle}
+                      </p>
                     </div>
                   </div>
                 </CarouselItem>
@@ -573,6 +541,9 @@ const App = () => {
           ) : null}
         </section>
       </main>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 };

@@ -173,9 +173,21 @@ function Stories({ stories, addToLibrary, libraryLoading, libraryStatus }) {
 
   if (stories.length === 0) {
     return (
-      <div className="text-center py-12">
-        <p className="text-muted-foreground text-lg">No stories found</p>
-      </div>
+      <Card className="p-8 sm:p-12 text-center border-2 border-dashed">
+        <div className="flex flex-col items-center gap-4">
+          <div className="p-4 bg-green-100 dark:bg-green-900/20 rounded-full">
+            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-green-500" />
+          </div>
+          <div className="max-w-md">
+            <h3 className="text-lg sm:text-xl font-semibold text-theme mb-2">
+              No stories yet
+            </h3>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              This user hasn't published any stories
+            </p>
+          </div>
+        </div>
+      </Card>
     );
   }
 

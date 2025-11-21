@@ -6,7 +6,7 @@ import { Loader2, ImagePlus } from "lucide-react";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/cropImage";
 
-function CreatePost({ onPostCreated, writerId }) {
+function CreatePost({ onPostCreated, writerId, username }) {
   const [form, setForm] = useState({
     title: "",
     content: "",
@@ -109,7 +109,7 @@ function CreatePost({ onPostCreated, writerId }) {
       <div className="relative">
         <Textarea
           name="content"
-          placeholder="Be the first to start a conversation..."
+          placeholder={`Write to ${username}...`}
           value={form.content}
           onChange={handleChange}
           required

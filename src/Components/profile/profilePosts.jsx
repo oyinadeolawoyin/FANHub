@@ -30,7 +30,7 @@ import {
 import { ConfirmDialog, useConfirm } from "../utils/toast-modal";
 
 function ProfilePosts() {
-  const { id } = useParams();
+  const { id, username } = useParams();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -362,7 +362,6 @@ function ProfilePosts() {
       <main className="pt-20 max-w-3xl mx-auto p-4 space-y-6">
         {/* Search Bar */}
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold gradient-text">My Posts</h1>
           {/* Search Bar with Touch-Friendly Button */}
           <form onSubmit={handleSearch} className="relative flex items-center gap-2">
             <div className="relative flex-1">
@@ -397,7 +396,7 @@ function ProfilePosts() {
         </div>
 
         {/* Create Post */}
-        <CreatePost onPostCreated={handlePostCreated} writerId={id} />
+        <CreatePost onPostCreated={handlePostCreated} writerId={id} username={username}/>
 
         {/* Posts */}
         {loading && currentPosts.length === 0 ? (

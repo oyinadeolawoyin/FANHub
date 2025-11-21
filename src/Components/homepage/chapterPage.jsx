@@ -7,7 +7,7 @@ import Header from "../css/header";
 import { ChevronLeft, ChevronRight, Eye, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import Footer from "../css/footer";
 
 function Chapter() {
     const { storyId, chapterId } = useParams();
@@ -477,6 +477,9 @@ function Chapter() {
                   </div>
                 )}
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

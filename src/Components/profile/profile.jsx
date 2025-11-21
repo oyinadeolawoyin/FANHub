@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { UserPlus, UserMinus, Users, Loader2 } from "lucide-react";
 import Follower from "./followers";
 import Following from "./following";
+import Footer from "../css/footer";
 
 function Profile() {
   const { user } = useAuth();
@@ -302,6 +303,9 @@ function Profile() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <Outlet />
         </div>
+
+        {/* FOOTER */}
+        <Footer />
 
         {/* Followers Modal */}
         {showFollowers && (

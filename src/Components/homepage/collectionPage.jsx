@@ -4,6 +4,7 @@ import { useAuth } from "../auth/authContext";
 import CommentList from "../comment/commentList";
 import Header from "../css/header";
 import { Card, CardContent } from "@/components/ui/card";
+import Footer from "../css/footer";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -1297,6 +1298,8 @@ function HomepageCollections() {
           </div>
         )}
       </div>
+      {/* FOOTER */}
+      <Footer />
     </>
   );
 }

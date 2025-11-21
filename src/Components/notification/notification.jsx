@@ -4,6 +4,7 @@ import { Bell, Loader2, Inbox, CheckCircle } from "lucide-react";
 import Header from "../css/header";
 import { useAuth } from "../auth/authContext";
 import { useToast } from "../utils/toast-modal";
+import Footer from "../css/footer";
 
 function Notification() {
   const [notifications, setNotifications] = useState([]);

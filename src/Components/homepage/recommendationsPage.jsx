@@ -5,6 +5,7 @@ import { Heart, MessageCircle, BookOpen, Filter, Search, X } from "lucide-react"
 import Header from "../css/header";
 import { useAuth } from "../auth/authContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Footer from "../css/footer";
 import {
   Select,
   SelectContent,
@@ -363,6 +364,9 @@ const RecommendationsPage = () => {
           </div>
         )}
       </main>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 };

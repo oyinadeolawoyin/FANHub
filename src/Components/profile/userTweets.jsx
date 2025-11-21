@@ -254,7 +254,6 @@ function UserTweets() {
 
       {/* Search Bar (NEW SECTION) */}
       <div className="space-y-4 max-w-4xl mx-auto px-4 sm:px-0">
-        <h1 className="text-2xl font-bold gradient-text">My Tweets</h1>
         <form onSubmit={handleSearch} className="relative flex items-center gap-2">
           <div className="relative flex-1">
             <Input
@@ -286,6 +285,27 @@ function UserTweets() {
           </Button>
         </form>
       </div>
+
+      {/* Empty State */}
+      {tweets.length === 0 && !loading && (
+        <Card className="p-8 sm:p-12 text-center border-2 border-dashed">
+          <div className="flex flex-col items-center gap-4">
+            <div className="p-4 bg-blue-100 dark:bg-blue-900/20 rounded-full">
+              <MessageCircle className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500" />
+            </div>
+            <div className="max-w-md">
+              <h3 className="text-lg sm:text-xl font-semibold text-theme mb-2">
+                {isSearchMode ? "No matching tweets" : "No tweets yet"}
+              </h3>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                {isSearchMode
+                  ? "Try adjusting your search terms"
+                  : "This user hasn't posted any tweets yet"}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Tweets List */}
       <div className="space-y-6 max-w-4xl mx-auto">

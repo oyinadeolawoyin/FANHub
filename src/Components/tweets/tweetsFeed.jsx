@@ -7,7 +7,7 @@ import Delete from "../delete/delete";
 import Header from "../css/header";
 import { useToast, useConfirm, Toast, ConfirmDialog } from "../utils/toast-modal";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import Footer from "../css/footer";
 import {
   Card,
   CardHeader,
@@ -1101,6 +1101,10 @@ function TweetFeed({ url, single = false }) {
           </div>
         </div>
       )}
+
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }

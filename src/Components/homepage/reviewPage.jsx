@@ -5,6 +5,7 @@ import Delete from "../delete/delete";
 import Header from "../css/header";
 import { Star, Heart, Trash2, Calendar, UserCircle, ArrowLeft, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Footer from "../css/footer";
 
 function SingleReview() {
     const { user } = useAuth();
@@ -391,6 +392,9 @@ function SingleReview() {
                     )}
                 </div>
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

@@ -1,6 +1,7 @@
 import { useAuth } from "../auth/authContext";
 import { Outlet, Link } from "react-router-dom";
 import Header from "../css/header";
+import Footer from "../css/footer";
 import { useState, useEffect } from "react";
 import { 
   Menu, 
@@ -75,11 +76,11 @@ function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 transition-colors duration-500">
       <Header user={user} darkMode={darkMode} setDarkMode={setDarkMode} />
       <div className="h-1"></div>
 
-      <div className="flex pt-[90px]">
+      <div className="flex flex-1 pt-[90px]">
         {/* Mobile Sidebar */}
         {isMobile ? (
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -121,12 +122,15 @@ function Dashboard() {
         )}
 
         {/* Main Content */}
-        <main className={`flex-1 min-h-[calc(100vh-73px)] ${!isMobile ? "ml-72" : ""}`}>
-          <div className="p-6 lg:p-8">
+        <main className={`flex-1 min-h-[calc(100vh-73px)] ${!isMobile ? "ml-72" : ""} flex flex-col`}>
+          <div className="flex-1 p-6 lg:p-8">
             <div className="max-w-7xl mx-auto">
               <Outlet />
             </div>
           </div>
+
+          {/* FOOTER */}
+          <Footer />
         </main>
       </div>
     </div>

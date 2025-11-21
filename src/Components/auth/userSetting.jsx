@@ -9,13 +9,14 @@ import {
   Instagram,
   Facebook,
   Twitter,
-  MessageCircle,
   DollarSign,
   Upload,
   Loader2,
   Save,
 } from "lucide-react";
 import Header from "../css/header";
+import Footer from "../css/footer";
+import DiscordIcon from "../css/discord";
 
 function Usersettings() {
   const { user, setUser } = useUser();
@@ -247,8 +248,8 @@ function Usersettings() {
                   { id: "instagram", label: "Instagram", icon: <Instagram className="w-5 h-5 text-secondary" />, placeholder: "@username" },
                   { id: "facebook", label: "Facebook", icon: <Facebook className="w-5 h-5 text-secondary" />, placeholder: "facebook.com/username" },
                   { id: "twitter", label: "Twitter / X", icon: <Twitter className="w-5 h-5 text-secondary" />, placeholder: "@username" },
-                  { id: "discord", label: "Discord", icon: <MessageCircle className="w-5 h-5 text-secondary" />, placeholder: "username#0000" },
-                  { id: "donation", label: "Donation Link", icon: <DollarSign className="w-5 h-5 text-secondary" />, placeholder: "https://..." },
+                  { id: "discord", label: "Discord", icon: <DiscordIcon className="w-5 h-5 text-secondary" />, placeholder: "username#0000" },
+                  { id: "donation", label: "Patreon", icon: <DollarSign className="w-5 h-5 text-secondary" />, placeholder: "https://..." },
                 ].map(({ id, label, icon, placeholder }) => (
                   <div key={id}>
                     <label htmlFor={id} className="block text-sm font-medium text-theme mb-2">
@@ -307,6 +308,9 @@ function Usersettings() {
           </form>
         </div>
       </div>
+
+      {/* FOOTER */}
+      <Footer />
     </>
   );
 }

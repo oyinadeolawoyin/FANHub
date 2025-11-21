@@ -7,6 +7,7 @@ import SmartAvatar from "../utils/SmartAvatar";
 import { Star, Heart, Trash2, Calendar, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast, useConfirm, Toast, ConfirmDialog } from "../utils/toast-modal";
+import Footer from "../css/footer";
 
 function Reviews() {
     const { user } = useAuth();
@@ -398,6 +399,9 @@ function Reviews() {
                     )}
                 </div>
             </div>
+
+            {/* FOOTER */}
+            <Footer />
         </>
     );
 }

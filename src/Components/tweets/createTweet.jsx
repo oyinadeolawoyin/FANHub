@@ -20,6 +20,7 @@ import {
   Lightbulb
 } from "lucide-react";
 import { useToast } from "../utils/toast-modal";
+import Footer from "../css/footer";
 
 // CreateTweet Component
 function CreateTweet() {
@@ -217,7 +218,8 @@ function CreateTweet() {
   return (
     <div className="min-h-screen bg-theme">
       <Header user={user} darkMode={darkMode} setDarkMode={handleThemeToggle} />
-      
+      <div className="h-10"></div>
+
       <div className="pt-20 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-5xl mx-auto">
           {/* Header */}
@@ -444,6 +446,9 @@ function CreateTweet() {
           </div>
         </div>
       </div>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }

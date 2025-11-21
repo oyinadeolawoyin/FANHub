@@ -8,6 +8,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/compon
 import { Input } from "@/components/ui/input";
 import { Search, Filter, Eye, Heart, Loader2, X, ChevronDown, BookOpen } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import Footer from "../css/footer";
 
 function Homecollections() {
   const navigate = useNavigate();
@@ -296,6 +297,9 @@ function Homecollections() {
           </section>
         </div>
       </main>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }
